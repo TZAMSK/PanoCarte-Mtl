@@ -7,20 +7,20 @@ La proposition doit être approuvée par l'enseignant. Par contre, les détails 
 ** Équipe
 
 - Nom des coéquipiers (3 ou 4 personnes) :
-  1 :
-  2 :
-  3 :
-  4 :
+  1 :hatim hatimi
+  2 : MAtthew Sabourin
+  3 : Alikhan Khakimov
+  4 : Armsky joseph
   
 - Horaire de rencontre hebdomadaire (1h) : 
 
 ** Projet
 
-- Thématique (quel est le domaine d'application de votre travail) :
+- Thématique (quel est le domaine d'application de votre travail) : stationnement ville de montréal
   
-- Problème à résoudre (du point de vue de l'utilisateur, quel sera la plus-value de votre app) :
+- Problème à résoudre (du point de vue de l'utilisateur, quel sera la plus-value de votre app) : fournir les heures de stationnements pour chaque rue
   
-- Analyse comparative (nommez au moins deux applications (Android ou non) déjà existantes qui font plus ou moins la même chose) :
+- Analyse comparative (nommez au moins deux applications (Android ou non) déjà existantes qui font plus ou moins la même chose) : mtlpark (sur ios), clicknpark(android)
 
   
 ** Fonctionnalités minimales :
@@ -29,8 +29,7 @@ La proposition doit être approuvée par l'enseignant. Par contre, les détails 
 Quelles données comptez-vous stoquer localement sur l'appareil? :
 
 *** Échange de données avec un service extérieur
-Quelles données comptez-vous échanger avec un service extérieur? :
-
+API signalisation ville de montréal
 
 L'API existe-t-il déjà? :
 Si oui, est-il accessible librement? gratuitement? devez-vous l'héberger vous-même? : 
@@ -40,12 +39,12 @@ Si déjà connu, de quel type d'API s'agit-il?
   - OpenAPI
   - GraphQL
   - RPC
-  - Autre :
+  - Autre : Signalisation-codification RPA des panneaux (gratuit)
 
 *** Interaction avec d'autres applications du système Android
 Quelle(s) fonctionnalité(s] fer(a|ont) appel à une autre application du système?
 (ex.: prise de photo/vidéo, envoie de courriel, ajout de rendez-vous au calendrier, etc.) :
-
+calendrier pour enregistrer un rappel
 
 *** Licence choisie :
 - ☐ Propriétaire
