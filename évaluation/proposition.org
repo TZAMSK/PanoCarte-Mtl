@@ -7,7 +7,7 @@ La proposition doit être approuvée par l'enseignant. Par contre, les détails 
 ** Équipe
 
 - Nom des coéquipiers (3 ou 4 personnes) :
-  1 :hatim hatimi
+  1 :Hatim Hatimi
   2 : MAtthew Sabourin
   3 : Alikhan Khakimov
   4 : Armsky joseph
@@ -16,7 +16,7 @@ La proposition doit être approuvée par l'enseignant. Par contre, les détails 
 
 ** Projet
 
-- Thématique (quel est le domaine d'application de votre travail) : stationnement ville de montréal
+- Thématique (quel est le domaine d'application de votre travail) : Stationnement ville de montréal
   
 - Problème à résoudre (du point de vue de l'utilisateur, quel sera la plus-value de votre app) : fournir les heures de stationnements pour chaque rue
   
@@ -32,7 +32,7 @@ Quelles données comptez-vous stoquer localement sur l'appareil? :
 API signalisation ville de montréal
 
 L'API existe-t-il déjà? :
-Si oui, est-il accessible librement? gratuitement? devez-vous l'héberger vous-même? : 
+Si oui, est-il accessible librement? gratuitement? devez-vous l'héberger vous-même? : gratuit, libre
 Si non, sera-t-il développé et par qui? ou simulé? : 
 Si déjà connu, de quel type d'API s'agit-il?
   - REST
