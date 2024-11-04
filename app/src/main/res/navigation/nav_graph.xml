@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_chargement">
+
+    <fragment
+        android:id="@+id/fragment_chargement"
+        android:name="com.example.panocartemtl.fragment_chargement"
+        android:label="fragment_chargement"
+        tools:layout="@layout/fragment_chargement" >
+        <action
+            android:id="@+id/action_fragment_chargement_vers_fragment_carte"
+            app:destination="@id/fragment_carte" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_carte"
+        android:name="com.example.panocartemtl.fragment_carte"
+        android:label="fragment_carte"
+        tools:layout="@layout/fragment_carte" >
+        <action
+            android:id="@+id/action_fragment_carte_vers_fragment_favoris"
+            app:destination="@id/fragment_favoris" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_favoris"
+        android:name="com.example.panocartemtl.fragment_favoris"
+        android:label="fragment_favoris"
+        tools:layout="@layout/fragment_favoris" />
+</navigation>
