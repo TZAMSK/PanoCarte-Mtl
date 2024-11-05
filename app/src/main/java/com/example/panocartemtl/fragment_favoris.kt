@@ -5,10 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 class fragment_favoris : Fragment() {
+
+    private lateinit var adresses: MutableList<String>
+    private lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,7 +25,7 @@ class fragment_favoris : Fragment() {
         val listView: ListView = view.findViewById(R.id.listViewFavoris)
 
         // Adresses fictives
-        val adresses = listOf(
+        adresses = mutableListOf(
             "1234 Rue Imaginaire, Montréal, QC H1A 1A1",
             "5678 Avenue Fictive, Montréal, QC H2B 2B2",
             "91011 Boulevard Faux, Montréal, QC H3C 3C3",
@@ -29,7 +34,23 @@ class fragment_favoris : Fragment() {
         )
 
         // Création de l'adaptateur
-        val adapter = ArrayAdapter(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, adresses)
+        adapter = object : ArrayAdapter<String>(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, adresses) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+
+                // Récupération du bouton de suppression
+                val btnSupprimer: Button = view.findViewById(R.id.btnSupprimer)
+                btnSupprimer.setOnClickListener {
+                    // Suppression de l'adresse de la liste
+                    adresses.removeAt(position)
+                    // Mise à jour de l'adaptateur
+                    notifyDataSetChanged()
+                    Toast.makeText(requireContext(), "Adresse supprimée", Toast.LENGTH_SHORT).show()
+                }
+
+                return view
+            }
+        }
 
         // Assignation de l'adaptateur à la ListView
         listView.adapter = adapter
