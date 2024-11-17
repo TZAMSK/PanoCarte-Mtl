@@ -43,6 +43,7 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import kotlin.random.Random
 
 class fragment_carte : Fragment() {
     private lateinit var popupLayout: View
@@ -204,6 +205,21 @@ class fragment_carte : Fragment() {
                     circleOpacity(0.2)
                 }
             )
+        }
+
+        for(i in 0 until 5) {
+            val longHazard = Random.nextDouble(-0.001,0.002)
+            val latHazard = Random.nextDouble(-0.001,0.002)
+
+            val coordRandom = Point.fromLngLat(position.longitude() + longHazard, position.latitude() + latHazard)
+
+            val insectarium = PointAnnotationOptions()
+                .withPoint(coordRandom)
+                .withIconImage("marqueur_rouge")
+                .withIconAnchor(IconAnchor.BOTTOM)
+                .withIconSize(0.3)
+
+            pointAnnotationManager.create(insectarium)
         }
     }
 
