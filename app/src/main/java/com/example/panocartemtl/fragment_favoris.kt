@@ -45,7 +45,7 @@ class fragment_favoris : Fragment() {
                     adresses.removeAt(position)
                     // Mise à jour de l'adaptateur
                     notifyDataSetChanged()
-                    Toast.makeText(requireContext(), "Adresse supprimée", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.adresse_supprimée, Toast.LENGTH_SHORT).show()
                 }
 
                 return view

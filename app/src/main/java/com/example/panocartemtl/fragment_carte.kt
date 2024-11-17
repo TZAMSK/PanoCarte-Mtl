@@ -21,19 +21,15 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.layers.addLayer
-import com.mapbox.maps.extension.style.layers.generated.CircleLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.sources.addSource
-import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
@@ -71,7 +67,7 @@ class fragment_carte : Fragment() {
             if (permis == true) {
                 getPositionActuelle()
             } else {
-                Toast.makeText(requireContext(), "Autorisation de la position est requise", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.autorisation_de_la_position_est_requise, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -173,7 +169,7 @@ class fragment_carte : Fragment() {
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "Autorisation de la position actuelle n'a pas été accordée.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.autorisation_de_la_position_actuelle_n_a_pas_été_accordée, Toast.LENGTH_SHORT).show()
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
@@ -188,7 +184,7 @@ class fragment_carte : Fragment() {
         var rayon = try {
             txtRayon.text.toString().toDouble()
         } catch (e: NumberFormatException) {
-            Toast.makeText(requireContext(), "Rayon indéterminé", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.rayon_indéterminé, Toast.LENGTH_SHORT).show()
             0.0
         }
 
@@ -265,11 +261,11 @@ class fragment_carte : Fragment() {
                 val marqueurId = markerMap[pointAnnotation]
                 when (marqueurId) {
                     "rosemont" -> {
-                        Toast.makeText(requireContext(),"Marqueur cliqué: Position de Rosemont",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),"${getString(R.string.marqueur_cliqué)}: Position Rosemont",Toast.LENGTH_SHORT).show()
                         montrerPopup("Position de Rosemont", "6400 16e Avenue, Montréal, QC H1X 2S9")
                     }
                     "insectarium" -> {
-                        Toast.makeText(requireContext(), "Marqueur cliqué: Position de l'Insectarium", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${getString(R.string.marqueur_cliqué)}: Position Insectarium", Toast.LENGTH_SHORT).show()
                         montrerPopup("Position de l'Insectarium", "4581 Sherbrooke St E, Montreal, QC H1X 2B2")
                     }
                 }

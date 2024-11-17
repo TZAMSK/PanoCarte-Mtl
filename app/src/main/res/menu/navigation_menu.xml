@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_carte"
-        android:title="Carte"
+        android:title="@string/carte"
         android:icon="@drawable/ville" />
 
     <item
         android:id="@+id/navigation_recherche"
-        android:title="Recherche"
+        android:title="@string/recherche"
         android:icon="@drawable/loupe" />
 
     <item
         android:id="@+id/navigation_favoris"
-        android:title="Favoris"
+        android:title="@string/favoris"
         android:icon="@drawable/fav" />
 </menu>

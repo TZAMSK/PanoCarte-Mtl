@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">panoCarteMTL</string>
+    <string name="ma_position">My position</string>
+    <string name="rayon">Radius</string>
+    <string name="adresse">Address</string>
+    <string name="fermer">Close</string>
+    <string name="carte">Map</string>
+    <string name="recherche">Search</string>
+    <string name="favoris">Favorites</string>
+    <string name="supprimer">Delete</string>
+
+    <!-- Pour Toast -->
+    <string name="autorisation_de_la_position_est_requise">Position authorization is required</string>
+    <string name="autorisation_de_la_position_actuelle_n_a_pas_été_accordée">Permission for current position has not been granted</string>
+    <string name="rayon_indéterminé">Undetermined radius</string>
+    <string name="marqueur_cliqué">Clicked marker</string>
+    <string name="adresse_supprimée">Address deleted</string>
+</resources>
