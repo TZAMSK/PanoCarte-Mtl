@@ -28,9 +28,11 @@ import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
+import com.mapbox.maps.extension.style.layers.getLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.sources.getSource
 import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
@@ -193,6 +195,17 @@ class fragment_carte : Fragment() {
         }
 
         mapboxMap.getStyle { style ->
+            // Erreur code: le cerle existe déja. Alors j'ajouté si le cercle existe, on l'efface avant de permettre de recliqué le bouton rayon
+            if (style.getLayer("circle-layer") != null) {
+                style.removeStyleLayer("circle-layer")
+            }
+            if (style.getSource("circle-source") != null) {
+                style.removeStyleSource("circle-source")
+            }
+
+            // Pour qu'il n'y a pas de nouveau 5 marqueurs à chaque fois qu'on clique bouton rayon
+            pointAnnotationManager.deleteAll()
+
             style.addSource(geoJsonSource)
             style.addLayer(
                 circleLayer("circle-layer", "circle-source") {
