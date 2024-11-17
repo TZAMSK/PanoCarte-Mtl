@@ -78,4 +78,6 @@ dependencies {
     implementation("com.mapbox.maps:android:11.8.0") {
         exclude(group = "com.google.android.gms", module = "play-services-cronet")
     }
+
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
 }
