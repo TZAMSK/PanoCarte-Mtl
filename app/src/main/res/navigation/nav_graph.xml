@@ -27,5 +27,9 @@
         android:id="@+id/fragment_favoris"
         android:name="com.example.panocartemtl.fragment_favoris"
         android:label="fragment_favoris"
-        tools:layout="@layout/fragment_favoris" />
+        tools:layout="@layout/fragment_favoris" >
+        <action
+            android:id="@+id/action_fragment_favoris_vers_fragment_carte"
+            app:destination="@id/fragment_carte" />
+    </fragment>
 </navigation>

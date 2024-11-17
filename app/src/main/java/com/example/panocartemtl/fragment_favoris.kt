@@ -9,11 +9,15 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 
 class fragment_favoris : Fragment() {
 
     private lateinit var adresses: MutableList<String>
     private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var btnRetour: Button
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,5 +60,18 @@ class fragment_favoris : Fragment() {
         listView.adapter = adapter
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        navController = findNavController()
+
+        // Retour
+        btnRetour = view.findViewById(R.id.btnRetour)
+
+        btnRetour.setOnClickListener {
+            navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
+        }
     }
 }

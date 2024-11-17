@@ -194,41 +194,46 @@ class fragment_carte : Fragment() {
             geometry(position)
         }
 
-        mapboxMap.getStyle { style ->
-            // Erreur code: le cerle existe déja. Alors j'ajouté si le cercle existe, on l'efface avant de permettre de recliqué le bouton rayon
-            if (style.getLayer("circle-layer") != null) {
-                style.removeStyleLayer("circle-layer")
-            }
-            if (style.getSource("circle-source") != null) {
-                style.removeStyleSource("circle-source")
-            }
-
-            // Pour qu'il n'y a pas de nouveau 5 marqueurs à chaque fois qu'on clique bouton rayon
-            pointAnnotationManager.deleteAll()
-
-            style.addSource(geoJsonSource)
-            style.addLayer(
-                circleLayer("circle-layer", "circle-source") {
-                    circleColor(ColorUtils.colorToRgbaString(Color.BLUE))
-                    circleRadius(rayon)
-                    circleOpacity(0.2)
+        if (rayon > 0) {
+            mapboxMap.getStyle { style ->
+                // Erreur code: le cerle existe déja. Alors j'ajouté si le cercle existe, on l'efface avant de permettre de recliqué le bouton rayon
+                if (style.getLayer("circle-layer") != null) {
+                    style.removeStyleLayer("circle-layer")
                 }
-            )
-        }
+                if (style.getSource("circle-source") != null) {
+                    style.removeStyleSource("circle-source")
+                }
 
-        for(i in 0 until 5) {
-            val longHazard = Random.nextDouble(-0.001,0.002)
-            val latHazard = Random.nextDouble(-0.001,0.002)
+                // Pour qu'il n'y a pas de nouveau 5 marqueurs à chaque fois qu'on clique bouton rayon
+                pointAnnotationManager.deleteAll()
 
-            val coordRandom = Point.fromLngLat(position.longitude() + longHazard, position.latitude() + latHazard)
+                style.addSource(geoJsonSource)
+                style.addLayer(
+                    circleLayer("circle-layer", "circle-source") {
+                        circleColor(ColorUtils.colorToRgbaString(Color.BLUE))
+                        circleRadius(rayon)
+                        circleOpacity(0.2)
+                    }
+                )
+            }
 
-            val insectarium = PointAnnotationOptions()
-                .withPoint(coordRandom)
-                .withIconImage("marqueur_rouge")
-                .withIconAnchor(IconAnchor.BOTTOM)
-                .withIconSize(0.3)
+            for (i in 0 until 5) {
+                val longHazard = Random.nextDouble(-0.001, 0.002)
+                val latHazard = Random.nextDouble(-0.001, 0.002)
 
-            pointAnnotationManager.create(insectarium)
+                val coordRandom = Point.fromLngLat(
+                    position.longitude() + longHazard,
+                    position.latitude() + latHazard
+                )
+
+                val insectarium = PointAnnotationOptions()
+                    .withPoint(coordRandom)
+                    .withIconImage("marqueur_rouge")
+                    .withIconAnchor(IconAnchor.BOTTOM)
+                    .withIconSize(0.3)
+
+                pointAnnotationManager.create(insectarium)
+            }
         }
     }
 
