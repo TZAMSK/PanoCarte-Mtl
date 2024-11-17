@@ -25,6 +25,18 @@
         map:defaultNavHost="true"
         map:navGraph="@navigation/nav_graph" />
 
+    <ImageView
+        android:id="@+id/btnRayon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/radius"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/personnaliser_edit_text"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,8 +50,22 @@
             android:layout_height="wrap_content"
             android:text="Ma position"
             android:textColor="@android:color/white"
+            android:inputType="phone"
             android:textSize="18sp"
             android:backgroundTint="@color/bleuBouton"/>
+
+        <EditText
+            android:id="@+id/txtRayon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:digits="1234567890"
+            android:hint="Rayon"
+            android:layout_marginStart="40dp"
+            android:textSize="30sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/personnaliser_edit_text"/>
+
     </LinearLayout>
 
     <FrameLayout

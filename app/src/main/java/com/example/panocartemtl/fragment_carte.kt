@@ -3,12 +3,15 @@ package com.example.panocartemtl
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,12 +21,21 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.CircleLayer
+import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
+import com.mapbox.maps.extension.style.sources.addSource
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
@@ -35,6 +47,8 @@ import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 class fragment_carte : Fragment() {
     private lateinit var popupLayout: View
     private lateinit var btnPostion: Button
+    private lateinit var txtRayon: EditText
+    private lateinit var btnRayon: ImageView
     private lateinit var popupBouton: Button
     private lateinit var navController: NavController
     private lateinit var mapView: MapView
@@ -86,6 +100,8 @@ class fragment_carte : Fragment() {
         popupLayout = view.findViewById(R.id.popupLayout)
         popupBouton = view.findViewById(R.id.popupBouton)
         btnPostion = view.findViewById(R.id.btnPositionActuelle)
+        txtRayon = view.findViewById(R.id.txtRayon)
+        btnRayon = view.findViewById(R.id.btnRayon)
 
         val menuView = requireActivity().findViewById<BottomNavigationView>(R.id.menu_navigation)
 
@@ -119,6 +135,26 @@ class fragment_carte : Fragment() {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
+
+        // Rayon cercle
+        btnRayon.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // Ressemble à btnPostion.setOnClickListener mais avec position actuelle
+                positionClient.lastLocation.addOnSuccessListener { position: Location? ->
+                    if (position != null) {
+                        val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
+                        dessinerCercleAutourPostion(positionActuelle)
+                    }
+                }
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+
     }
 
     private fun getPositionActuelle() {
@@ -126,6 +162,7 @@ class fragment_carte : Fragment() {
             positionClient.lastLocation.addOnSuccessListener { position: Location? ->
                 if (position != null) {
                     val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
+
                     mapView.getMapboxMap().setCamera(
                         CameraOptions.Builder()
                             .center(positionActuelle)
@@ -137,6 +174,36 @@ class fragment_carte : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Autorisation de la position actuelle n'a pas été accordée.", Toast.LENGTH_SHORT).show()
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+
+    // Écrit grâce à l'example du Mapbox - «Cluster points within a layer»
+    // Source: https://docs.mapbox.com/android/maps/examples/android-view/location-component-animation/
+    private fun dessinerCercleAutourPostion(position: Point) {
+        val mapboxMap = mapView.getMapboxMap()
+
+        // Si rayon pas encore procuré ou l'utilisateur veut pas
+        var rayon = try {
+            txtRayon.text.toString().toDouble()
+        } catch (e: NumberFormatException) {
+            Toast.makeText(requireContext(), "Rayon indéterminé", Toast.LENGTH_SHORT).show()
+            0.0
+        }
+
+        val geoJsonSource = geoJsonSource("circle-source") {
+            geometry(position)
+        }
+
+        mapboxMap.getStyle { style ->
+            style.addSource(geoJsonSource)
+            style.addLayer(
+                circleLayer("circle-layer", "circle-source") {
+                    circleColor(ColorUtils.colorToRgbaString(Color.BLUE))
+                    circleRadius(rayon)
+                    circleOpacity(0.2)
+                }
+            )
         }
     }
 
