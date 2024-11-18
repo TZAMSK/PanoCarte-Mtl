@@ -1,5 +1,7 @@
 package com.example.panocartemtl
 
+//import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,8 @@ class fragment_favoris : Fragment() {
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var btnRetour: Button
     private lateinit var navController: NavController
+
+    //private lateinit var btnConfirmer: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,12 +49,17 @@ class fragment_favoris : Fragment() {
                 // Récupération du bouton de suppression
                 val btnSupprimer: Button = view.findViewById(R.id.btnSupprimer)
                 btnSupprimer.setOnClickListener {
-                    // Suppression de l'adresse de la liste
-                    adresses.removeAt(position)
-                    // Mise à jour de l'adaptateur
-                    notifyDataSetChanged()
-                    Toast.makeText(requireContext(), R.string.adresse_supprimée, Toast.LENGTH_SHORT).show()
-                }
+                    AlertDialog.Builder(context)
+                        .setTitle(R.string.titre_confirmation)
+                        .setPositiveButton("OK") { _, _ ->
+                            // Suppression de l'adresse de la liste
+                            adresses.removeAt(position)
+                            // Mise à jour de l'adaptateur
+                            notifyDataSetChanged()
+                            Toast.makeText(requireContext(), R.string.adresse_supprimée, Toast.LENGTH_SHORT).show()
+                        }
+                        .show()
+                    }
 
                 return view
             }

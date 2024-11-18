@@ -10,6 +10,8 @@
     <string name="favoris">Favoris</string>
     <string name="supprimer">Supprimer</string>
     <string name="retour">Retour</string>
+    <string name="titre_confirmation">Êtes-vous sûre de vouloir supprimer cet item de vos favoris?</string>
+    <string name="boutton_confirmation">Oui</string>
 
     <!-- Pour Toast -->
     <string name="autorisation_de_la_position_est_requise">Autorisation de la position est requise</string>
