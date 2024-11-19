@@ -28,7 +28,7 @@ class fragment_favoris : Fragment() {
         // Initialisation de la ListView
         val listView: ListView = view.findViewById(R.id.listViewFavoris)
 
-        // Adresses fictives
+        // Liste d'adresses fictives
         adresses = mutableListOf(
             "1234 Rue Imaginaire, Montréal, QC H1A 1A1",
             "5678 Avenue Fictive, Montréal, QC H2B 2B2",
@@ -38,40 +38,23 @@ class fragment_favoris : Fragment() {
         )
 
         // Création de l'adaptateur
-        adapter = object : ArrayAdapter<String>(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, adresses) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getView(position, convertView, parent)
-
-                // Récupération du bouton de suppression
-                val btnSupprimer: Button = view.findViewById(R.id.btnSupprimer)
-                btnSupprimer.setOnClickListener {
-                    // Suppression de l'adresse de la liste
-                    adresses.removeAt(position)
-                    // Mise à jour de l'adaptateur
-                    notifyDataSetChanged()
-                    Toast.makeText(requireContext(), R.string.adresse_supprimée, Toast.LENGTH_SHORT).show()
-                }
-
-                return view
-            }
-        }
-
-        // Assignation de l'adaptateur à la ListView
+        adapter = ArrayAdapter(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, adresses)
         listView.adapter = adapter
 
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        navController = findNavController()
+        // Récupérer l'adresse depuis les arguments
+        arguments?.getString("adresse")?.let { nouvelleAdresse ->
+            adresses.add(nouvelleAdresse)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(requireContext(), "Adresse ajoutée", Toast.LENGTH_SHORT).show()
+        }
 
         // Retour
         btnRetour = view.findViewById(R.id.btnRetour)
-
+        navController = findNavController()
         btnRetour.setOnClickListener {
             navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
         }
+
+        return view
     }
 }

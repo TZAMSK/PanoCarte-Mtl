@@ -64,6 +64,7 @@ class fragment_carte : Fragment() {
     private lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var positionClient: FusedLocationProviderClient
     private lateinit var btnDestination: ImageView
+    private lateinit var btnAjouterFavori: Button
 
     private val markerMap: MutableMap<PointAnnotation, String> = mutableMapOf()
     private var destinationChoisie: Point? = null
@@ -89,7 +90,27 @@ class fragment_carte : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_carte, container, false)
+        // Inflater le layout du fragment
+        val view = inflater.inflate(R.layout.fragment_carte, container, false)
+
+        // Initialisation du navController
+        navController = findNavController()
+
+        // Initialisation du bouton pour ajouter à la liste des favoris
+        btnAjouterFavori = view.findViewById(R.id.button)
+        btnAjouterFavori.setOnClickListener {
+            // Adresse codée en dur à ajouter aux favoris
+            val adresse = "4581 Sherbrooke St E,Montreal,QC,H1X 2B2"
+
+            // Envoi de l'adresse en utilisant un Bundle pour passer les données
+            val bundle = Bundle()
+            bundle.putString("adresse", adresse)
+
+            // Navigation vers fragment_favoris avec le bundle contenant l'adresse
+            navController.navigate(R.id.action_fragment_carte_vers_fragment_favoris, bundle)
+        }
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
