@@ -140,8 +140,8 @@
 
                 <ImageView
                     android:id="@+id/bookmarkLogo"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:src="@drawable/bookmark"
                     android:layout_alignParentStart="true"
                     android:layout_gravity="center_vertical"
@@ -156,6 +156,15 @@
                     android:layout_centerInParent="true"
                     android:textColor="@android:color/white"
                     android:backgroundTint="@color/bleuBouton" />
+
+                <ImageView
+                    android:id="@+id/btnDestination"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/destination"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp" />
 
             </RelativeLayout>
         </LinearLayout>

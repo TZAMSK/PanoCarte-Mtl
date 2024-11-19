@@ -22,18 +22,26 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
+import com.mapbox.maps.extension.style.layers.generated.lineLayer
 import com.mapbox.maps.extension.style.layers.getLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.sources.getSource
 import com.mapbox.maps.extension.style.utils.ColorUtils
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import org.json.JSONObject
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
@@ -41,6 +49,7 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import java.io.IOException
 import kotlin.random.Random
 
 class fragment_carte : Fragment() {
@@ -54,8 +63,10 @@ class fragment_carte : Fragment() {
     private lateinit var annotationPlugin: AnnotationPlugin
     private lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var positionClient: FusedLocationProviderClient
+    private lateinit var btnDestination: ImageView
 
     private val markerMap: MutableMap<PointAnnotation, String> = mutableMapOf()
+    private var destinationChoisie: Point? = null
 
     // Position actuelle
 
@@ -101,6 +112,7 @@ class fragment_carte : Fragment() {
         btnPostion = view.findViewById(R.id.btnPositionActuelle)
         txtRayon = view.findViewById(R.id.txtRayon)
         btnRayon = view.findViewById(R.id.btnRayon)
+        btnDestination = view.findViewById(R.id.btnDestination)
 
         val menuView = requireActivity().findViewById<BottomNavigationView>(R.id.menu_navigation)
 
@@ -154,6 +166,102 @@ class fragment_carte : Fragment() {
             }
         }
 
+        btnDestination.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED) {
+                positionClient.lastLocation.addOnSuccessListener { position: Location? ->
+                    if (position != null) {
+                        val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
+                        navigationEntrePostion(positionActuelle, destinationChoisie!!)
+                    }
+                }
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
+
+    private fun navigationEntrePostion(from: Point, to: Point) {
+        // Source: https://docs.mapbox.com/help/tutorials/getting-started-directions-api/
+        // Sous: Parameters
+        // Clé
+        val accessToken = "sk.eyJ1IjoidHphbXNrIiwiYSI6ImNtM2tzbGJtczBraHAyaXB2NmlpejlzMnMifQ.JAE5ZyxpPo4Y-n4FlaIuUg"
+        // Url de l'api qui nous permet de dessiner une ligne
+        // Source pour les ${profile}: https://docs.mapbox.com/help/glossary/routing-profile/
+        // Url contient «walking» pour le ${profile} de navigation il y a driving, cycling et driving-traffic
+        val url = "https://api.mapbox.com/directions/v5/mapbox/walking/${from.longitude()},${from.latitude()};${to.longitude()},${to.latitude()}?geometries=geojson&access_token=$accessToken"
+
+
+        // Source: Copier coller de la documentation OkHttp
+        // https://square.github.io/okhttp/recipes/ sous «Asynchronous Get (.kt, .java)»
+        val request = Request.Builder().url(url).build()
+
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body?.string()
+                    if (responseBody != null) {
+                        parseRouteResponse(responseBody)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun parseRouteResponse(responseBody: String) {
+        // On trouve le json dans: https://docs.mapbox.com/help/tutorials/getting-started-directions-api/
+        // Sous: Review the response
+
+        val json = JSONObject(responseBody)
+        // Route commence à index zéro
+        val route = json.getJSONArray("routes").getJSONObject(0)
+        val geometry = route.getJSONObject("geometry")
+        val coordinates = geometry.getJSONArray("coordinates")
+
+        // Les points qui permet de dessiner la ligne (ils se relient en genre de vecteurs?)
+        val routePoints = ArrayList<Point>()
+        for (i in 0 until coordinates.length()) {
+            val coord = coordinates.getJSONArray(i)
+            val point = Point.fromLngLat(coord.getDouble(0), coord.getDouble(1))
+            routePoints.add(point)
+        }
+
+        dessinerRoute(routePoints)
+    }
+
+    // Ressemble exactement à dessinerCercleAutourPostion
+    private fun dessinerRoute(routePoints: List<Point>) {
+        mapView.getMapboxMap().getStyle { style ->
+
+            val geoJsonSource = geoJsonSource("route-source") {
+                geometry(LineString.fromLngLats(routePoints))
+            }
+
+            // Comme dans dessinerCercleAutourPostion
+            // Erreur code: la lign existe déja. Alors j'ajouté si la ligne existe, on l'efface avant de permettre de recliqué le bouton destination
+            if (style.getLayer("route-layer") != null) {
+                style.removeStyleLayer("route-layer")
+            }
+            if (style.getSource("route-source") != null) {
+                style.removeStyleSource("route-source")
+            }
+
+            style.addSource(geoJsonSource)
+
+            style.addLayer(
+                lineLayer("route-layer", "route-source") {
+                    lineColor(ColorUtils.colorToRgbaString(Color.RED))
+                    lineWidth(5.0)
+                }
+            )
+        }
     }
 
     private fun getPositionActuelle() {
@@ -165,7 +273,7 @@ class fragment_carte : Fragment() {
                     mapView.getMapboxMap().setCamera(
                         CameraOptions.Builder()
                             .center(positionActuelle)
-                            .zoom(18.0)
+                            .zoom(14.97)
                             .build()
                     )
                 }
@@ -175,7 +283,6 @@ class fragment_carte : Fragment() {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
-
 
     // Écrit grâce à l'example du Mapbox - «Cluster points within a layer»
     // Source: https://docs.mapbox.com/android/maps/examples/android-view/location-component-animation/
@@ -279,10 +386,12 @@ class fragment_carte : Fragment() {
                 val marqueurId = markerMap[pointAnnotation]
                 when (marqueurId) {
                     "rosemont" -> {
+                        destinationChoisie = Point.fromLngLat(coordRosemont.longitude(), coordRosemont.latitude()) // Store Rosemont coordinates
                         Toast.makeText(requireContext(),"${getString(R.string.marqueur_cliqué)}: Position Rosemont",Toast.LENGTH_SHORT).show()
                         montrerPopup("Position de Rosemont", "6400 16e Avenue, Montréal, QC H1X 2S9")
                     }
                     "insectarium" -> {
+                        destinationChoisie = Point.fromLngLat(coordInsectarium.longitude(), coordInsectarium.latitude())
                         Toast.makeText(requireContext(), "${getString(R.string.marqueur_cliqué)}: Position Insectarium", Toast.LENGTH_SHORT).show()
                         montrerPopup("Position de l'Insectarium", "4581 Sherbrooke St E, Montreal, QC H1X 2B2")
                     }
