@@ -10,6 +10,7 @@
     <string name="favoris">Favorites</string>
     <string name="supprimer">Delete</string>
     <string name="retour">Back</string>
+    <string name="ajouter">add</string>
 
     <!-- Pour Toast -->
     <string name="autorisation_de_la_position_est_requise">Position authorization is required</string>
