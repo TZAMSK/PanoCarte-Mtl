@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -54,10 +55,14 @@ import kotlin.random.Random
 
 class fragment_carte : Fragment() {
     private lateinit var popupLayout: View
+    private lateinit var popupRecherche: View
     private lateinit var btnPostion: Button
     private lateinit var txtRayon: EditText
+    private lateinit var txtRecherche: AutoCompleteTextView
     private lateinit var btnRayon: ImageView
     private lateinit var popupBouton: Button
+    private lateinit var btnFermerPopupRecherche: Button
+    private lateinit var btnOkPopupRecherche: Button
     private lateinit var navController: NavController
     private lateinit var mapView: MapView
     private lateinit var annotationPlugin: AnnotationPlugin
@@ -108,24 +113,36 @@ class fragment_carte : Fragment() {
 
         // Instancier les composantes
         popupLayout = view.findViewById(R.id.popupLayout)
+        popupRecherche = view.findViewById(R.id.popupRecherche)
         popupBouton = view.findViewById(R.id.popupBouton)
         btnPostion = view.findViewById(R.id.btnPositionActuelle)
         txtRayon = view.findViewById(R.id.txtRayon)
+        txtRecherche = view.findViewById(R.id.txtRecherche)
         btnRayon = view.findViewById(R.id.btnRayon)
         btnDestination = view.findViewById(R.id.btnDestination)
+        btnFermerPopupRecherche = view.findViewById(R.id.btnFermerPopupRecherche)
+        btnOkPopupRecherche = view.findViewById(R.id.btnOkPopupRecherche)
 
         val menuView = requireActivity().findViewById<BottomNavigationView>(R.id.menu_navigation)
 
-        // Cacher popup
+        // Cacher popup description
         popupBouton.setOnClickListener {
             popupLayout.visibility = View.GONE
+        }
+
+        // Cacher popup recherche
+        btnFermerPopupRecherche.setOnClickListener {
+            popupRecherche.visibility = View.GONE
         }
 
         // Navigation menu
         menuView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_carte -> true
-                R.id.navigation_recherche -> true
+                R.id.navigation_recherche -> {
+                    popupRecherche.visibility = View.VISIBLE
+                    true
+                }
                 R.id.navigation_favoris -> {
                     navController.navigate(R.id.action_fragment_carte_vers_fragment_favoris)
                     true
@@ -179,6 +196,24 @@ class fragment_carte : Fragment() {
                 }
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+
+        btnOkPopupRecherche.setOnClickListener {
+            var adresseRecherchée = txtRecherche.text.toString().trim()
+            if (adresseRecherchée.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.adresseRecherchée_indéterminée, Toast.LENGTH_SHORT).show()
+            } else if (adresseRecherchée.equals("Insectarium", ignoreCase = true)) {
+                popupRecherche.visibility = View.GONE
+                mapView.getMapboxMap().setCamera(
+                    CameraOptions.Builder()
+                        .center(Point.fromLngLat(-73.554640, 45.561120))
+                        .zoom(14.97)
+                        .build()
+                )
+                Toast.makeText(requireContext(), R.string.position_trouvée, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), R.string.adresseRecherchée_inconnue, Toast.LENGTH_SHORT).show()
             }
         }
     }

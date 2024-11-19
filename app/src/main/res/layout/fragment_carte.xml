@@ -170,6 +170,67 @@
         </LinearLayout>
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/popupRecherche"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="#AAFFFFFF"
+        android:layout_marginBottom="60dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="32dp"
+            android:orientation="vertical"
+            android:layout_margin="32dp"
+            android:background="@drawable/popup_bg"
+            android:elevation="4dp"
+            android:minHeight="300dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/txtRecherche"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/adresse"
+                android:padding="12dp"
+                android:background="@drawable/personnaliser_edit_text"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"
+                android:completionThreshold="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingTop="16dp">
+
+                <Button
+                    android:id="@+id/btnFermerPopupRecherche"
+                    android:layout_width="120dp"
+                    android:layout_height="60dp"
+                    android:text="@string/fermer"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/rouge"
+                    android:layout_marginEnd="16dp" />
+
+                <Button
+                    android:id="@+id/btnOkPopupRecherche"
+                    android:layout_width="120dp"
+                    android:layout_height="60dp"
+                    android:text="@string/oui"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/vert" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/menu_navigation"
         android:layout_width="match_parent"

@@ -10,11 +10,15 @@
     <string name="favoris">Favoris</string>
     <string name="supprimer">Supprimer</string>
     <string name="retour">Retour</string>
+    <string name="oui">Oui</string>
 
     <!-- Pour Toast -->
     <string name="autorisation_de_la_position_est_requise">Autorisation de la position est requise</string>
     <string name="autorisation_de_la_position_actuelle_n_a_pas_été_accordée">Autorisation de la position actuelle n\'a pas été accordée</string>
     <string name="rayon_indéterminé">Rayon indéterminé</string>
+    <string name="adresseRecherchée_indéterminée">Adresse recherchée indéterminée</string>
+    <string name="adresseRecherchée_inconnue">Adresse recherchée inconnue</string>
+    <string name="position_trouvée">Position trouvée</string>
     <string name="marqueur_cliqué">Marqueur cliqué</string>
     <string name="adresse_supprimée">Adresse supprimée</string>
 </resources>
