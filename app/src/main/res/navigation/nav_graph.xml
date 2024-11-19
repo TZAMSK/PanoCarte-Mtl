@@ -15,6 +15,15 @@
             app:destination="@id/fragment_carte" />
     </fragment>
     <fragment
+        android:id="@+id/fragment_recherche"
+        android:name="com.example.panocartemtl.fragment_recherche"
+        android:label="fragment_recherche"
+        tools:layout="@layout/fragment_recherche" >
+        <action
+            android:id="@+id/action_fragment_recherche_vers_fragment_carte"
+            app:destination="@id/fragment_carte" />
+    </fragment>
+    <fragment
         android:id="@+id/fragment_carte"
         android:name="com.example.panocartemtl.fragment_carte"
         android:label="fragment_carte"
@@ -22,6 +31,9 @@
         <action
             android:id="@+id/action_fragment_carte_vers_fragment_favoris"
             app:destination="@id/fragment_favoris" />
+        <action
+            android:id="@+id/action_fragment_carte_vers_fragment_recherche"
+            app:destination="@id/fragment_recherche" />
     </fragment>
     <fragment
         android:id="@+id/fragment_favoris"

@@ -71,7 +71,7 @@ class fragment_favoris : Fragment() {
         btnRetour = view.findViewById(R.id.btnRetour)
 
         btnRetour.setOnClickListener {
-            navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
+            navController.navigate(R.id.action_fragment_recherche_vers_fragment_carte)
         }
     }
 }

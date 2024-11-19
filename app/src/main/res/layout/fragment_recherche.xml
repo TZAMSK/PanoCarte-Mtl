@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0F8F8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="100dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="491dp"
+            android:background="#A9FADD"
+            android:clipToPadding="true"
+            android:elevation="4dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/txt_titre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="16dp"
+                android:text="Recherchez votre adresse ici!"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edit_adresse"
+                android:layout_width="286dp"
+                android:layout_height="82dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:backgroundTint="#17948B"
+                android:hint="adresse"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="#46424C"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="Heure de recherche"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <TimePicker
+                android:id="@+id/time_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="191dp"
+                android:layout_gravity="center"
+                android:timePickerMode="spinner" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#17948B"
+                    android:text="OK"
+                    android:textColor="#47434D" />
+
+                <Button
+                    android:id="@+id/btn_annule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#17958C"
+                    android:text="Annulé"
+                    android:textColor="#48444E" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_chercher"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#17938A"
+                android:elevation="4dp"
+                android:padding="12dp"
+                android:text="Chercher mon adresse"
+                android:textColor="#434750" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

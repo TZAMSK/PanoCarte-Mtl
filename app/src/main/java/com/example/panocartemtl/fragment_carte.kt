@@ -113,7 +113,10 @@ class fragment_carte : Fragment() {
         menuView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_carte -> true
-                R.id.navigation_recherche -> true
+                R.id.navigation_recherche -> {
+                    navController.navigate(R.id.action_fragment_carte_vers_fragment_recherche)
+                    true
+                }
                 R.id.navigation_favoris -> {
                     navController.navigate(R.id.action_fragment_carte_vers_fragment_favoris)
                     true
