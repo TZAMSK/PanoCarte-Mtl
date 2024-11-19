@@ -11,13 +11,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.example.panocartemtl.favoris.Présentateur
+import com.example.panocartemtl.favoris.Stationnement
 
-class fragment_favoris : Fragment() {
+class VueFavoris : Fragment() {
 
-    private lateinit var adresses: MutableList<String>
+    private var adresses: MutableList<String> = mutableListOf()
     private lateinit var adapter: ArrayAdapter<String>
-    private lateinit var btnRetour: Button
     private lateinit var navController: NavController
+    private lateinit var présentateur: Présentateur
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,17 +27,10 @@ class fragment_favoris : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_favoris, container, false)
 
+        présentateur = Présentateur(this)
+
         // Initialisation de la ListView
         val listView: ListView = view.findViewById(R.id.listViewFavoris)
-
-        // Adresses fictives
-        adresses = mutableListOf(
-            "1234 Rue Imaginaire, Montréal, QC H1A 1A1",
-            "5678 Avenue Fictive, Montréal, QC H2B 2B2",
-            "91011 Boulevard Faux, Montréal, QC H3C 3C3",
-            "1213 Chemin Illusoire, Montréal, QC H4D 4D4",
-            "1415 Route Mensongère, Montréal, QC H5E 5E5"
-        )
 
         // Création de l'adaptateur
         adapter = object : ArrayAdapter<String>(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, adresses) {
@@ -46,10 +41,7 @@ class fragment_favoris : Fragment() {
                 val btnSupprimer: Button = view.findViewById(R.id.btnSupprimer)
                 btnSupprimer.setOnClickListener {
                     // Suppression de l'adresse de la liste
-                    adresses.removeAt(position)
-                    // Mise à jour de l'adaptateur
-                    notifyDataSetChanged()
-                    Toast.makeText(requireContext(), R.string.adresse_supprimée, Toast.LENGTH_SHORT).show()
+                    présentateur.supprimerStationnement(position)
                 }
 
                 return view
@@ -59,6 +51,12 @@ class fragment_favoris : Fragment() {
         // Assignation de l'adaptateur à la ListView
         listView.adapter = adapter
 
+        // Retour
+        val btnRetour: Button = view.findViewById(R.id.btnRetour)
+        btnRetour.setOnClickListener {
+            présentateur.retourVersCarte()
+        }
+
         return view
     }
 
@@ -67,11 +65,20 @@ class fragment_favoris : Fragment() {
 
         navController = findNavController()
 
-        // Retour
-        btnRetour = view.findViewById(R.id.btnRetour)
+        présentateur.chargerListeStationnement()
+    }
 
-        btnRetour.setOnClickListener {
-            navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
-        }
+    fun listeStationnement(stationnements: List<Stationnement>) {
+        adresses.clear()
+        adresses.addAll(stationnements.map { it.adresse })
+        adapter.notifyDataSetChanged()
+    }
+
+    fun notifierSuppression() {
+        Toast.makeText(requireContext(), R.string.adresse_supprimée, Toast.LENGTH_SHORT).show()
+    }
+
+    fun naviguerVersCarte() {
+        navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
     }
 }

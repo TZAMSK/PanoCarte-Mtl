@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_favoris"
-        android:name="com.example.panocartemtl.fragment_favoris"
+        android:name="com.example.panocartemtl.VueFavoris"
         android:label="fragment_favoris"
         tools:layout="@layout/fragment_favoris" >
         <action
