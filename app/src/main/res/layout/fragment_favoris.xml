@@ -17,7 +17,7 @@
         android:id="@+id/btnAfficherCalendrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="afficher_calendrier"
+        android:text="@string/Calendrier"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:backgroundTint="@color/bleuBouton" />

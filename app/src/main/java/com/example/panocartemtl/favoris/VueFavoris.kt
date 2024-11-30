@@ -34,6 +34,12 @@ class VueFavoris : Fragment() {
 
         présentateur = Présentateur(this)
 
+        // Gestion du bouton pour afficher le calendrier
+        val btnAfficherCalendrier: Button = view.findViewById(R.id.btnAfficherCalendrier)
+        btnAfficherCalendrier.setOnClickListener {
+            ouvrirCalendrier()
+        }
+
         // Initialisation de la ListView
         val listView: ListView = view.findViewById(R.id.listViewFavoris)
 
@@ -69,6 +75,7 @@ class VueFavoris : Fragment() {
 
         return view
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -152,4 +159,15 @@ class VueFavoris : Fragment() {
     fun naviguerVersCarte() {
         navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
     }
+    private fun ouvrirCalendrier() {
+        try {
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_APP_CALENDAR)
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Impossible d'ouvrir l'application calendrier", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }
