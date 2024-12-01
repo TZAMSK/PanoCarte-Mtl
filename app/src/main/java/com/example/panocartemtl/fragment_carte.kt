@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.example.panocartemtl.Modèle.Modèle
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,6 +51,10 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import kotlin.random.Random
 
@@ -72,6 +77,8 @@ class fragment_carte : Fragment() {
 
     private val markerMap: MutableMap<PointAnnotation, String> = mutableMapOf()
     private var destinationChoisie: Point? = null
+
+    val modèle = Modèle.instance
 
     // Position actuelle
 
@@ -384,35 +391,32 @@ class fragment_carte : Fragment() {
     private fun setupMap(style: Style) {
         style.addImage("marqueur_rouge", BitmapFactory.decodeResource(resources, R.drawable.marqueur_rouge))
 
-        // Rosemont
-        val coordRosemont = Point.fromLngLat(-73.5826029, 45.5571566)
+        CoroutineScope(Dispatchers.IO).launch {
+            // Récupérer les données en arrière-plan
+            val listeStationnements = modèle.obtenir_tous_stationnements()
 
-        val rosemont = PointAnnotationOptions()
-            .withPoint(coordRosemont)
-            .withIconImage("marqueur_rouge")
-            .withIconAnchor(IconAnchor.BOTTOM)
-            .withIconSize(0.6)
+            // Passer au thread principal pour mettre à jour l'interface utilisateur
+            withContext(Dispatchers.Main) {
+                for (stationnement in listeStationnements) {
+                    val nouveau_point = PointAnnotationOptions()
+                        .withPoint(Point.fromLngLat(stationnement.coordonnée.longitude, stationnement.coordonnée.latitude))
+                        .withIconImage("marqueur_rouge")
+                        .withIconAnchor(IconAnchor.BOTTOM)
+                        .withIconSize(0.6)
 
-        val rosemontAnnotation = pointAnnotationManager.create(rosemont)
-        markerMap[rosemontAnnotation] = "rosemont"
-
-        // Insectarium
-        val coordInsectarium = Point.fromLngLat(-73.554640, 45.561120)
-
-        val insectarium = PointAnnotationOptions()
-            .withPoint(coordInsectarium)
-            .withIconImage("marqueur_rouge")
-            .withIconAnchor(IconAnchor.BOTTOM)
-            .withIconSize(0.6)
-
-        val insectariumAnnotation = pointAnnotationManager.create(insectarium)
-        markerMap[insectariumAnnotation] = "insectarium"
+                    // Créer les annotations sur le thread principal
+                    val point = pointAnnotationManager.create(nouveau_point)
+                    markerMap[point] = "un point"
+                }
+            }
+        }
 
         // Première vue
         mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder().center(coordInsectarium).zoom(13.0).build()
+            CameraOptions.Builder().center(Point.fromLngLat(-73.554640, 45.561120)).zoom(13.0).build()
         )
 
+        /*
         // Cliquer sur les marqueurs
         // Écrit grâce à l'exemple de Mapbox - «Add Point Annotations»
         // Source: https://docs.mapbox.com/android/maps/examples/add-point-annotations/
@@ -434,6 +438,8 @@ class fragment_carte : Fragment() {
                 return true
             }
         })
+
+         */
     }
 
     private fun montrerPopup(titre: String, description: String) {

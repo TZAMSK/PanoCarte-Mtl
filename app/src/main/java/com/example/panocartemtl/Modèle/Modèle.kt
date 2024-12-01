@@ -8,13 +8,16 @@ import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnéesHTTP
 import kotlin.jvm.Throws
 
 class Modèle private constructor (
-    override var url_stationnements : String = "http://localhost:8080/stationnements",
-    override var url_stationnement : String = "http://localhost:8080/stationnement",
-    override var url_image : String = "http://localhost:8080/panneaux_images",
-    override var url_numéros_municipal: String = "http://localhost:8080/numeros_municpaux",
-    override var url_rues: String = "http://localhost:8080/rues",
-    override var url_codes_postals: String = "http://localhost:8080/codes_postals",
-    override var url_rayon: String = "http://localhost:8080/rayon",
+    // À mettre votre Wireless LAN de votre ipv4
+    // ipconfig dans le terminal
+    // Source: Source: https://stackoverflow.com/questions/4779963/how-can-i-access-my-localhost-from-my-android-device 
+    override var url_stationnements : String = "http://{ipv4}:3000/stationnements",
+    override var url_stationnement : String = "http://{ipv4}:3000/stationnement",
+    override var url_image : String = "http://{ipv4}:3000/panneaux_images",
+    override var url_numéros_municipal: String = "http://{ipv4}:3000/numeros_municpaux",
+    override var url_rues: String = "http://{ipv4}:3000/rues",
+    override var url_codes_postals: String = "http://{ipv4}:3000/codes_postals",
+    override var url_rayon: String = "http://{ipv4}:3000/rayon",
     source: SourceDeDonnées = SourceDeDonnéesHTTP()
 ) : IModèle {
 
