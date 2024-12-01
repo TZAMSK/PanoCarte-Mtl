@@ -23,13 +23,13 @@ interface SourceDeDonnées {
     suspend fun obtenir_stationnement_image( url: String, image_url: String ) : Stationnement
 
     @Throws(SourceDeDonnéesException::class)
-    suspend fun obtenir_numeros_municipaux_uniques( url: String ) : Array<String>
+    suspend fun obtenir_numeros_municipaux_uniques( url: String ) : List<String>
 
     @Throws(SourceDeDonnéesException::class)
-    suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ) : Array<String>
+    suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ) : List<String>
 
     @Throws(SourceDeDonnéesException::class)
-    suspend fun obtenir_codes_postals_uniques( url: String, numero_municipal: String, rue: String ) : Array<String>
+    suspend fun obtenir_codes_postals_uniques( url: String, numero_municipal: String, rue: String ) : List<String>
 
     @Throws(SourceDeDonnéesException::class)
     suspend fun obtenir_stationnements_rayon( url: String, longitude: Double, latitude: Double ) : List<Stationnement>

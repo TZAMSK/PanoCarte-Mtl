@@ -48,7 +48,7 @@ class SourceBidon: SourceDeDonnées {
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_numeros_municipaux_uniques(url: String): Array<String> {
+    override suspend fun obtenir_numeros_municipaux_uniques(url: String): List<String> {
         TODO("Not yet implemented")
     }
 
@@ -56,8 +56,8 @@ class SourceBidon: SourceDeDonnées {
     override suspend fun obtenir_rues_uniques(
         url: String,
         numero_municipal: String
-    ): Array<String> {
-        return arrayOf("1000", "1001", "1002", "1003", "1004")
+    ): List<String> {
+        return listOf("1000", "1001", "1002", "1003", "1004")
     }
 
     @Throws( SourceDeDonnéesException::class )
@@ -65,8 +65,8 @@ class SourceBidon: SourceDeDonnées {
         url: String,
         numero_municipal: String,
         rue: String
-    ): Array<String> {
-        return arrayOf("10e Avenue", "11e Avenue", "12e Avenue", "13e Avenue", "14e Avenue")
+    ): List<String> {
+        return listOf("10e Avenue", "11e Avenue", "12e Avenue", "13e Avenue", "14e Avenue")
     }
 
     @Throws( SourceDeDonnéesException::class )

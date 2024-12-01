@@ -104,13 +104,33 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
     }
 
     @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_numeros_municipaux_uniques( url: String ): Array<String> {
+    override suspend fun obtenir_numeros_municipaux_uniques( url: String ): List<String> {
         TODO("Not yet implemented")
     }
 
     @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ): Array<String> {
-        TODO("Not yet implemented")
+    override suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ): List<String> {
+        try {
+            val urlComplet = "${url}/${numero_municipal}"
+            val client = OkHttpClient()
+            val requête = Request.Builder().url( urlComplet ).build()
+            val réponse = client.newCall( requête ).execute();
+
+            if ( réponse.code != 200 ) {
+                throw SourceDeDonnéesException( "Erreur: " + réponse.code )
+            }
+
+            val données = réponse.body
+
+            if ( données == null ) {
+                throw SourceDeDonnéesException( "Pas de données reçues " )
+            }
+
+            return DécodeurJson.décoderListe( données.string() )
+        }
+        catch ( e: IOException ) {
+            throw SourceDeDonnéesException( e.message ?: "Erreur inconnue" )
+        }
     }
 
     @Throws(SourceDeDonnéesException::class)
@@ -118,7 +138,7 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         url: String,
         numero_municipal: String,
         rue: String
-    ): Array<String> {
+    ): List<String> {
         TODO("Not yet implemented")
     }
 

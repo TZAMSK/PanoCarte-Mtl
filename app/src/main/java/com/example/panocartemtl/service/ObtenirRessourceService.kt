@@ -38,11 +38,11 @@ class ObtenirRessourceService(var source: SourceDeDonnées = SourceDeDonnéesHTT
         return source.obtenir_stationnement_image( url, image_url )
     }
 
-    suspend fun obtenir_numeros_municipaux_uniques( url: String ): Array<String> {
+    suspend fun obtenir_numeros_municipaux_uniques( url: String ): List<String> {
         return source.obtenir_numeros_municipaux_uniques( url )
     }
 
-    suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ): Array<String> {
+    suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ): List<String> {
         return source.obtenir_rues_uniques( url, numero_municipal )
     }
 
@@ -50,7 +50,7 @@ class ObtenirRessourceService(var source: SourceDeDonnées = SourceDeDonnéesHTT
         url: String,
         numero_municipal: String,
         rue: String
-    ): Array<String> {
+    ): List<String> {
         return source.obtenir_codes_postals_uniques( url, numero_municipal, rue )
     }
 

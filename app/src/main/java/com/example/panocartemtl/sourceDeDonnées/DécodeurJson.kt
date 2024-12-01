@@ -202,9 +202,9 @@ class DécodeurJson {
         }
 
         // Quand on va recevoir une liste uniques de numéros municipaux, de rues et de codes postals
-        private fun décoderListe( json: String ) : List<String> {
+        fun décoderListe( json: String ) : List<String> {
             val reader = JsonReader( StringReader( json ) )
-            val listeMotsUniques = mutableListOf<String>()
+            var listeMotsUniques = mutableListOf<String>()
 
             try{
                 reader.beginArray()
