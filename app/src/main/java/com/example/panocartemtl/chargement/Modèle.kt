@@ -14,13 +14,13 @@ class Modèle{
         }
 
         var progrès = 0
-         while (progrès < chargement.limiteChargement) {
-             progrès += chargement.chargementSaut
-             if (progrès > chargement.limiteChargement) {
-                 progrès = chargement.limiteChargement
-             }
-             progèsÀJour(progrès)
-             delay(chargement.tempsEntreSaut.toLong())
-         }
+        while (progrès < chargement.limiteChargement) {
+            progrès += chargement.chargementSaut
+            if (progrès > chargement.limiteChargement) {
+                progrès = chargement.limiteChargement
+            }
+            progèsÀJour(progrès)
+            delay(chargement.tempsEntreSaut.toLong())
+        }
     }
 }
