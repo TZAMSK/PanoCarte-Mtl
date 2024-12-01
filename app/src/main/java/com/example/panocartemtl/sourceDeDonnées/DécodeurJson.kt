@@ -17,6 +17,28 @@ class DécodeurJson {
           * @params json Une chaîne de caractères en format JSON représentant une Donnée
           * @return La Donnée créée
           */
+
+         fun décoderJsonVersStationnementsListe( json: String ): Array<Stationnement> {
+             val reader = JsonReader( StringReader( json ) )
+             var stationnements = emptyArray<Stationnement>()
+
+             try{
+                 reader.beginArray()
+                 while ( reader.hasNext() ) {
+                     val stationnement = décoderStationnementObjet( reader )
+                     stationnements += stationnement
+                 }
+             }
+             catch (exc: EOFException) {
+                 throw SourceDeDonnéesException("Format JSON invalide")
+             }
+             catch (exc: MalformedJsonException) {
+                 throw SourceDeDonnéesException("Format JSON invalide")
+             }
+
+             return stationnements
+         }
+
          fun décoderJsonVersStationnement( json: String ): Stationnement {
              val reader = JsonReader( StringReader( json ) )
              var id: Int = 0
@@ -29,7 +51,6 @@ class DécodeurJson {
              try{
                  reader.beginObject()
                  while ( reader.hasNext() ) {
-                     val token = reader.peek()
                      when ( reader.nextName() ) {
                          "id" -> {
                              id = reader.nextInt()
@@ -61,46 +82,91 @@ class DécodeurJson {
                      }
                  }
              }
-             catch (exc: EOFException) {
-                 throw SourceDeDonnéesException("Format JSON invalide")
+             catch ( exc: EOFException ) {
+                 throw SourceDeDonnéesException( "Format JSON invalide")
              }
-             catch (exc: MalformedJsonException) {
-                 throw SourceDeDonnéesException("Format JSON invalide")
+             catch ( exc: MalformedJsonException ) {
+                 throw SourceDeDonnéesException("Format JSON invalide" )
              }
 
-             return Stationnement(id, adresse, coordonnée, panneau, heures_début, heures_fin)
+             return Stationnement( id, adresse, coordonnée, panneau, heures_début, heures_fin )
          }
 
-         private fun décoderAdresseObjet( reader: JsonReader ): Adresse {
-             var numero_municipal: String = ""
-             var rue: String = ""
-             var code_postal: String = ""
+        fun décoderStationnementObjet( reader: JsonReader ): Stationnement {
+            var id: Int = 0
+            var adresse = Adresse()
+            var coordonnée = Coordonnée()
+            var panneau: String = ""
+            var heures_début: String = ""
+            var heures_fin: String = ""
 
-             reader.beginObject()
+            reader.beginObject()
 
-             while ( reader.hasNext() ) {
-                 when( reader.nextName() ) {
-                     "numero_municipal" -> {
-                         numero_municipal = reader.nextString()
-                     }
+            while ( reader.hasNext() ) {
+                when ( reader.nextName() ) {
+                    "id" -> {
+                        id = reader.nextInt()
+                    }
 
-                     "rue" -> {
-                         rue = reader.nextString()
-                     }
+                    "adresse" -> {
+                        adresse = décoderAdresseObjet( reader )
+                    }
 
-                     "code_postal" -> {
-                         code_postal = reader.nextString()
-                     }
+                    "coordonnee" -> {
+                        coordonnée = décoderCoordonnéeObjet( reader )
+                    }
 
-                     else -> {
-                         reader.skipValue()
-                     }
-                 }
-             }
-             reader.endObject()
+                    "panneau" -> {
+                        panneau = reader.nextString()
+                    }
 
-             return Adresse(numero_municipal, rue, code_postal)
-         }
+                    "heures_debut" -> {
+                        heures_début = reader.nextString()
+                    }
+
+                    "heures_fin" -> {
+                        heures_fin = reader.nextString()
+                    }
+
+                    else -> {
+                        reader.skipValue()
+                    }
+                }
+            }
+
+            return Stationnement( id, adresse, coordonnée, panneau, heures_début, heures_fin )
+        }
+
+        private fun décoderAdresseObjet( reader: JsonReader ): Adresse {
+            var numero_municipal: String = ""
+            var rue: String = ""
+            var code_postal: String = ""
+
+            reader.beginObject()
+
+            while ( reader.hasNext() ) {
+                when( reader.nextName() ) {
+                    "numero_municipal" -> {
+                        numero_municipal = reader.nextString()
+                    }
+
+                    "rue" -> {
+                        rue = reader.nextString()
+                    }
+
+                    "code_postal" -> {
+                        code_postal = reader.nextString()
+                    }
+
+                    else -> {
+                        reader.skipValue()
+                    }
+                }
+            }
+            reader.endObject()
+
+            return Adresse( numero_municipal, rue, code_postal )
+        }
 
         private fun décoderCoordonnéeObjet( reader: JsonReader ): Coordonnée {
             var coordonnée = Coordonnée()
@@ -126,8 +192,30 @@ class DécodeurJson {
             }
             reader.endObject()
 
-            return Coordonnée(longitude, latitude)
+            return Coordonnée( longitude, latitude )
         }
-     }
+
+        // Quand on va recevoir une liste uniques de numéros municipaux, de rues et de codes postals
+        private fun décoderListe( json: String ) : Array<String> {
+            val reader = JsonReader( StringReader( json ) )
+            var listeMotsUniques = emptyArray<String>()
+
+            try{
+                reader.beginArray()
+                while ( reader.hasNext() ) {
+                    listeMotsUniques += reader.nextString()
+                }
+            }
+
+            catch (exc: EOFException) {
+                throw SourceDeDonnéesException( "Format JSON invalide" )
+            }
+            catch (exc: MalformedJsonException) {
+                throw SourceDeDonnéesException( "Format JSON invalide" )
+            }
+
+            return listeMotsUniques
+        }
+    }
 
 }
