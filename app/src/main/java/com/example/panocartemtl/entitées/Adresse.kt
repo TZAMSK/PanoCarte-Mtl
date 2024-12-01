@@ -6,16 +6,12 @@ class Adresse(
     var code_postal: String = "",
 ){
     // Source: exemple code chargeur
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Adresse) return false
+    override fun equals( other: Any? ): Boolean {
+        if ( this === other ) return true
+        if ( other !is Adresse ) return false
 
         return this.numero_municipal ==  other.numero_municipal &&
                 this.rue == other.rue &&
                 this.code_postal == other.code_postal
-    }
-
-    override fun toString(): String {
-        return "Adresse(numero_municipal='$numero_municipal', rue='$rue', code_postal='$code_postal')"
     }
 }

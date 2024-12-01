@@ -32,10 +32,10 @@ class DécodeurJsonTests {
             }
         """.trimIndent()
 
-        val résultatObservé = DécodeurJson.décoderJsonVersStationnement( json )
-        val donnéeAttendu = Stationnement(1, Adresse("3571", "Rue Beaubien", "H1X 1H1"), Coordonnée(-73.583856, 45.557873), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00")
+        val résultat_observé = DécodeurJson.décoderJsonVersStationnement( json )
+        val donnée_attendu = Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583856, 45.557873), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
 
-        assertEquals( donnéeAttendu, résultatObservé )
+        assertEquals( donnée_attendu, résultat_observé )
     }
 
     @Test
@@ -75,13 +75,13 @@ class DécodeurJsonTests {
             ]
         """.trimIndent()
 
-        val résultatObservé = DécodeurJson.décoderJsonVersStationnementsListe( json )
-        val donnéeAttendu = listOf(
+        val résultat_observé = DécodeurJson.décoderJsonVersStationnementsListe( json )
+        val donnée_attendu = listOf(
             Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583856, 45.557873 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" ),
             Stationnement( 2, Adresse( "3642", "Rue Beaubien", "H1X 1G2" ), Coordonnée( -73.588192, 45.557309 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
         )
 
-        assertEquals ( donnéeAttendu, résultatObservé )
+        assertEquals ( donnée_attendu, résultat_observé )
     }
 
     @Test

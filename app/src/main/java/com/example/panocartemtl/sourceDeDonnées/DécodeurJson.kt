@@ -27,17 +27,16 @@ class DécodeurJson {
                  reader.beginArray()
                  while ( reader.hasNext() ) {
                      val stationnement = décoderStationnementObjet( reader )
-                     println("Stationnement ajouté: $stationnement")
-                     stationnements.add(stationnement)
+                     stationnements.add( stationnement )
                  }
 
                  reader.endArray()
              }
-             catch (exc: EOFException) {
-                 throw SourceDeDonnéesException("Format JSON invalide")
+             catch ( exc: EOFException ) {
+                 throw SourceDeDonnéesException( "Format JSON invalide" )
              }
              catch (exc: MalformedJsonException) {
-                 throw SourceDeDonnéesException("Format JSON invalide")
+                 throw SourceDeDonnéesException( "Format JSON invalide" )
              }
 
              return stationnements
@@ -88,10 +87,10 @@ class DécodeurJson {
                  reader.endObject()
              }
              catch ( exc: EOFException ) {
-                 throw SourceDeDonnéesException( "Format JSON invalide")
+                 throw SourceDeDonnéesException( "Format JSON invalide" )
              }
              catch ( exc: MalformedJsonException ) {
-                 throw SourceDeDonnéesException("Format JSON invalide" )
+                 throw SourceDeDonnéesException( "Format JSON invalide" )
              }
 
              return Stationnement( id, adresse, coordonnée, panneau, heures_début, heures_fin )
@@ -175,7 +174,6 @@ class DécodeurJson {
         }
 
         private fun décoderCoordonnéeObjet( reader: JsonReader ): Coordonnée {
-            var coordonnée = Coordonnée()
             var longitude = 0.0
             var latitude = 0.0
 

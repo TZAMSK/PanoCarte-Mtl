@@ -24,8 +24,8 @@ class VueChargement : Fragment() {
         return inflater.inflate( R.layout.fragment_chargement, container, false )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated( view: View, savedInstanceState: Bundle? ) {
+        super.onViewCreated( view, savedInstanceState )
 
         prgText = view.findViewById( R.id.prgText )
         prgChargement = view.findViewById( R.id.prgChargement )
@@ -43,6 +43,6 @@ class VueChargement : Fragment() {
     }
 
     fun naviguerVersCarte() {
-        navController.navigate(R.id.action_fragment_chargement_vers_fragment_carte)
+        navController.navigate( R.id.action_fragment_chargement_vers_fragment_carte )
     }
 }

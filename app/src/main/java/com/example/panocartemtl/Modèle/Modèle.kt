@@ -11,13 +11,13 @@ class Modèle private constructor (
     // À mettre votre Wireless LAN de votre ipv4
     // ipconfig dans le terminal
     // Source: Source: https://stackoverflow.com/questions/4779963/how-can-i-access-my-localhost-from-my-android-device
-    override var url_stationnements : String = "http://{ipv4}:3000/stationnements",
-    override var url_stationnement : String = "http://{ipv4}:3000/stationnement",
-    override var url_image : String = "http://{ipv4}:3000/panneaux_images",
-    override var url_numéros_municipal: String = "http://{ipv4}:3000/numeros_municpaux",
-    override var url_rues: String = "http://{ipv4}:3000/rues",
-    override var url_codes_postals: String = "http://{ipv4}:3000/codes_postals",
-    override var url_rayon: String = "http://{ipv4}:3000/rayon",
+    override var url_stationnements : String = "http://10.0.0.136:3000/stationnements",
+    override var url_stationnement : String = "http://10.0.0.136:3000/stationnement",
+    override var url_image : String = "http://10.0.0.136:3000/panneaux_images",
+    override var url_numéros_municipal: String = "http://10.0.0.136:3000/numeros_municpaux",
+    override var url_rues: String = "http://10.0.0.136:3000/rues",
+    override var url_codes_postals: String = "http://10.0.0.136:3000/codes_postals",
+    override var url_rayon: String = "http://10.0.0.136:3000/rayon",
     source: SourceDeDonnées = SourceDeDonnéesHTTP()
 ) : IModèle {
 
@@ -43,31 +43,31 @@ class Modèle private constructor (
      * @throws SourceDeDonnéesException en cas de problème à la lecture des données
      */
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_tous_stationnements(): List<Stationnement> {
-        val stationnements_reçues = obtenirRessourceService.obtenir_tous_stationnements( url_stationnements )
+    override suspend fun obtenirTousStationnements(): List<Stationnement> {
+        val stationnements_reçues = obtenirRessourceService.obtenirTousStationnements( url_stationnements )
 
         return stationnements_reçues
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_stationnement_par_id(id: Int): Stationnement {
-        val stationnement_reçue = obtenirRessourceService.obtenir_stationnement_par_id( url_stationnements, id )
+    override suspend fun obtenirStationnementParId( id: Int ): Stationnement {
+        val stationnement_reçue = obtenirRessourceService.obtenirStationnementParId( url_stationnements, id )
 
         return stationnement_reçue
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_stationnements_par_heures_disponibles(
+    override suspend fun obtenirStationnementsParHeuresDisponibles(
         heure_début: String,
         heure_prévu: String
     ): List<Stationnement> {
-        val stationnements_reçues = obtenirRessourceService.obtenir_stationnement_par_heures_disponibles( url_stationnements, heure_début, heure_prévu)
+        val stationnements_reçues = obtenirRessourceService.obtenirStationnementParHeuresDisponibles( url_stationnements, heure_début, heure_prévu )
 
         return stationnements_reçues
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_stationnement_par_adresse(
+    override suspend fun obtenirStationnementParAdresse(
         numéro_municipal: String,
         rue: String,
         code_postal: String
@@ -76,24 +76,24 @@ class Modèle private constructor (
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_stationnement_image(url_image: String): List<Stationnement> {
+    override suspend fun obtenirStationnementImage( url_image: String ): List<Stationnement> {
         TODO("Not yet implemented")
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_numeros_municipaux_uniques(): List<String> {
+    override suspend fun obtenirNumerosMunicipauxUniques(): List<String> {
         TODO("Not yet implemented")
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_rues_uniques(numéro_municipal: String): List<String> {
-        val stationnements_reçues = obtenirRessourceService.obtenir_rues_uniques( url_rues, numéro_municipal )
+    override suspend fun obtenirRuesUniques( numéro_municipal: String ): List<String> {
+        val stationnements_reçues = obtenirRessourceService.obtenirRuesUniques( url_rues, numéro_municipal )
 
         return stationnements_reçues
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_codes_postals_uniques(
+    override suspend fun obtenirCodesPostalsUniques(
         numéro_municipal: String,
         rue: String
     ): List<String> {
@@ -101,7 +101,7 @@ class Modèle private constructor (
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenir_stationnements_rayon(
+    override suspend fun obtenirStationnementsRayon(
         longitude: String,
         latitude: String
     ): List<Stationnement> {

@@ -7,8 +7,8 @@ import okhttp3.Request
 import java.io.IOException
 
 class SourceDeDonnéesHTTP() : SourceDeDonnées {
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_tous_stationnements( url: String ): List<Stationnement> {
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirTousStationnements( url: String ): List<Stationnement> {
         try {
             val client = OkHttpClient()
             val requête = Request.Builder().url( url ).build()
@@ -31,12 +31,12 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         }
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_stationnement_par_id( url: String, id: Int ): Stationnement {
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirStationnementParId( url: String, id: Int ): Stationnement {
         try {
-            val urlComplet = "${url}/${id}"
+            val url_complet = "${url}/${id}"
             val client = OkHttpClient()
-            val requête = Request.Builder().url( urlComplet ).build()
+            val requête = Request.Builder().url( url_complet ).build()
             val réponse = client.newCall( requête ).execute();
 
             if ( réponse.code != 200 ) {
@@ -56,16 +56,16 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         }
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_stationnement_par_heures_disponibles(
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirStationnementParHeuresDisponibles(
         url: String,
-        heureDébut: String,
-        heurePrévu: String
+        heure_début: String,
+        heure_prévu: String
     ): List<Stationnement> {
         try {
-            val urlComplet = "${url}/${heureDébut}/${heurePrévu}"
+            val url_complet = "${url}/${heure_début}/${heure_prévu}"
             val client = OkHttpClient()
-            val requête = Request.Builder().url( urlComplet ).build()
+            val requête = Request.Builder().url( url_complet ).build()
             val réponse = client.newCall( requête ).execute();
 
             if ( réponse.code != 200 ) {
@@ -85,8 +85,8 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         }
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_stationnement_par_adresse(
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirStationnementParAdresse(
         url: String,
         numero_municipal: String,
         rue: String,
@@ -95,25 +95,25 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         TODO("Not yet implemented")
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_stationnement_image(
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirStationnementImage(
         url: String,
         image_url: String
     ): Stationnement {
         TODO("Not yet implemented")
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_numeros_municipaux_uniques( url: String ): List<String> {
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirNumerosMunicipauxUniques( url: String ): List<String> {
         TODO("Not yet implemented")
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_rues_uniques( url: String, numero_municipal: String ): List<String> {
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirRuesUniques( url: String, numero_municipal: String ): List<String> {
         try {
-            val urlComplet = "${url}/${numero_municipal}"
+            val url_complet = "${url}/${numero_municipal}"
             val client = OkHttpClient()
-            val requête = Request.Builder().url( urlComplet ).build()
+            val requête = Request.Builder().url( url_complet ).build()
             val réponse = client.newCall( requête ).execute();
 
             if ( réponse.code != 200 ) {
@@ -133,8 +133,8 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         }
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_codes_postals_uniques(
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirCodesPostalsUniques(
         url: String,
         numero_municipal: String,
         rue: String
@@ -142,8 +142,8 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         TODO("Not yet implemented")
     }
 
-    @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_stationnements_rayon(
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirStationnementsRayon(
         url: String,
         longitude: Double,
         latitude: Double

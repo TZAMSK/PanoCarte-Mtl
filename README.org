@@ -8,3 +8,20 @@ Vous devez :
  - Facultativement, ajouter un fichier de licence
 
    [[./licence.png]]
+
+RÈGLE DE FORMATTAGE: 
+Variables : En style serpent, avec des underscores si le nom est composé de plus qu'un mot.
+Exemple : numéro_municipal
+
+Méthodes : En style chameau, avec une minuscule au début.
+Exemple : obtenirListeStationnement()
+
+Espaces dans les parenthèses :
+Ajoutez une espace après l'ouverture et avant la fermeture.
+Exemple : fun récupérerChose( val chose_id: String )
+
+Espaces vides :
+Une ligne vide après avoir nommé une classe.
+Une ligne vide après une condition.
+Aucune ligne vide après avoir nommé une méthode.
+

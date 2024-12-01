@@ -393,7 +393,7 @@ class fragment_carte : Fragment() {
 
         CoroutineScope(Dispatchers.IO).launch {
             // Récupérer les données en arrière-plan
-            val listeStationnements = modèle.obtenir_tous_stationnements()
+            val listeStationnements = modèle.obtenirTousStationnements()
 
             // Passer au thread principal pour mettre à jour l'interface utilisateur
             withContext(Dispatchers.Main) {

@@ -13,29 +13,29 @@ interface IModèle {
     var url_rayon: String
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_tous_stationnements(): List<Stationnement>
+    suspend fun obtenirTousStationnements(): List<Stationnement>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_stationnement_par_id(id : Int): Stationnement
+    suspend fun obtenirStationnementParId( id : Int ): Stationnement
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_stationnements_par_heures_disponibles( heure_début : String, heure_prévu : String ) : List<Stationnement>
+    suspend fun obtenirStationnementsParHeuresDisponibles( heure_début : String, heure_prévu : String ) : List<Stationnement>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_stationnement_par_adresse( numéro_municipal : String, rue : String, code_postal: String ) : Stationnement
+    suspend fun obtenirStationnementParAdresse( numéro_municipal : String, rue : String, code_postal: String ) : Stationnement
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_stationnement_image( url_image : String ) : List<Stationnement>
+    suspend fun obtenirStationnementImage( url_image : String ) : List<Stationnement>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_numeros_municipaux_uniques() : List<String>
+    suspend fun obtenirNumerosMunicipauxUniques() : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_rues_uniques( numéro_municipal: String ) : List<String>
+    suspend fun obtenirRuesUniques( numéro_municipal: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_codes_postals_uniques( numéro_municipal: String, rue: String ) : List<String>
+    suspend fun obtenirCodesPostalsUniques( numéro_municipal: String, rue: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenir_stationnements_rayon( longitude: String, latitude: String ) : List<Stationnement>
+    suspend fun obtenirStationnementsRayon( longitude: String, latitude: String ) : List<Stationnement>
 }

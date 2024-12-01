@@ -12,8 +12,4 @@ class Coordonnée(
         return this.longitude ==  other.longitude &&
                 this.latitude == other.latitude
     }
-
-    override fun toString(): String {
-        return "Coordonnée(longitude=$longitude, latitude=$latitude)"
-    }
 }

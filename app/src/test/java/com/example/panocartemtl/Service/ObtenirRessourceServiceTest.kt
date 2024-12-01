@@ -13,14 +13,17 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class ObtenirRessourceServiceTest {
+
     val service_cobaye = ObtenirRessourceService()
+    val url_stationnements = "http://10.0.0.136:3000/stationnements"
+    val url_host_erreur = "http://10.0.0.136:3000/..."
 
     @Test
     fun `étant donné une recherche d'un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
         // Code: Interprété par ce code par l'utilisation de « runBlocking »
         // Source: https://proandroiddev.com/testing-kotlin-coroutines-d904738b846d
         runBlocking {
-            val cobaye_requête = service_cobaye.obtenir_stationnement_par_id( "http://localhost:8080/stationnements", 1 )
+            val cobaye_requête = service_cobaye.obtenirStationnementParId( url_stationnements, 1 )
 
             val résultatAttendu = Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583856, 45.557873 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
 
@@ -33,7 +36,7 @@ class ObtenirRessourceServiceTest {
 
         val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
-                service_cobaye.obtenir_stationnement_par_id( "http://localhost:8080/stationnements", 9999 )
+                service_cobaye.obtenirStationnementParId( url_stationnements, 9999 )
             }
         }
 
@@ -44,7 +47,7 @@ class ObtenirRessourceServiceTest {
     fun `étant donné une requête HTTP GET qui cherche des stationnements discponibles selon un temps prévu, lorsqu'on cherche entre 1h00 et 16h00, on obtient une liste des stationnements disponibles`() {
 
         runBlocking {
-            val cobaye_requête = service_cobaye.obtenir_stationnement_par_heures_disponibles("http://localhost:8080/stationnements", "01:00", "15:00")
+            val cobaye_requête = service_cobaye.obtenirStationnementParHeuresDisponibles( url_stationnements, "01:00", "15:00" )
 
             val résultatAttendu = listOf(
                 Stationnement( 30, Adresse( "6507", "10e Avenue", "H1Y 2H8" ), Coordonnée( -73.58783, 45.5546 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
@@ -64,10 +67,10 @@ class ObtenirRessourceServiceTest {
 
         val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
-                service_cobaye.obtenir_stationnement_par_heures_disponibles( "http://localhost:8080/stationnements", "01:00", "25:00" )
+                service_cobaye.obtenirStationnementParHeuresDisponibles( url_stationnements, "01:00", "25:00" )
             }
         }
 
-        assertEquals( "unexpected end of stream on http://localhost:8080/...", exception.message )
+        assertEquals( "unexpected end of stream on ${url_host_erreur}", exception.message )
     }
 }
