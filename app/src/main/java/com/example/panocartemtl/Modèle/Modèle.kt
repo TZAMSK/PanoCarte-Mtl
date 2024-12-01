@@ -10,7 +10,7 @@ import kotlin.jvm.Throws
 class Modèle private constructor (
     // À mettre votre Wireless LAN de votre ipv4
     // ipconfig dans le terminal
-    // Source: Source: https://stackoverflow.com/questions/4779963/how-can-i-access-my-localhost-from-my-android-device 
+    // Source: Source: https://stackoverflow.com/questions/4779963/how-can-i-access-my-localhost-from-my-android-device
     override var url_stationnements : String = "http://{ipv4}:3000/stationnements",
     override var url_stationnement : String = "http://{ipv4}:3000/stationnement",
     override var url_image : String = "http://{ipv4}:3000/panneaux_images",
