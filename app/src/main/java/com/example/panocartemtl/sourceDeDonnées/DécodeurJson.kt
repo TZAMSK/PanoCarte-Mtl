@@ -9,6 +9,7 @@ import java.io.EOFException
 import java.io.StringReader
 
 class DécodeurJson {
+
     companion object {
 
          /**
@@ -18,16 +19,19 @@ class DécodeurJson {
           * @return La Donnée créée
           */
 
-         fun décoderJsonVersStationnementsListe( json: String ): Array<Stationnement> {
+         fun décoderJsonVersStationnementsListe( json: String ): List<Stationnement> {
              val reader = JsonReader( StringReader( json ) )
-             var stationnements = emptyArray<Stationnement>()
+             var stationnements = mutableListOf<Stationnement>()
 
              try{
                  reader.beginArray()
                  while ( reader.hasNext() ) {
                      val stationnement = décoderStationnementObjet( reader )
-                     stationnements += stationnement
+                     println("Stationnement ajouté: $stationnement")
+                     stationnements.add(stationnement)
                  }
+
+                 reader.endArray()
              }
              catch (exc: EOFException) {
                  throw SourceDeDonnéesException("Format JSON invalide")
@@ -81,6 +85,7 @@ class DécodeurJson {
                          }
                      }
                  }
+                 reader.endObject()
              }
              catch ( exc: EOFException ) {
                  throw SourceDeDonnéesException( "Format JSON invalide")
@@ -133,6 +138,7 @@ class DécodeurJson {
                     }
                 }
             }
+            reader.endObject()
 
             return Stationnement( id, adresse, coordonnée, panneau, heures_début, heures_fin )
         }
@@ -196,15 +202,16 @@ class DécodeurJson {
         }
 
         // Quand on va recevoir une liste uniques de numéros municipaux, de rues et de codes postals
-        private fun décoderListe( json: String ) : Array<String> {
+        private fun décoderListe( json: String ) : List<String> {
             val reader = JsonReader( StringReader( json ) )
-            var listeMotsUniques = emptyArray<String>()
+            val listeMotsUniques = mutableListOf<String>()
 
             try{
                 reader.beginArray()
                 while ( reader.hasNext() ) {
-                    listeMotsUniques += reader.nextString()
+                    listeMotsUniques.add(reader.nextString())
                 }
+                reader.endArray()
             }
 
             catch (exc: EOFException) {

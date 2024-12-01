@@ -1,15 +1,14 @@
 package com.example.panocartemtl.sourceDeDonnées
 
 import com.example.panocartemtl.entitées.Stationnement
-import okhttp3.Headers
 import okhttp3.OkHttpClient
 import kotlin.jvm.Throws
 import okhttp3.Request
 import java.io.IOException
 
-class SourceDeDonnéesHTTP( var urls : Map<String, String> ) : SourceDeDonnées {
+class SourceDeDonnéesHTTP() : SourceDeDonnées {
     @Throws(SourceDeDonnéesException::class)
-    override suspend fun obtenir_tous_stationnements( url: String ): Array<Stationnement> {
+    override suspend fun obtenir_tous_stationnements( url: String ): List<Stationnement> {
         try {
             val client = OkHttpClient()
             val requête = Request.Builder().url( url ).build()
@@ -62,7 +61,7 @@ class SourceDeDonnéesHTTP( var urls : Map<String, String> ) : SourceDeDonnées 
         url: String,
         heureDébut: String,
         heurePrévu: String
-    ): Array<Stationnement> {
+    ): List<Stationnement> {
         try {
             val urlComplet = "${url}/${heureDébut}/${heurePrévu}"
             val client = OkHttpClient()
@@ -128,7 +127,7 @@ class SourceDeDonnéesHTTP( var urls : Map<String, String> ) : SourceDeDonnées 
         url: String,
         longitude: Double,
         latitude: Double
-    ): Array<String> {
+    ): List<Stationnement> {
         TODO("Not yet implemented")
     }
 }

@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonReader
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class DécodeurJsonTests {
 
@@ -34,7 +35,7 @@ class DécodeurJsonTests {
         val résultatObservé = DécodeurJson.décoderJsonVersStationnement( json )
         val donnéeAttendu = Stationnement(1, Adresse("3571", "Rue Beaubien", "H1X 1H1"), Coordonnée(-73.583856, 45.557873), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00")
 
-        assertEquals( donnéeAttendu, résultatObservé)
+        assertEquals( donnéeAttendu, résultatObservé )
     }
 
     @Test
@@ -75,12 +76,12 @@ class DécodeurJsonTests {
         """.trimIndent()
 
         val résultatObservé = DécodeurJson.décoderJsonVersStationnementsListe( json )
-        val donnéeAttendu = arrayOf(
-            Stationnement(1, Adresse("3571", "Rue Beaubien", "H1X 1H1"), Coordonnée(-73.583856, 45.557873), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00"),
-            Stationnement(2, Adresse("3642", "Rue Beaubien", "H1X 1G2"), Coordonnée(-73.588192, 45.557309), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00")
+        val donnéeAttendu = listOf(
+            Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583856, 45.557873 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" ),
+            Stationnement( 2, Adresse( "3642", "Rue Beaubien", "H1X 1G2" ), Coordonnée( -73.588192, 45.557309 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
         )
 
-        assertEquals( donnéeAttendu, résultatObservé)
+        assertEquals ( donnéeAttendu, résultatObservé )
     }
 
     @Test

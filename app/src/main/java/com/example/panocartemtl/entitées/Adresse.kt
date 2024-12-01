@@ -14,4 +14,8 @@ class Adresse(
                 this.rue == other.rue &&
                 this.code_postal == other.code_postal
     }
+
+    override fun toString(): String {
+        return "Adresse(numero_municipal='$numero_municipal', rue='$rue', code_postal='$code_postal')"
+    }
 }
