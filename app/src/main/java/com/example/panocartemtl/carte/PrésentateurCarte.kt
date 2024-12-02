@@ -1,5 +1,7 @@
 package com.example.panocartemtl.carte
 
+import android.app.TimePickerDialog
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.widget.Toast
@@ -35,52 +37,42 @@ import okhttp3.Request
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.logging.SimpleFormatter
 
-class PrésentateurCarte(var vue: VueCarte, val iocontext: CoroutineContext = Dispatchers.IO ): IPrésentateurCarte {
+class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = Dispatchers.IO ): IPrésentateurCarte {
     private var destinationChoisie: Point? = null
     private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
 
     val modèle = Modèle.instance
 
-    fun initializeMap(mapView: MapView) {
-        vue.mapView = mapView
-        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS) { style ->
-            setupMap(style)
-        }
-    }
-
-    private fun setupMap(style: Style) {
-        val annotationPlugin = vue.mapView.annotations
-        vue.pointAnnotationManager = annotationPlugin.createPointAnnotationManager()
-        caméraPremièreInstance()
-        setupMarkerClickListener()
-    }
 
     override fun caméraPremièreInstance() {
         vue.mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder().center(Point.fromLngLat(-73.554640, 45.561120)).zoom(13.0).build()
+            CameraOptions.Builder().center( Point.fromLngLat( -73.554640, 45.561120 ) ).zoom( 13.0 ).build()
         )
     }
 
-    private fun setupMarkerClickListener() {
-        vue.pointAnnotationManager.addClickListener { pointAnnotation ->
-            afficherStationnementParId()
-            true
+    override fun détruireTousMarqueurs() {
+        for ( marker in markerMap.keys ) {
+            vue.pointAnnotationManager.delete( marker )
         }
+        markerMap.clear()
     }
 
     override fun recupérerTousStationnements() {
-        CoroutineScope(iocontext).launch {
+        CoroutineScope( iocontext ).launch {
             val listeStationnements = modèle.obtenirTousStationnements()
-            withContext(Dispatchers.Main) {
-                for (stationnement in listeStationnements) {
+            withContext( Dispatchers.Main ) {
+                for ( stationnement in listeStationnements ) {
                     val nouveauPoint = PointAnnotationOptions()
-                        .withPoint(Point.fromLngLat(stationnement.coordonnée.longitude, stationnement.coordonnée.latitude))
-                        .withIconImage("marqueur_rouge")
-                        .withIconAnchor(IconAnchor.BOTTOM)
-                        .withIconSize(0.6)
+                        .withPoint( Point.fromLngLat( stationnement.coordonnée.longitude, stationnement.coordonnée.latitude ) )
+                        .withIconImage( "marqueur_rouge" )
+                        .withIconAnchor( IconAnchor.BOTTOM )
+                        .withIconSize( 0.6 )
 
-                    val point = vue.pointAnnotationManager.create(nouveauPoint)
+                    val point = vue.pointAnnotationManager.create( nouveauPoint )
                     markerMap[point] = stationnement.id
                 }
             }
@@ -89,17 +81,15 @@ class PrésentateurCarte(var vue: VueCarte, val iocontext: CoroutineContext = Di
 
     override fun afficherStationnementParId() {
         vue.pointAnnotationManager.addClickListener(object : OnPointAnnotationClickListener {
-            override fun onAnnotationClick(pointAnnotation: PointAnnotation): Boolean {
+            override fun onAnnotationClick( pointAnnotation: PointAnnotation ): Boolean {
                 val marqueurId = markerMap[pointAnnotation]?.toInt()
 
-                // Check if the ID is valid
-                if (marqueurId != null) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val stationnement = withContext(Dispatchers.IO) {
-                            modèle.obtenirStationnementParId(marqueurId)
+                if ( marqueurId != null ) {
+                    CoroutineScope( Dispatchers.Main ).launch {
+                        val stationnement = withContext( iocontext ) {
+                            modèle.obtenirStationnementParId( marqueurId )
                         }
 
-                        // Set destination and display details
                         destinationChoisie = Point.fromLngLat(
                             stationnement.coordonnée.longitude,
                             stationnement.coordonnée.latitude
@@ -107,7 +97,7 @@ class PrésentateurCarte(var vue: VueCarte, val iocontext: CoroutineContext = Di
 
                         Toast.makeText(
                             vue.requireContext(),
-                            vue.getString(R.string.marqueur_cliqué),
+                            vue.getString( R.string.marqueur_cliqué ),
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -121,7 +111,7 @@ class PrésentateurCarte(var vue: VueCarte, val iocontext: CoroutineContext = Di
         })
     }
 
-    override fun navigationEntrePostion(à_partir: Point) {
+    override fun navigationEntrePostion( à_partir: Point ) {
         // Source: https://docs.mapbox.com/help/tutorials/getting-started-directions-api/
         // Sous: Parameters
         // Clé
@@ -134,30 +124,30 @@ class PrésentateurCarte(var vue: VueCarte, val iocontext: CoroutineContext = Di
 
         // Source: Copier coller de la documentation OkHttp
         // https://square.github.io/okhttp/recipes/ sous «Asynchronous Get (.kt, .java)»
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder().url( url ).build()
 
         val client = OkHttpClient()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        client.newCall( request ).enqueue(object : Callback {
+            override fun onFailure( call: Call, e: IOException ) {
                 e.printStackTrace()
             }
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
+            override fun onResponse( call: Call, response: Response ) {
+                if ( response.isSuccessful ) {
                     val responseBody = response.body?.string()
-                    if (responseBody != null) {
-                        parseRouteResponse(responseBody)
+                    if ( responseBody != null ) {
+                        parseRouteResponse( responseBody )
                     }
                 }
             }
         })
     }
 
-    private fun parseRouteResponse(responseBody: String) {
+    private fun parseRouteResponse( responseBody: String ) {
         // On trouve le json dans: https://docs.mapbox.com/help/tutorials/getting-started-directions-api/
         // Sous: Review the response
 
-        val json = JSONObject(responseBody)
+        val json = JSONObject( responseBody )
         // Route commence à index zéro
         val route = json.getJSONArray("routes").getJSONObject(0)
         val geometry = route.getJSONObject("geometry")
@@ -165,40 +155,89 @@ class PrésentateurCarte(var vue: VueCarte, val iocontext: CoroutineContext = Di
 
         // Les points qui permet de dessiner la ligne (ils se relient en genre de vecteurs?)
         val routePoints = ArrayList<Point>()
-        for (i in 0 until coordinates.length()) {
-            val coord = coordinates.getJSONArray(i)
-            val point = Point.fromLngLat(coord.getDouble(0), coord.getDouble(1))
-            routePoints.add(point)
+        for ( i in 0 until coordinates.length() ) {
+            val coord = coordinates.getJSONArray( i )
+            val point = Point.fromLngLat( coord.getDouble( 0 ), coord.getDouble( 1 ) )
+            routePoints.add( point )
         }
 
-        dessinerRoute(routePoints)
+        dessinerRoute( routePoints )
     }
 
     // Ressemble exactement à dessinerCercleAutourPostion
-    private fun dessinerRoute(routePoints: List<Point>) {
+    private fun dessinerRoute( routePoints: List<Point> ) {
         vue.mapView.getMapboxMap().getStyle { style ->
 
             val geoJsonSource = geoJsonSource("route-source") {
-                geometry(LineString.fromLngLats(routePoints))
+                geometry( LineString.fromLngLats( routePoints ) )
             }
 
             // Comme dans dessinerCercleAutourPostion
             // Erreur code: la lign existe déja. Alors j'ajouté si la ligne existe, on l'efface avant de permettre de recliqué le bouton destination
-            if (style.getLayer("route-layer") != null) {
-                style.removeStyleLayer("route-layer")
+            if (style.getLayer( "route-layer" ) != null ) {
+                style.removeStyleLayer( "route-layer" )
             }
             if (style.getSource("route-source") != null) {
-                style.removeStyleSource("route-source")
+                style.removeStyleSource( "route-source" )
             }
 
-            style.addSource(geoJsonSource)
+            style.addSource( geoJsonSource )
 
             style.addLayer(
-                lineLayer("route-layer", "route-source") {
-                    lineColor(ColorUtils.colorToRgbaString(Color.RED))
-                    lineWidth(5.0)
+                lineLayer( "route-layer", "route-source" ) {
+                    lineColor( ColorUtils.colorToRgbaString( Color.RED ) )
+                    lineWidth( 5.0 )
                 }
             )
+        }
+    }
+
+    fun vérifierBoutonsHeureRempli(): Boolean {
+        return vue.btnChoisirHeureDébut.text != vue.getString( R.string.début ) && vue.btnChoisirHeurePrévu.text != vue.getString( R.string.prévu )
+    }
+
+    fun montrerMontreDébut() {
+        val calendrier = Calendar.getInstance()
+        val heureListener = TimePickerDialog.OnTimeSetListener{ heureChoix, heure, minute ->
+            calendrier.set( Calendar.HOUR_OF_DAY, heure )
+            calendrier.set( Calendar.MINUTE, minute )
+            vue.btnChoisirHeureDébut.text = SimpleDateFormat( "HH:mm" ).format( calendrier.time )
+        }
+
+        TimePickerDialog( vue.requireContext(), heureListener, calendrier.get( Calendar.HOUR_OF_DAY ), calendrier.get( Calendar.MINUTE ), true).show()
+    }
+
+    fun montrerMontrePrévu() {
+        val calendrier = Calendar.getInstance()
+        val heureListener = TimePickerDialog.OnTimeSetListener{ heureChoix, heure, minute ->
+            calendrier.set( Calendar.HOUR_OF_DAY, heure )
+            calendrier.set( Calendar.MINUTE, minute )
+            vue.btnChoisirHeurePrévu.text = SimpleDateFormat( "HH:mm" ).format( calendrier.time )
+        }
+
+        TimePickerDialog( vue.requireContext(), heureListener, calendrier.get( Calendar.HOUR_OF_DAY ), calendrier.get( Calendar.MINUTE ), true).show()
+    }
+
+    override fun afficherStationnementParHeure() {
+        if ( vérifierBoutonsHeureRempli() == true ) {
+            CoroutineScope( iocontext ).launch {
+                val début = vue.btnChoisirHeureDébut.text.toString()
+                val prévu = vue.btnChoisirHeurePrévu.text.toString()
+                val listeStationnementsHeure = modèle.obtenirStationnementsParHeuresDisponibles(début, prévu)
+
+                withContext ( Dispatchers.Main ) {
+                    for ( stationnement in listeStationnementsHeure ) {
+                        val nouveauPoint = PointAnnotationOptions()
+                            .withPoint( Point.fromLngLat( stationnement.coordonnée.longitude, stationnement.coordonnée.latitude ) )
+                            .withIconImage( "marqueur_rouge" )
+                            .withIconAnchor( IconAnchor.BOTTOM )
+                            .withIconSize( 0.6 )
+
+                        val point = vue.pointAnnotationManager.create( nouveauPoint )
+                        markerMap[point] = stationnement.id
+                    }
+                }
+            }
         }
     }
 }

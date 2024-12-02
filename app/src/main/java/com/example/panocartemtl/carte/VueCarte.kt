@@ -13,8 +13,10 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -68,19 +70,26 @@ class VueCarte : Fragment() {
     private lateinit var btnRayon: ImageView
     private lateinit var popupBouton: Button
     private lateinit var btnFermerPopupRecherche: Button
-    private lateinit var btnOkPopupRecherche: Button
+    lateinit var btnOkPopupRecherche: Button
+    lateinit var btnChoisirHeureDébut: Button
+    lateinit var btnChoisirHeurePrévu: Button
     private lateinit var navController: NavController
     lateinit var mapView: MapView
     private lateinit var annotationPlugin: AnnotationPlugin
     lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var positionClient: FusedLocationProviderClient
     private lateinit var btnDestination: ImageView
+    private lateinit var choisirHeure: ToggleButton
+    private lateinit var choisirAdresse: ToggleButton
+    private lateinit var heureInsértionTexteHeure: LinearLayout
+    private lateinit var heureInsértionTexteAdresse: LinearLayout
+    private lateinit var btnTousStationnements: Button
 
     private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
     private var destinationChoisie: Point? = null
 
     val modèle = Modèle.instance
-    val présentateur = PrésentateurCarte(this)
+    val présentateur = PrésentateurCarte(this )
 
     // Position actuelle
 
@@ -127,13 +136,45 @@ class VueCarte : Fragment() {
         popupBouton = view.findViewById(R.id.popupBouton)
         btnPostion = view.findViewById(R.id.btnPositionActuelle)
         txtRayon = view.findViewById(R.id.txtRayon)
-        txtRecherche = view.findViewById(R.id.txtRecherche)
         btnRayon = view.findViewById(R.id.btnRayon)
         btnDestination = view.findViewById(R.id.btnDestination)
         btnFermerPopupRecherche = view.findViewById(R.id.btnFermerPopupRecherche)
         btnOkPopupRecherche = view.findViewById(R.id.btnOkPopupRecherche)
+        btnChoisirHeureDébut = view.findViewById(R.id.btnChoisirHeureDébut)
+        btnChoisirHeurePrévu = view.findViewById(R.id.btnChoisirHeurePrévu)
+        btnOkPopupRecherche = view.findViewById(R.id.btnOkPopupRecherche)
+        btnTousStationnements = view.findViewById(R.id.btnTousStationnements)
+        choisirHeure = view.findViewById(R.id.choisirHeure)
+        choisirAdresse = view.findViewById(R.id.choisirAdresse)
+        heureInsértionTexteHeure = view.findViewById(R.id.heureInsértionTexteHeure)
+        heureInsértionTexteAdresse = view.findViewById(R.id.heureInsértionTexteAdresse)
+
+
+
+        // Changer contenur du popupRecherche
+        choisirHeure.setOnCheckedChangeListener { _, cliqué ->
+            if (cliqué) {
+                heureInsértionTexteHeure.visibility = View.VISIBLE
+                heureInsértionTexteAdresse.visibility = View.GONE
+                choisirAdresse.isChecked = false
+            }
+        }
+
+        choisirAdresse.setOnCheckedChangeListener { _, cliqué ->
+            if (cliqué) {
+                heureInsértionTexteAdresse.visibility = View.VISIBLE
+                heureInsértionTexteHeure.visibility = View.GONE
+                choisirHeure.isChecked = false
+            }
+        }
 
         val menuView = requireActivity().findViewById<BottomNavigationView>(R.id.menu_navigation)
+
+        // Afficher tous
+        btnTousStationnements.setOnClickListener {
+            présentateur.détruireTousMarqueurs()
+            présentateur.recupérerTousStationnements()
+        }
 
         // Cacher popup description
         popupBouton.setOnClickListener {
@@ -209,7 +250,25 @@ class VueCarte : Fragment() {
             }
         }
 
+        btnChoisirHeureDébut.setOnClickListener {
+            présentateur.montrerMontreDébut()
+        }
+
+        btnChoisirHeurePrévu.setOnClickListener {
+            présentateur.montrerMontrePrévu()
+        }
+
         btnOkPopupRecherche.setOnClickListener {
+            if (présentateur.vérifierBoutonsHeureRempli() == true) {
+                présentateur.détruireTousMarqueurs()
+                présentateur.afficherStationnementParHeure()
+            }
+
+            popupRecherche.visibility = View.GONE
+        }
+
+
+/*
             var adresseRecherchée = txtRecherche.text.toString().trim()
             if (adresseRecherchée.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.adresseRecherchée_indéterminée, Toast.LENGTH_SHORT).show()
@@ -225,7 +284,9 @@ class VueCarte : Fragment() {
             } else {
                 Toast.makeText(requireContext(), R.string.adresseRecherchée_inconnue, Toast.LENGTH_SHORT).show()
             }
-        }
+
+             */
+
     }
 
     private fun getPositionActuelle() {

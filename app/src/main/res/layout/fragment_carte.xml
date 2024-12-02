@@ -37,6 +37,19 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="40dp"/>
 
+    <Button
+        android:id="@+id/btnTousStationnements"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:text="+"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:backgroundTint="@color/bleuBouton"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="120dp"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -190,7 +203,103 @@
             android:elevation="4dp"
             android:minHeight="300dp">
 
-            <AutoCompleteTextView
+            <!-- Toggle Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+
+                <ToggleButton
+                    android:id="@+id/choisirHeure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="Heure"
+                    android:textOff="Heure"
+                    android:background="@drawable/popup_bg" />
+
+                <ToggleButton
+                    android:id="@+id/choisirAdresse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="Adresse"
+                    android:textOff="Adresse"
+                    android:background="@drawable/popup_bg"
+                    android:layout_marginStart="16dp" />
+            </LinearLayout>
+
+            <!-- Heure -->
+            <LinearLayout
+                android:id="@+id/heureInsértionTexteHeure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="16dp">
+
+                    <Button
+                        android:id="@+id/btnChoisirHeureDébut"
+                        android:text="@string/début"
+                        android:padding="12dp"
+                        android:layout_width="140dp"
+                        android:layout_height="70dp"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/bleuBouton" />
+
+                    <Button
+                        android:id="@+id/btnChoisirHeurePrévu"
+                        android:text="@string/prévu"
+                        android:padding="12dp"
+                        android:layout_width="140dp"
+                        android:layout_height="70dp"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/bleuBouton" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Adresse -->
+            <LinearLayout
+                android:id="@+id/heureInsértionTexteAdresse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Code municipal"
+                    android:padding="12dp"
+                    android:background="@drawable/personnaliser_edit_text" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Rue"
+                    android:padding="12dp"
+                    android:background="@drawable/personnaliser_edit_text"
+                    android:layout_marginTop="8dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Code postal"
+                    android:padding="12dp"
+                    android:background="@drawable/personnaliser_edit_text"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!--
+            <Spinner
                 android:id="@+id/txtRecherche"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,6 +310,7 @@
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"
                 android:completionThreshold="1" />
+            -->
 
             <LinearLayout
                 android:layout_width="match_parent"
