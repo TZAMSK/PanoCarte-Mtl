@@ -11,8 +11,8 @@ import kotlin.test.assertEquals
 class SourceDeDonnéesTest {
 
     val source: SourceDeDonnées = SourceDeDonnéesHTTP()
-    val url_stationnements = "http://10.0.0.136:3000/stationnements"
-    val url_host_erreur = "http://10.0.0.136:3000/..."
+    val url_stationnements = "http://localhost:8080/stationnements"
+    val url_host_erreur = "http://localhost:8080/..."
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -68,5 +68,28 @@ class SourceDeDonnéesTest {
         }
 
         assertEquals( "unexpected end of stream on ${url_host_erreur}", exception.message )
+    }
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on cherche un stationnement avec une adresse donnée, on obtient le stationnement correspondant`() {
+
+        runBlocking {
+            val cobaye_requête = source.obtenirStationnementParAdresse(
+                url_stationnements,
+                "3571",
+                "Rue Beaubien",
+                "H1X 1H1"
+            )
+
+            val résultat_attendu = Stationnement(
+                1,
+                Adresse("3571", "Rue Beaubien", "H1X 1H1"),
+                Coordonnée(-73.583856, 45.557873),
+                "/panneaux_images/SB-AC_NE-181.png",
+                "09:00:00",
+                "12:00:00"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
     }
 }
