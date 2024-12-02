@@ -105,7 +105,25 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirNumerosMunicipauxUniques( url: String ): List<String> {
-        TODO("Not yet implemented")
+        try {
+            val client = OkHttpClient()
+            val requête = Request.Builder().url(url).build()
+            val réponse = client.newCall(requête).execute()
+
+            if (réponse.code != 200) {
+                throw SourceDeDonnéesException("Erreur: " + réponse.code)
+            }
+
+            val données = réponse.body
+
+            if (données == null) {
+                throw SourceDeDonnéesException("Pas de données reçues")
+            }
+
+            return DécodeurJson.décoderListe(données.string())
+        } catch (e: IOException) {
+            throw SourceDeDonnéesException(e.message ?: "Erreur inconnue")
+        }
     }
 
     @Throws( SourceDeDonnéesException::class )

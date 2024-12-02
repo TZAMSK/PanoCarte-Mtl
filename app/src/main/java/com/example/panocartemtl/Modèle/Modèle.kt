@@ -82,7 +82,9 @@ class Modèle private constructor (
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirNumerosMunicipauxUniques(): List<String> {
-        TODO("Not yet implemented")
+        val stationnement_reçues = obtenirRessourceService.obtenirNumerosMunicipauxUniques(url_numéros_municipal)
+
+        return stationnement_reçues
     }
 
     @Throws( SourceDeDonnéesException::class )
