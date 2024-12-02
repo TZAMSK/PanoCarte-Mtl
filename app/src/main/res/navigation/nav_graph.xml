@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_carte"
-        android:name="com.example.panocartemtl.fragment_carte"
+        android:name="com.example.panocartemtl.carte.VueCarte"
         android:label="fragment_carte"
         tools:layout="@layout/fragment_carte" >
         <action

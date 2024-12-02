@@ -1,4 +1,4 @@
-package com.example.panocartemtl
+package com.example.panocartemtl.carte
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.panocartemtl.Modèle.Modèle
+import com.example.panocartemtl.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -46,10 +47,10 @@ import okhttp3.Response
 import org.json.JSONObject
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import kotlin.random.Random
 
-class fragment_carte : Fragment() {
+class VueCarte : Fragment() {
     private lateinit var popupLayout: View
     private lateinit var popupRecherche: View
     private lateinit var btnPostion: Button
@@ -69,16 +70,17 @@ class fragment_carte : Fragment() {
     private lateinit var btnFermerPopupRecherche: Button
     private lateinit var btnOkPopupRecherche: Button
     private lateinit var navController: NavController
-    private lateinit var mapView: MapView
+    lateinit var mapView: MapView
     private lateinit var annotationPlugin: AnnotationPlugin
-    private lateinit var pointAnnotationManager: PointAnnotationManager
+    lateinit var pointAnnotationManager: PointAnnotationManager
     private lateinit var positionClient: FusedLocationProviderClient
     private lateinit var btnDestination: ImageView
 
-    private val markerMap: MutableMap<PointAnnotation, String> = mutableMapOf()
+    private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
     private var destinationChoisie: Point? = null
 
     val modèle = Modèle.instance
+    val présentateur = PrésentateurCarte(this)
 
     // Position actuelle
 
@@ -92,7 +94,8 @@ class fragment_carte : Fragment() {
             if (permis == true) {
                 getPositionActuelle()
             } else {
-                Toast.makeText(requireContext(), R.string.autorisation_de_la_position_est_requise, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    R.string.autorisation_de_la_position_est_requise, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -321,7 +324,8 @@ class fragment_carte : Fragment() {
                 }
             }
         } else {
-            Toast.makeText(requireContext(), R.string.autorisation_de_la_position_actuelle_n_a_pas_été_accordée, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                R.string.autorisation_de_la_position_actuelle_n_a_pas_été_accordée, Toast.LENGTH_SHORT).show()
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
@@ -389,60 +393,22 @@ class fragment_carte : Fragment() {
     // Écrit grâce à la documentation officiel de Mapbox - «Markers and annotations»
     // Source: https://docs.mapbox.com/android/maps/guides/annotations/annotations/
     private fun setupMap(style: Style) {
-        style.addImage("marqueur_rouge", BitmapFactory.decodeResource(resources, R.drawable.marqueur_rouge))
+        style.addImage("marqueur_rouge", BitmapFactory.decodeResource(resources,
+            R.drawable.marqueur_rouge
+        ))
 
-        CoroutineScope(Dispatchers.IO).launch {
-            // Récupérer les données en arrière-plan
-            val listeStationnements = modèle.obtenirTousStationnements()
-
-            // Passer au thread principal pour mettre à jour l'interface utilisateur
-            withContext(Dispatchers.Main) {
-                for (stationnement in listeStationnements) {
-                    val nouveau_point = PointAnnotationOptions()
-                        .withPoint(Point.fromLngLat(stationnement.coordonnée.longitude, stationnement.coordonnée.latitude))
-                        .withIconImage("marqueur_rouge")
-                        .withIconAnchor(IconAnchor.BOTTOM)
-                        .withIconSize(0.6)
-
-                    // Créer les annotations sur le thread principal
-                    val point = pointAnnotationManager.create(nouveau_point)
-                    markerMap[point] = "un point"
-                }
-            }
-        }
+        présentateur.recupérerTousStationnements()
 
         // Première vue
-        mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder().center(Point.fromLngLat(-73.554640, 45.561120)).zoom(13.0).build()
-        )
+        présentateur.caméraPremièreInstance()
 
-        /*
         // Cliquer sur les marqueurs
         // Écrit grâce à l'exemple de Mapbox - «Add Point Annotations»
         // Source: https://docs.mapbox.com/android/maps/examples/add-point-annotations/
-        pointAnnotationManager.addClickListener(object : OnPointAnnotationClickListener {
-            override fun onAnnotationClick(pointAnnotation: PointAnnotation): Boolean {
-                val marqueurId = markerMap[pointAnnotation]
-                when (marqueurId) {
-                    "rosemont" -> {
-                        destinationChoisie = Point.fromLngLat(coordRosemont.longitude(), coordRosemont.latitude()) // Store Rosemont coordinates
-                        Toast.makeText(requireContext(),"${getString(R.string.marqueur_cliqué)}: Position Rosemont",Toast.LENGTH_SHORT).show()
-                        montrerPopup("Position de Rosemont", "6400 16e Avenue, Montréal, QC H1X 2S9")
-                    }
-                    "insectarium" -> {
-                        destinationChoisie = Point.fromLngLat(coordInsectarium.longitude(), coordInsectarium.latitude())
-                        Toast.makeText(requireContext(), "${getString(R.string.marqueur_cliqué)}: Position Insectarium", Toast.LENGTH_SHORT).show()
-                        montrerPopup("Position de l'Insectarium", "4581 Sherbrooke St E, Montreal, QC H1X 2B2")
-                    }
-                }
-                return true
-            }
-        })
-
-         */
+        présentateur.afficherStationnementParId()
     }
 
-    private fun montrerPopup(titre: String, description: String) {
+    fun montrerPopup(description: String) {
         popupLayout.findViewById<TextView>(R.id.txtAdresse).text = description
         popupLayout.visibility = View.VISIBLE
     }
