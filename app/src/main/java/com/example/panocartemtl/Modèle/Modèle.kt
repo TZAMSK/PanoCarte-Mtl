@@ -72,7 +72,9 @@ class Modèle private constructor (
         rue: String,
         code_postal: String
     ): Stationnement {
-        TODO("Not yet implemented")
+        val stationnement_reçue = obtenirRessourceService.obtenirStationnementParAdresse( url_stationnements, numéro_municipal, rue, code_postal )
+
+        return stationnement_reçue
     }
 
     @Throws( SourceDeDonnéesException::class )
@@ -82,14 +84,14 @@ class Modèle private constructor (
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirNumerosMunicipauxUniques(): List<String> {
-        val stationnement_reçues = obtenirRessourceService.obtenirNumerosMunicipauxUniques(url_numéros_municipal)
+        val stationnement_reçues = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_stationnements )
 
         return stationnement_reçues
     }
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirRuesUniques( numéro_municipal: String ): List<String> {
-        val stationnements_reçues = obtenirRessourceService.obtenirRuesUniques( url_rues, numéro_municipal )
+        val stationnements_reçues = obtenirRessourceService.obtenirRuesUniques( url_stationnements, numéro_municipal )
 
         return stationnements_reçues
     }

@@ -123,4 +123,40 @@ class SourceDeDonnéesTest {
 
         assertEquals("Erreur: 404", exception.message)
     }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse valide, on obtient un objet Stationnement correspondant`() {
+        runBlocking {
+            val numero_municipal = "3571"
+            val rue = "Rue Beaubien"
+            val code_postal = "H1X 1H1"
+            val cobaye_requête = source.obtenirStationnementParAdresse(url_stationnements, numero_municipal, rue, code_postal)
+
+            val résultat_attendu = Stationnement(
+                1,
+                Adresse(numero_municipal, rue, code_postal),
+                Coordonnée(-73.583856, 45.557873),
+                "/panneaux_images/SB-AC_NE-181.png",
+                "09:00:00",
+                "12:00:00"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse invalide, on obtient une erreur`() {
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                val numero_municipal = "9999"
+                val rue = "Rue Invalide"
+                val code_postal = "H1X 9H9"
+                source.obtenirStationnementParAdresse(url_stationnements, numero_municipal, rue, code_postal)
+            }
+        }
+
+        assertEquals("Erreur: 404", exception.message)
+    }
+
 }
