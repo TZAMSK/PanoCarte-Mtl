@@ -22,7 +22,7 @@ class Modèle private constructor (
 ) : IModèle {
 
     var source: SourceDeDonnées = source
-        set(value){
+        set( value ){
             field = value
         }
 
@@ -79,7 +79,7 @@ class Modèle private constructor (
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirStationnementImage( url_image: String ): Stationnement {
-        return obtenirRessourceService.obtenirStationnementImage(url_stationnements,url_image)
+        return obtenirRessourceService.obtenirStationnementImage( url_stationnements,url_image )
     }
 
     @Throws( SourceDeDonnéesException::class )

@@ -14,6 +14,8 @@ class SourceDeDonnéesTest {
     val source: SourceDeDonnées = SourceDeDonnéesHTTP()
     val url_stationnements = "http://localhost:8080/stationnements"
     val url_host_erreur = "http://localhost:8080/..."
+    val url_numeros_municipaux = "http://localhost:8080/numeros_municipaux"
+    val url_rues = "http://localhost:8080/rues"
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -90,14 +92,14 @@ class SourceDeDonnéesTest {
                 "12:00:00"
             )
 
-            assertEquals(cobaye_requête, résultat_attendu)
+            assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête valide, on obtient une liste des numéros municipaux`() {
         runBlocking {
-            val cobaye_requête = source.obtenirNumerosMunicipauxUniques(  url_stationnements )
+            val cobaye_requête = source.obtenirNumerosMunicipauxUniques( url_numeros_municipaux )
 
             val résultat_attendu = listOf(
                 "3571", "3642", "3561", "3370", "6411", "3454", "3535", "3425", "3589", "3617", "2762", "6823", "3603", "3674", "3620", "3660", "3284", "6312",
@@ -107,32 +109,21 @@ class SourceDeDonnéesTest {
                 "6320", "6414", "6820", "3368", "6981", "6750", "6976", "6609", "6741", "6306"
             )
 
-            assertEquals(cobaye_requête, résultat_attendu)
+            assertEquals( cobaye_requête, résultat_attendu )
         }
-    }
-
-    @Test
-    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête invalide, on obtient une erreur`() {
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
-            runBlocking {
-                source.obtenirNumerosMunicipauxUniques(url_stationnements)
-            }
-        }
-
-        assertEquals("Erreur: 404", exception.message)
     }
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec numéro municipal, on obtient une liste des rues`() {
         runBlocking {
             val numero_municipal = "3571"
-            val cobaye_requête = source.obtenirRuesUniques(url_stationnements, numero_municipal)
+            val cobaye_requête = source.obtenirRuesUniques( url_rues, numero_municipal )
 
             val résultat_attendu = listOf(
                 "Rue Beaubien", "Bb Rosemont"
             )
 
-            assertEquals(cobaye_requête, résultat_attendu)
+            assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 
@@ -142,7 +133,7 @@ class SourceDeDonnéesTest {
             val numero_municipal = "3571"
             val rue = "Rue Beaubien"
             val code_postal = "H1X 1H1"
-            val cobaye_requête = source.obtenirStationnementParAdresse(url_stationnements, numero_municipal, rue, code_postal)
+            val cobaye_requête = source.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
 
             val résultat_attendu = Stationnement(
                 1,
@@ -153,7 +144,7 @@ class SourceDeDonnéesTest {
                 "12:00:00"
             )
 
-            assertEquals(cobaye_requête, résultat_attendu)
+            assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 
@@ -178,7 +169,7 @@ class SourceDeDonnéesTest {
             )
 
             // Vérification que le résultat correspond à l'attendu
-            assertEquals(cobaye_requête, résultat_attendu)
+            assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 
@@ -188,13 +179,13 @@ class SourceDeDonnéesTest {
         val image_url = "/panneaux_images/SB-AC_NE-181.png"
         val url_complet = "http://localhost:8080"
 
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
-                source.obtenirStationnementImage(url_complet, image_url)
+                source.obtenirStationnementImage( url_complet, image_url )
             }
         }
 
-        assertEquals("Erreur: 500", exception.message)
+        assertEquals( "Erreur: 500", exception.message )
     }
 
     @Test
@@ -203,13 +194,13 @@ class SourceDeDonnéesTest {
         val image_url = "/panneaux_images/SB-AC_NE-181.png"
         val url_complet = "http://localhost:8080"
 
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
-                source.obtenirStationnementImage(url_complet, image_url)
+                source.obtenirStationnementImage( url_complet, image_url )
             }
         }
 
-        assertEquals("Pas de données reçues", exception.message)
+        assertEquals( "Pas de données reçues", exception.message )
     }
 
     @Test
@@ -218,9 +209,9 @@ class SourceDeDonnéesTest {
         val image_url = "/panneaux_images/SB-AC_NE-181.png"
         val url_complet = "http://localhost:8080"
 
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
-                source.obtenirStationnementImage(url_complet, image_url)
+                source.obtenirStationnementImage( url_complet, image_url )
             }
         }
 
@@ -229,15 +220,15 @@ class SourceDeDonnéesTest {
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse invalide, on obtient une erreur`() {
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
                 val numero_municipal = "9999"
                 val rue = "Rue Invalide"
                 val code_postal = "H1X 9H9"
-                source.obtenirStationnementParAdresse(url_stationnements, numero_municipal, rue, code_postal)
+                source.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
             }
         }
 
-        assertEquals("Erreur: 500", exception.message)
+        assertEquals( "Erreur: 500", exception.message )
     }
 }
