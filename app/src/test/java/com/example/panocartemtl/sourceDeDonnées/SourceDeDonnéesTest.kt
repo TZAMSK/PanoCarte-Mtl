@@ -31,7 +31,6 @@ class SourceDeDonnéesTest {
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche un stationnement avec id inconnu, on obtient l'erreur 500`() {
-
         val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
                 source.obtenirStationnementParId( url_stationnements, 9999 )
@@ -43,7 +42,6 @@ class SourceDeDonnéesTest {
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche des stationnements discponibles selon un temps prévu, lorsqu'on cherche les stationnements disponibles entre 1h00 et 16h00, on obtient une liste des stationnements disponibles`() {
-
         runBlocking {
             val cobaye_requête = source.obtenirStationnementParHeuresDisponibles( url_stationnements, "01:00", "15:00" )
 
@@ -71,6 +69,7 @@ class SourceDeDonnéesTest {
 
         assertEquals( "unexpected end of stream on ${url_host_erreur}", exception.message )
     }
+
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on cherche un stationnement avec une adresse donnée, on obtient le stationnement correspondant`() {
 
@@ -94,6 +93,70 @@ class SourceDeDonnéesTest {
             assertEquals(cobaye_requête, résultat_attendu)
         }
     }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête valide, on obtient une liste des numéros municipaux`() {
+        runBlocking {
+            val cobaye_requête = source.obtenirNumerosMunicipauxUniques(  url_stationnements )
+
+            val résultat_attendu = listOf(
+                "3571", "3642", "3561", "3370", "6411", "3454", "3535", "3425", "3589", "3617", "2762", "6823", "3603", "3674", "3620", "3660", "3284", "6312",
+                "5778", "5364", "6293", "3299", "5984", "6612", "6708", "5892", "6072", "6500", "6507", "6392", "6189", "6756", "6683", "3626", "6050", "6691",
+                "5187", "5476", "5601", "6545", "5423", "5678", "6615", "5764", "6128", "6333", "6359", "6474", "5867", "6541", "6115", "6001", "6681", "5600",
+                "6498", "5722", "6321", "6752", "5690", "2661", "5448", "5930", "5745", "6420", "6486", "6329", "6175", "5481", "6401", "6412", "5637", "6513",
+                "6320", "6414", "6820", "3368", "6981", "6750", "6976", "6609", "6741", "6306"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête invalide, on obtient une erreur`() {
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                source.obtenirNumerosMunicipauxUniques(url_stationnements)
+            }
+        }
+
+        assertEquals("Erreur: 404", exception.message)
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec numéro municipal, on obtient une liste des rues`() {
+        runBlocking {
+            val numero_municipal = "3571"
+            val cobaye_requête = source.obtenirRuesUniques(url_stationnements, numero_municipal)
+
+            val résultat_attendu = listOf(
+                "Rue Beaubien", "Bb Rosemont"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse valide, on obtient un objet Stationnement correspondant`() {
+        runBlocking {
+            val numero_municipal = "3571"
+            val rue = "Rue Beaubien"
+            val code_postal = "H1X 1H1"
+            val cobaye_requête = source.obtenirStationnementParAdresse(url_stationnements, numero_municipal, rue, code_postal)
+
+            val résultat_attendu = Stationnement(
+                1,
+                Adresse(numero_municipal, rue, code_postal),
+                Coordonnée(-73.583856, 45.557873),
+                "/panneaux_images/SB-AC_NE-181.png",
+                "09:00:00",
+                "12:00:00"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
     @Test
     fun `étant donné une requête HTTP GET qui cherche une image de stationnement, lorsqu'on cherche une image avec une URL valide, on obtient un stationnement avec l'image correspondante`() {
 
@@ -164,4 +227,17 @@ class SourceDeDonnéesTest {
         assertTrue(exception.message?.contains("Erreur inconnue") == true)
     }
 
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse invalide, on obtient une erreur`() {
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                val numero_municipal = "9999"
+                val rue = "Rue Invalide"
+                val code_postal = "H1X 9H9"
+                source.obtenirStationnementParAdresse(url_stationnements, numero_municipal, rue, code_postal)
+            }
+        }
+
+        assertEquals("Erreur: 500", exception.message)
+    }
 }

@@ -95,24 +95,22 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         try {
             val url_complet = "${url}/${numero_municipal}/${rue}/${code_postal}"
             val client = OkHttpClient()
-            val requête = Request.Builder().url( url_complet ).build()
-            val réponse = client.newCall( requête ).execute()
+            val requête = Request.Builder().url(url_complet).build()
+            val réponse = client.newCall(requête).execute()
 
-            if ( réponse.code != 200 ) {
-                throw SourceDeDonnéesException( "Erreur: " + réponse.code )
+            if (réponse.code != 200) {
+                throw SourceDeDonnéesException("Erreur: ${réponse.code}")
             }
+
             val données = réponse.body
 
-            // Vérification de la présence des données
-            if ( données == null ) {
-                throw SourceDeDonnéesException( "Pas de données reçues " )
+            if (données == null) {
+                throw SourceDeDonnéesException("Pas de données reçues")
             }
 
-            // Décodage de la réponse JSON en un objet Stationnement
-            return DécodeurJson.décoderJsonVersStationnement( données.string() )
-        }
-        catch ( e: IOException ) {
-            throw SourceDeDonnéesException( e.message ?: "Erreur inconnue" )
+            return DécodeurJson.décoderJsonVersStationnement(données.string())
+        } catch (e: IOException) {
+            throw SourceDeDonnéesException(e.message ?: "Erreur inconnue")
         }
     }
 
@@ -146,7 +144,25 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirNumerosMunicipauxUniques( url: String ): List<String> {
-        TODO("Not yet implemented")
+        try {
+            val client = OkHttpClient()
+            val requête = Request.Builder().url(url).build()
+            val réponse = client.newCall(requête).execute()
+
+            if (réponse.code != 200) {
+                throw SourceDeDonnéesException("Erreur: " + réponse.code)
+            }
+
+            val données = réponse.body
+
+            if (données == null) {
+                throw SourceDeDonnéesException("Pas de données reçues")
+            }
+
+            return DécodeurJson.décoderListe(données.string())
+        } catch (e: IOException) {
+            throw SourceDeDonnéesException(e.message ?: "Erreur inconnue")
+        }
     }
 
     @Throws( SourceDeDonnéesException::class )
