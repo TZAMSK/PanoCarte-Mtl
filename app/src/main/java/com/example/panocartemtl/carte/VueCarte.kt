@@ -201,7 +201,7 @@ class VueCarte : Fragment() {
                 positionClient.lastLocation.addOnSuccessListener { position: Location? ->
                     if (position != null) {
                         val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
-                        navigationEntrePostion(positionActuelle, destinationChoisie!!)
+                        présentateur.navigationEntrePostion(positionActuelle)
                     }
                 }
             } else {
@@ -225,87 +225,6 @@ class VueCarte : Fragment() {
             } else {
                 Toast.makeText(requireContext(), R.string.adresseRecherchée_inconnue, Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    private fun navigationEntrePostion(from: Point, to: Point) {
-        // Source: https://docs.mapbox.com/help/tutorials/getting-started-directions-api/
-        // Sous: Parameters
-        // Clé
-        val accessToken = "sk.eyJ1IjoidHphbXNrIiwiYSI6ImNtM2tzbGJtczBraHAyaXB2NmlpejlzMnMifQ.JAE5ZyxpPo4Y-n4FlaIuUg"
-        // Url de l'api qui nous permet de dessiner une ligne
-        // Source pour les ${profile}: https://docs.mapbox.com/help/glossary/routing-profile/
-        // Url contient «walking» pour le ${profile} de navigation il y a driving, cycling et driving-traffic
-        val url = "https://api.mapbox.com/directions/v5/mapbox/walking/${from.longitude()},${from.latitude()};${to.longitude()},${to.latitude()}?geometries=geojson&access_token=$accessToken"
-
-
-        // Source: Copier coller de la documentation OkHttp
-        // https://square.github.io/okhttp/recipes/ sous «Asynchronous Get (.kt, .java)»
-        val request = Request.Builder().url(url).build()
-
-        val client = OkHttpClient()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    if (responseBody != null) {
-                        parseRouteResponse(responseBody)
-                    }
-                }
-            }
-        })
-    }
-
-    private fun parseRouteResponse(responseBody: String) {
-        // On trouve le json dans: https://docs.mapbox.com/help/tutorials/getting-started-directions-api/
-        // Sous: Review the response
-
-        val json = JSONObject(responseBody)
-        // Route commence à index zéro
-        val route = json.getJSONArray("routes").getJSONObject(0)
-        val geometry = route.getJSONObject("geometry")
-        val coordinates = geometry.getJSONArray("coordinates")
-
-        // Les points qui permet de dessiner la ligne (ils se relient en genre de vecteurs?)
-        val routePoints = ArrayList<Point>()
-        for (i in 0 until coordinates.length()) {
-            val coord = coordinates.getJSONArray(i)
-            val point = Point.fromLngLat(coord.getDouble(0), coord.getDouble(1))
-            routePoints.add(point)
-        }
-
-        dessinerRoute(routePoints)
-    }
-
-    // Ressemble exactement à dessinerCercleAutourPostion
-    private fun dessinerRoute(routePoints: List<Point>) {
-        mapView.getMapboxMap().getStyle { style ->
-
-            val geoJsonSource = geoJsonSource("route-source") {
-                geometry(LineString.fromLngLats(routePoints))
-            }
-
-            // Comme dans dessinerCercleAutourPostion
-            // Erreur code: la lign existe déja. Alors j'ajouté si la ligne existe, on l'efface avant de permettre de recliqué le bouton destination
-            if (style.getLayer("route-layer") != null) {
-                style.removeStyleLayer("route-layer")
-            }
-            if (style.getSource("route-source") != null) {
-                style.removeStyleSource("route-source")
-            }
-
-            style.addSource(geoJsonSource)
-
-            style.addLayer(
-                lineLayer("route-layer", "route-source") {
-                    lineColor(ColorUtils.colorToRgbaString(Color.RED))
-                    lineWidth(5.0)
-                }
-            )
         }
     }
 
