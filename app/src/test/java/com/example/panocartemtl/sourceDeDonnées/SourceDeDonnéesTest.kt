@@ -69,4 +69,54 @@ class SourceDeDonnéesTest {
 
         assertEquals( "unexpected end of stream on ${url_host_erreur}", exception.message )
     }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête valide, on obtient une liste des numéros municipaux`() {
+        runBlocking {
+            val cobaye_requête = source.obtenirNumerosMunicipauxUniques(url_stationnements)
+
+            val résultat_attendu = listOf(
+                "1234", "5678", "91011", "1213", "1415"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête invalide, on obtient une erreur`() {
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                source.obtenirNumerosMunicipauxUniques(url_stationnements)
+            }
+        }
+
+        assertEquals("Erreur: 404", exception.message)
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec numéro municipal, on obtient une liste des rues`() {
+        runBlocking {
+            val numero_municipal = "1234"
+            val cobaye_requête = source.obtenirRuesUniques(url_stationnements, numero_municipal)
+
+            val résultat_attendu = listOf(
+                "Rue Beaubien", "Rue Saint-Michel", "Boulevard Saint-Laurent"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête avec un numéro municipal invalide, on obtient une erreur`() {
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                val numero_municipal = "0000"
+                source.obtenirRuesUniques(url_stationnements, numero_municipal)
+            }
+        }
+
+        assertEquals("Erreur: 404", exception.message)
+    }
 }
