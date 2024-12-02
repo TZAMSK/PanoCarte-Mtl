@@ -81,4 +81,13 @@ class ModèleTest {
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
+    @Test
+    fun `étant donné une adresse valide, lorsqu'on cherche un stationnement par adresse, on obtient le stationnement correspondant`() {
+        runBlocking {
+            val résultat_observé = cobaye_instance_modèle.obtenirStationnementParAdresse("3571", "Rue Beaubien", "H1X 1H1")
+            val donnée_attendu = Stationnement(1, Adresse("3571", "Rue Beaubien", "H1X 1H1"), Coordonnée(-73.583856, 45.557873), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00")
+
+            assertEquals(donnée_attendu, résultat_observé)
+        }
+    }
 }
