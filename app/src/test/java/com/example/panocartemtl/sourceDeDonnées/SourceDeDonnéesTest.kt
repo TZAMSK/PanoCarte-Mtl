@@ -76,7 +76,11 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirNumerosMunicipauxUniques(url_stationnements)
 
             val résultat_attendu = listOf(
-                "1234", "5678", "91011", "1213", "1415"
+                "3571", "3642", "3561", "3370", "6411", "3454", "3535", "3425", "3589", "3617", "2762", "6823", "3603", "3674", "3620", "3660", "3284", "6312",
+                "5778", "5364", "6293", "3299", "5984", "6612", "6708", "5892", "6072", "6500", "6507", "6392", "6189", "6756", "6683", "3626", "6050", "6691",
+                "5187", "5476", "5601", "6545", "5423", "5678", "6615", "5764", "6128", "6333", "6359", "6474", "5867", "6541", "6115", "6001", "6681", "5600",
+                "6498", "5722", "6321", "6752", "5690", "2661", "5448", "5930", "5745", "6420", "6486", "6329", "6175", "5481", "6401", "6412", "5637", "6513",
+                "6320", "6414", "6820", "3368", "6981", "6750", "6976", "6609", "6741", "6306"
             )
 
             assertEquals(cobaye_requête, résultat_attendu)
@@ -97,11 +101,11 @@ class SourceDeDonnéesTest {
     @Test
     fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec numéro municipal, on obtient une liste des rues`() {
         runBlocking {
-            val numero_municipal = "1234"
+            val numero_municipal = "3571"
             val cobaye_requête = source.obtenirRuesUniques(url_stationnements, numero_municipal)
 
             val résultat_attendu = listOf(
-                "Rue Beaubien", "Rue Saint-Michel", "Boulevard Saint-Laurent"
+                "Rue Beaubien", "Bb Rosemont"
             )
 
             assertEquals(cobaye_requête, résultat_attendu)
@@ -112,7 +116,7 @@ class SourceDeDonnéesTest {
     fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête avec un numéro municipal invalide, on obtient une erreur`() {
         val exception = assertThrows(SourceDeDonnéesException::class.java) {
             runBlocking {
-                val numero_municipal = "0000"
+                val numero_municipal = "9999"
                 source.obtenirRuesUniques(url_stationnements, numero_municipal)
             }
         }
