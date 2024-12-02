@@ -5,14 +5,15 @@ import com.example.panocartemtl.entitées.Coordonnée
 import com.example.panocartemtl.entitées.Stationnement
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class SourceDeDonnéesTest {
 
     val source: SourceDeDonnées = SourceDeDonnéesHTTP()
-    val url_stationnements = "http://10.0.0.136:3000/stationnements"
-    val url_host_erreur = "http://10.0.0.136:3000/..."
+    val url_stationnements = "http://localhost:8080/stationnements"
+    val url_host_erreur = "http://localhost:8080/..."
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -26,6 +27,7 @@ class SourceDeDonnéesTest {
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
+
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche un stationnement avec id inconnu, on obtient l'erreur 500`() {
@@ -69,4 +71,97 @@ class SourceDeDonnéesTest {
 
         assertEquals( "unexpected end of stream on ${url_host_erreur}", exception.message )
     }
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on cherche un stationnement avec une adresse donnée, on obtient le stationnement correspondant`() {
+
+        runBlocking {
+            val cobaye_requête = source.obtenirStationnementParAdresse(
+                url_stationnements,
+                "3571",
+                "Rue Beaubien",
+                "H1X 1H1"
+            )
+
+            val résultat_attendu = Stationnement(
+                1,
+                Adresse("3571", "Rue Beaubien", "H1X 1H1"),
+                Coordonnée(-73.583856, 45.557873),
+                "/panneaux_images/SB-AC_NE-181.png",
+                "09:00:00",
+                "12:00:00"
+            )
+
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche une image de stationnement, lorsqu'on cherche une image avec une URL valide, on obtient un stationnement avec l'image correspondante`() {
+
+        runBlocking {
+            val image_url = "/panneaux_images/SB-AC_NE-181.png"
+            val url_complet = "http://localhost:8080" // URL de base pour la requête
+
+            // Simulation de l'appel à la méthode obtenirStationnementImage
+            val cobaye_requête = source.obtenirStationnementImage(url_complet, image_url)
+
+            // Résultat attendu (Stationnement avec l'image correspondante)
+            val résultat_attendu = Stationnement(
+                1,
+                Adresse("3571", "Rue Beaubien", "H1X 1H1"),
+                Coordonnée(-73.583856, 45.557873),
+                image_url,
+                "09:00:00",
+                "12:00:00"
+            )
+
+            // Vérification que le résultat correspond à l'attendu
+            assertEquals(cobaye_requête, résultat_attendu)
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche une image de stationnement, lorsqu'il y a une erreur HTTP (par exemple 500), une exception SourceDeDonnéesException est lancée`() {
+
+        val image_url = "/panneaux_images/SB-AC_NE-181.png"
+        val url_complet = "http://localhost:8080"
+
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                source.obtenirStationnementImage(url_complet, image_url)
+            }
+        }
+
+        assertEquals("Erreur: 500", exception.message)
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche une image de stationnement, lorsqu'il n'y a pas de données reçues, une exception SourceDeDonnéesException est lancée`() {
+
+        val image_url = "/panneaux_images/SB-AC_NE-181.png"
+        val url_complet = "http://localhost:8080"
+
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                source.obtenirStationnementImage(url_complet, image_url)
+            }
+        }
+
+        assertEquals("Pas de données reçues", exception.message)
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche une image de stationnement, lorsqu'il y a une erreur réseau, une exception SourceDeDonnéesException est lancée`() {
+
+        val image_url = "/panneaux_images/SB-AC_NE-181.png"
+        val url_complet = "http://localhost:8080"
+
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                source.obtenirStationnementImage(url_complet, image_url)
+            }
+        }
+
+        assertTrue(exception.message?.contains("Erreur inconnue") == true)
+    }
+
 }

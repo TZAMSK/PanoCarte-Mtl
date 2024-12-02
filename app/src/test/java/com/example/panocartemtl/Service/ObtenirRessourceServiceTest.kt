@@ -73,4 +73,34 @@ class ObtenirRessourceServiceTest {
 
         assertEquals( "unexpected end of stream on ${url_host_erreur}", exception.message )
     }
+    @Test
+    fun `étant donné une requête HTTP GET pour un stationnement avec une image spécifique, lorsqu'on fournit une URL valide, on obtient le stationnement correspondant`() {
+        runBlocking {
+            val imageUrl = "/panneaux_images/SB-AC_NE-181.png"
+            val cobaye_requête = service_cobaye.obtenirStationnementImage(url_stationnements, imageUrl)
+
+            val résultatAttendu = Stationnement(
+                1,
+                Adresse("3571", "Rue Beaubien", "H1X 1H1"),
+                Coordonnée(-73.583856, 45.557873),
+                "/panneaux_images/SB-AC_NE-181.png",
+                "09:00:00",
+                "12:00:00"
+            )
+
+            assertEquals(cobaye_requête, résultatAttendu)
+        }
+    }
+    @Test
+    fun `étant donné une requête HTTP GET pour un stationnement avec une image, lorsqu'on fournit une URL invalide, on obtient une erreur`() {
+        val imageUrlInvalide = "/images_inexistantes/404.png"
+
+        val exception = assertThrows(SourceDeDonnéesException::class.java) {
+            runBlocking {
+                service_cobaye.obtenirStationnementImage(url_stationnements, imageUrlInvalide)
+            }
+        }
+
+        assertEquals("Erreur: 404", exception.message)
+    }
 }

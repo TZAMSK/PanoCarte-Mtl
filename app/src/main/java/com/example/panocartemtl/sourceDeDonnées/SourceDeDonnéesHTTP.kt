@@ -92,7 +92,28 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         rue: String,
         code_postal: String
     ): Stationnement {
-        TODO("Not yet implemented")
+        try {
+            val url_complet = "${url}/${numero_municipal}/${rue}/${code_postal}"
+            val client = OkHttpClient()
+            val requête = Request.Builder().url( url_complet ).build()
+            val réponse = client.newCall( requête ).execute()
+
+            if ( réponse.code != 200 ) {
+                throw SourceDeDonnéesException( "Erreur: " + réponse.code )
+            }
+            val données = réponse.body
+
+            // Vérification de la présence des données
+            if ( données == null ) {
+                throw SourceDeDonnéesException( "Pas de données reçues " )
+            }
+
+            // Décodage de la réponse JSON en un objet Stationnement
+            return DécodeurJson.décoderJsonVersStationnement( données.string() )
+        }
+        catch ( e: IOException ) {
+            throw SourceDeDonnéesException( e.message ?: "Erreur inconnue" )
+        }
     }
 
     @Throws( SourceDeDonnéesException::class )
@@ -100,7 +121,27 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         url: String,
         image_url: String
     ): Stationnement {
-        TODO("Not yet implemented")
+        try {
+            val url_complet = "${url}${image_url}"
+
+            val client = OkHttpClient()
+            val requête = Request.Builder().url(url_complet).build()
+
+            val réponse = client.newCall(requête).execute()
+
+            if (réponse.code != 200) {
+                throw SourceDeDonnéesException("Erreur: ${réponse.code}")
+            }
+
+            val données = réponse.body
+            if (données == null) {
+                throw SourceDeDonnéesException("Pas de données reçues")
+            }
+            return DécodeurJson.décoderJsonVersStationnement(données.string())
+        } catch (e: IOException) {
+            // En cas d'erreur, lance une exception avec un message approprié
+            throw SourceDeDonnéesException(e.message ?: "Erreur inconnue")
+        }
     }
 
     @Throws( SourceDeDonnéesException::class )

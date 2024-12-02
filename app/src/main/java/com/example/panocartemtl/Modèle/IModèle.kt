@@ -25,7 +25,7 @@ interface IModèle {
     suspend fun obtenirStationnementParAdresse( numéro_municipal : String, rue : String, code_postal: String ) : Stationnement
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirStationnementImage( url_image : String ) : List<Stationnement>
+    suspend fun obtenirStationnementImage( url_image : String ) : Stationnement
 
     @Throws( SourceDeDonnéesException::class )
     suspend fun obtenirNumerosMunicipauxUniques() : List<String>
