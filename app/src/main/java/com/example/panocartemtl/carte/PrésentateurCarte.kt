@@ -31,6 +31,7 @@ import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.sources.getSource
 import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
+import com.squareup.picasso.Picasso
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -102,6 +103,11 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
                             vue.getString( R.string.marqueur_cliqué ),
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        // Inspiré de:
+                        // Source: https://www.youtube.com/watch?v=81gJ8MB25yw
+                        // Source: https://github.com/square/picasso
+                        Picasso.get().load( "http://10.0.0.136:3000${stationnement.panneau}" ).into( vue.imageStationnement  )
 
                         vue.montrerPopup(
                             "${stationnement.adresse.numero_municipal} ${stationnement.adresse.rue} ${stationnement.adresse.code_postal}"

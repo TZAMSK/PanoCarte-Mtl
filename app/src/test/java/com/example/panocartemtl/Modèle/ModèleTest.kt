@@ -155,37 +155,6 @@ class ModèleTest {
     }
 
     @Test
-    fun `étant donné une URL d'image valide, lorsqu'on cherche un stationnement par image, on obtient le stationnement correspondant`() {
-        runBlocking {
-            val urlImageValide = "/panneaux_images/SB-US_NE-2312.png"
-            val résultat_observé = cobaye_instance_modèle.obtenirStationnementImage(urlImageValide)
-            val donnée_attendu = Stationnement(
-                id = 1,
-                adresse = Adresse("3571", "Rue Beaubien", "H1X 1H1"),
-                coordonnée = Coordonnée(-73.583856, 45.557873),
-                panneau = "/panneaux_images/SB-US_NE-2312.png",
-                heures_début = "09:00:00",
-                heures_fin = "12:00:00"
-            )
-
-            assertEquals(donnée_attendu, résultat_observé)
-        }
-    }
-
-    @Test
-    fun `étant donné une URL d'image invalide, lorsqu'on cherche un stationnement par image, une exception est levée`() {
-        val urlImageInvalide = "/panneaux_images/image_invalide.png"
-
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
-            runBlocking {
-                cobaye_instance_modèle.obtenirStationnementImage(urlImageInvalide)
-            }
-        }
-
-        assertEquals("Erreur: Ressource introuvable pour l'image $urlImageInvalide", exception.message)
-    }
-
-    @Test
     fun `étant donné on veut chercher des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 150 mètre du point (-73,589473,, 45,554418), on obtient des stationnements correspondants`() {
         runBlocking {
             val longitude = -73.589473

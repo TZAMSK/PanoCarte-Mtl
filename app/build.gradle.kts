@@ -82,6 +82,8 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:18.0.0")
     implementation ("com.mapbox.mapboxsdk:mapbox-sdk-services:7.3.1")
 
+    implementation("com.squareup.picasso:picasso:2.8")
+
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")

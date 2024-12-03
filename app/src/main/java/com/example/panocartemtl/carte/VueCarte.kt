@@ -84,6 +84,7 @@ class VueCarte : Fragment() {
     private lateinit var heureInsértionTexteHeure: LinearLayout
     private lateinit var heureInsértionTexteAdresse: LinearLayout
     private lateinit var btnTousStationnements: Button
+    lateinit var imageStationnement: ImageView
 
     private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
     private var destinationChoisie: Point? = null
@@ -148,6 +149,7 @@ class VueCarte : Fragment() {
         choisirAdresse = view.findViewById(R.id.choisirAdresse)
         heureInsértionTexteHeure = view.findViewById(R.id.heureInsértionTexteHeure)
         heureInsértionTexteAdresse = view.findViewById(R.id.heureInsértionTexteAdresse)
+        imageStationnement = view.findViewById(R.id.imageStationnement)
 
 
 
