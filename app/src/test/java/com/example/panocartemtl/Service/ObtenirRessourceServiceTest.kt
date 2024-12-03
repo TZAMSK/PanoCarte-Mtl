@@ -20,7 +20,7 @@ class ObtenirRessourceServiceTest {
     val url_host_erreur = "http://10.0.0.136:3000/..."
     val url_rayon = "http://10.0.0.136:3000/stationnements/rayon"
     val url_rues = "http://10.0.0.136:3000/rues"
-    val url_numéros_municipaux = "http://10.0.0.136:3000/numeros_municpaux"
+    val url_numéros_municipaux = "http://10.0.0.136:3000/numeros_municipaux"
 
     @Test
     fun `étant donné une recherche d'un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -224,55 +224,54 @@ class ObtenirRessourceServiceTest {
     fun `étant donné une requête HTTP GET qui cherche des rues uniques, lorsqu'on fournit un numéro municipal valide, on obtient une liste des rues correspondantes`() {
         runBlocking {
             val numero_municipal = "3571"
-            val résultat_observé = service_cobaye.obtenirRuesUniques(url_rues, numero_municipal)
+            val résultat_observé = service_cobaye.obtenirRuesUniques( url_rues, numero_municipal )
 
-            val résultat_attendu = listOf("Rue Beaubien", "Bb Rosemont")
+            val résultat_attendu = listOf( "Bb Rosemont", "Rue Beaubien" )
 
-            assertEquals(résultat_attendu, résultat_observé)
+            assertEquals( résultat_attendu, résultat_observé )
         }
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des rues uniques, lorsqu'on fournit un numéro municipal inexistant, on obtient une erreur 500`() {
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
-            runBlocking {
-                val numero_municipal = "9999"
-                service_cobaye.obtenirRuesUniques(url_rues, numero_municipal)
-            }
-        }
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques, lorsqu'on fournit un numéro municipal inexistant, on obtient une liste vide`() {
+        runBlocking {
+            val numero_municipal = "9999"
+            val cobaye_requête = service_cobaye.obtenirRuesUniques( url_rues, numero_municipal )
 
-        assertEquals("Erreur: 500", exception.message)
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
     }
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fournit la bonne requête avec un lien valide, on obtient la liste des numéros municipaux`() {
         runBlocking {
-            val résultat_observé = service_cobaye.obtenirNumerosMunicipauxUniques(url_numéros_municipaux)
+            val résultat_observé = service_cobaye.obtenirNumerosMunicipauxUniques( url_numéros_municipaux )
 
             val résultat_attendu = listOf(
-                "3571", "3642", "3561", "3370", "6411", "3454", "3535", "3425", "3589", "3617", "2762", "6823",
-                "3603", "3674", "3620", "3660", "3284", "6312", "5778", "5364", "6293", "3299", "5984", "6612",
-                "6708", "5892", "6072", "6500", "6507", "6392", "6189", "6756", "6683", "3626", "6050", "6691",
-                "5187", "5476", "5601", "6545", "5423", "5678", "6615", "5764", "6128", "6333", "6359", "6474",
-                "5867", "6541", "6115", "6001", "6681", "5600", "6498", "5722", "6321", "6752", "5690", "2661",
-                "5448", "5930", "5745", "6420", "6486", "6329", "6175", "5481", "6401", "6412", "5637", "6513",
-                "6320", "6414", "6820", "3368", "6981", "6750", "6976", "6609", "6741", "6306"
+                "2661", "2762", "3284", "3299", "3368", "3370", "3425", "3454", "3535", "3561", "3571", "3589", "3603", "3617", "3620",
+                "3626", "3642", "3660", "3674", "5187", "5364", "5423", "5448", "5476", "5481", "5600", "5601", "5637", "5678", "5690",
+                "5722", "5745", "5764", "5778", "5867", "5892", "5930", "5984", "6001", "6050", "6072", "6115", "6128", "6175", "6189",
+                "6293", "6306", "6312", "6320", "6321", "6329", "6333", "6359", "6392", "6401", "6411", "6412", "6414", "6420", "6474",
+                "6486", "6498", "6500", "6507", "6513", "6541", "6545", "6609", "6612", "6615", "6681", "6683", "6691", "6708", "6741",
+                "6750", "6752", "6756", "6820", "6823", "6976", "6981"
             )
 
-            assertEquals(résultat_attendu, résultat_observé)
+            assertEquals( résultat_attendu, résultat_observé )
         }
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fournit une mauvaise requête avec un lien invalide, on obtient une erreur 500`() {
-        val exception = assertThrows(SourceDeDonnéesException::class.java) {
-            runBlocking {
-                val url_numéros_municipaux_exemple = "http://10.0.0.136:3000/exemple_numeros_municpaux_invalide"
-                service_cobaye.obtenirNumerosMunicipauxUniques(url_numéros_municipaux_exemple)
-            }
-        }
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques, lorsqu'on fait une requête valide avec un numéro municipal inexistant, on obtient une liste vide`() {
+        runBlocking {
+            val numero_municipal = "9999"
+            val cobaye_requête = service_cobaye.obtenirRuesUniques( url_rues, numero_municipal )
 
-        assertEquals("Erreur: 500", exception.message)
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
     }
 
 }

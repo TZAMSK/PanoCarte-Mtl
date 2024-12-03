@@ -131,6 +131,18 @@ class SourceDeDonnéesTest {
     }
 
     @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec un numéro municipal inexistant, on obtient une liste vide`() {
+        runBlocking {
+            val numero_municipal = "9999"
+            val cobaye_requête = source.obtenirRuesUniques( url_rues, numero_municipal )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
     fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête avec le numéro municipal 6507 et rue 10e Avenue, on obtient le code postal « H1Y 2H8 »`() {
         runBlocking {
             val cobaye_requête = source.obtenirCodesPostalsUniques( url_codes_postals, "6507", "10e Avenue" )

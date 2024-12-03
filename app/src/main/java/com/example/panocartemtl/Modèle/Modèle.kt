@@ -14,7 +14,7 @@ class Modèle private constructor (
     override var url_stationnements : String = "http://10.0.0.136:3000/stationnements",
     override var url_stationnement : String = "http://10.0.0.136:3000/stationnement",
     override var url_image : String = "http://10.0.0.136:3000/panneaux_images",
-    override var url_numéros_municipal: String = "http://10.0.0.136:3000/numeros_municpaux",
+    override var url_numéros_municipaux: String = "http://10.0.0.136:3000/numeros_municipaux",
     override var url_rues: String = "http://10.0.0.136:3000/rues",
     override var url_codes_postals: String = "http://10.0.0.136:3000/codes_postals",
     override var url_rayon: String = "http://10.0.0.136:3000/stationnements/rayon",
@@ -80,7 +80,7 @@ class Modèle private constructor (
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirNumerosMunicipauxUniques(): List<String> {
-        val liste_numéro_municipaux_reçue = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_stationnements )
+        val liste_numéro_municipaux_reçue = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_numéros_municipaux )
 
         return liste_numéro_municipaux_reçue
     }

@@ -7,7 +7,7 @@ interface IModèle {
     var url_stationnements : String
     var url_stationnement : String
     var url_image : String
-    var url_numéros_municipal: String
+    var url_numéros_municipaux: String
     var url_rues: String
     var url_codes_postals: String
     var url_rayon: String
