@@ -217,6 +217,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textOn="Heure"
+                    android:textColor="@android:color/black"
                     android:textOff="Heure"
                     android:background="@drawable/popup_bg" />
 
@@ -225,10 +226,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textOn="Adresse"
+                    android:textColor="@android:color/black"
                     android:textOff="Adresse"
                     android:background="@drawable/popup_bg"
                     android:layout_marginStart="16dp" />
+
             </LinearLayout>
+
 
             <!-- Heure -->
             <LinearLayout
@@ -265,6 +269,33 @@
                         android:textColor="@android:color/white"
                         android:backgroundTint="@color/bleuBouton" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="16dp">
+
+                    <Button
+                        android:id="@+id/btnFermerPopupRechercheHeure"
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="@string/fermer"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/rouge"
+                        android:layout_marginEnd="16dp" />
+
+                    <Button
+                        android:id="@+id/btnOkPopupRechercheHeure"
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="@string/oui"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/vert" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Adresse -->
@@ -273,71 +304,61 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:gravity="center_horizontal">
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Code municipal"
+                <Spinner
+                    android:id="@+id/sélectionNuméroMunicipal"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:hint="@string/numéro_municipal"
                     android:padding="12dp"
                     android:background="@drawable/personnaliser_edit_text" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Rue"
+                <Spinner
+                    android:id="@+id/sélectionRue"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:hint="@string/rue"
                     android:padding="12dp"
                     android:background="@drawable/personnaliser_edit_text"
                     android:layout_marginTop="8dp" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Code postal"
+                <Spinner
+                    android:id="@+id/sélectionCodePostal"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:hint="@string/code_postal"
                     android:padding="12dp"
                     android:background="@drawable/personnaliser_edit_text"
                     android:layout_marginTop="8dp" />
-            </LinearLayout>
 
-            <!--
-            <Spinner
-                android:id="@+id/txtRecherche"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/adresse"
-                android:padding="12dp"
-                android:background="@drawable/personnaliser_edit_text"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_marginBottom="16dp"
-                android:completionThreshold="1" />
-            -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="16dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:paddingTop="16dp">
+                    <Button
+                        android:id="@+id/btnFermerPopupRechercheAdresse"
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="@string/fermer"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/rouge"
+                        android:layout_marginEnd="16dp" />
 
-                <Button
-                    android:id="@+id/btnFermerPopupRecherche"
-                    android:layout_width="120dp"
-                    android:layout_height="60dp"
-                    android:text="@string/fermer"
-                    android:textSize="20sp"
-                    android:textColor="@android:color/white"
-                    android:backgroundTint="@color/rouge"
-                    android:layout_marginEnd="16dp" />
-
-                <Button
-                    android:id="@+id/btnOkPopupRecherche"
-                    android:layout_width="120dp"
-                    android:layout_height="60dp"
-                    android:text="@string/oui"
-                    android:textSize="20sp"
-                    android:textColor="@android:color/white"
-                    android:backgroundTint="@color/vert" />
+                    <Button
+                        android:id="@+id/btnOkPopupRechercheAdresse"
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="@string/oui"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/vert" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

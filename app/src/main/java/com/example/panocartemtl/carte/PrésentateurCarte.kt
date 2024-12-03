@@ -4,6 +4,9 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
@@ -32,6 +35,7 @@ import com.mapbox.maps.extension.style.sources.getSource
 import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.async
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -50,7 +54,6 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
 
     val modèle = Modèle.instance
 
-
     override fun caméraPremièreInstance() {
         vue.mapView.getMapboxMap().setCamera(
             CameraOptions.Builder().center( Point.fromLngLat( -73.554640, 45.561120 ) ).zoom( 13.0 ).build()
@@ -67,6 +70,8 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
     override fun recupérerTousStationnements() {
         CoroutineScope( iocontext ).launch {
             val listeStationnements = modèle.obtenirTousStationnements()
+            instancierSpinnerNuméroMunicipal()
+
             withContext( Dispatchers.Main ) {
                 for ( stationnement in listeStationnements ) {
                     val nouveauPoint = PointAnnotationOptions()
@@ -290,19 +295,19 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         if ( rayon > 0) {
             mapboxMap.getStyle { style ->
                 // Erreur code: le cerle existe déja. Alors j'ajouté si le cercle existe, on l'efface avant de permettre de recliqué le bouton rayon
-                if (style.getLayer("circle-layer") != null) {
-                    style.removeStyleLayer("circle-layer")
+                if (style.getLayer( "circle-layer" ) != null) {
+                    style.removeStyleLayer( "circle-layer" )
                 }
-                if (style.getSource("circle-source") != null) {
-                    style.removeStyleSource("circle-source")
+                if (style.getSource( "circle-source" ) != null) {
+                    style.removeStyleSource( "circle-source" )
                 }
 
-                style.addSource(geoJsonSource)
+                style.addSource( geoJsonSource )
                 style.addLayer(
-                    circleLayer("circle-layer", "circle-source") {
-                        circleColor(ColorUtils.colorToRgbaString(Color.BLUE))
-                        circleRadius(rayon.toDouble())
-                        circleOpacity(0.2)
+                    circleLayer( "circle-layer", "circle-source" ) {
+                        circleColor( ColorUtils.colorToRgbaString( Color.BLUE ) )
+                        circleRadius( rayon.toDouble() )
+                        circleOpacity( 0.2 )
                     }
                 )
             }
@@ -311,5 +316,68 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         afficherStationnementsRayon( position, rayon.toString() )
 
     }
+
+    override suspend fun récuperListeNumérosMunicipaux(): List<String> {
+        return withContext( iocontext ) {
+            modèle.obtenirNumerosMunicipauxUniques()
+        }
+    }
+
+    override suspend fun récuperListeRues( numéro_municipal: String ): List<String> {
+        return withContext( iocontext ) {
+            modèle.obtenirRuesUniques( numéro_municipal )
+        }
+    }
+
+    override suspend fun récuperListeCodesPostal( numéro_municipal: String, rue: String ): List<String> {
+        return withContext( iocontext ) {
+            modèle.obtenirCodesPostalsUniques( numéro_municipal, rue )
+        }
+    }
+
+    suspend fun instancierSpinnerNuméroMunicipal() {
+        val liste_numéros_nunicipaux = récuperListeNumérosMunicipaux()
+
+        withContext(Dispatchers.Main) {
+            val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_numéros_nunicipaux )
+            vue.sélectionNuméroMunicipal.adapter = adaptateur
+        }
+    }
+
+    suspend fun mettreÀJourSpinnerRue( numéro_municipal: String ) {
+        val liste_rues = récuperListeRues(numéro_municipal)
+
+        withContext(Dispatchers.Main) {
+            val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_rues )
+            vue.sélectionRue.adapter = adaptateur
+        }
+    }
+
+    suspend fun mettreÀJourSpinnerCodePostal( numéro_municipal: String, rue: String ) {
+        val liste_codes_postaux = récuperListeCodesPostal(numéro_municipal, rue)
+
+        withContext(Dispatchers.Main) {
+            val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_codes_postaux )
+            vue.sélectionCodePostal.adapter = adaptateur
+        }
+    }
+
+    override fun afficherStationnementParAdresse( numéro_municipal: String, rue: String, code_postal: String ) {
+        CoroutineScope( iocontext ).launch {
+            val stationnement = modèle.obtenirStationnementParAdresse( numéro_municipal, rue, code_postal )
+
+            withContext ( Dispatchers.Main ) {
+                val nouveauPoint = PointAnnotationOptions()
+                    .withPoint( Point.fromLngLat( stationnement.coordonnée.longitude, stationnement.coordonnée.latitude ) )
+                    .withIconImage( "marqueur_rouge" )
+                    .withIconAnchor( IconAnchor.BOTTOM )
+                    .withIconSize( 0.6 )
+
+                val point = vue.pointAnnotationManager.create( nouveauPoint )
+                markerMap[point] = stationnement.id
+            }
+        }
+    }
+
 }
 

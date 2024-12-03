@@ -9,11 +9,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
@@ -69,8 +71,10 @@ class VueCarte : Fragment() {
     private lateinit var txtRecherche: AutoCompleteTextView
     lateinit var btnRayon: ImageView
     private lateinit var popupBouton: Button
-    private lateinit var btnFermerPopupRecherche: Button
-    lateinit var btnOkPopupRecherche: Button
+    private lateinit var btnFermerPopupRechercheHeure: Button
+    lateinit var btnOkPopupRechercheHeure: Button
+    private lateinit var btnFermerPopupRechercheAdresse: Button
+    lateinit var btnOkPopupRechercheAdresse: Button
     lateinit var btnChoisirHeureDébut: Button
     lateinit var btnChoisirHeurePrévu: Button
     private lateinit var navController: NavController
@@ -85,6 +89,9 @@ class VueCarte : Fragment() {
     private lateinit var heureInsértionTexteAdresse: LinearLayout
     private lateinit var btnTousStationnements: Button
     lateinit var imageStationnement: ImageView
+    lateinit var sélectionNuméroMunicipal: Spinner
+    lateinit var sélectionRue: Spinner
+    lateinit var sélectionCodePostal: Spinner
 
     private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
     private var destinationChoisie: Point? = null
@@ -139,17 +146,21 @@ class VueCarte : Fragment() {
         txtRayon = view.findViewById(R.id.txtRayon)
         btnRayon = view.findViewById(R.id.btnRayon)
         btnDestination = view.findViewById(R.id.btnDestination)
-        btnFermerPopupRecherche = view.findViewById(R.id.btnFermerPopupRecherche)
-        btnOkPopupRecherche = view.findViewById(R.id.btnOkPopupRecherche)
+        btnFermerPopupRechercheHeure = view.findViewById(R.id.btnFermerPopupRechercheHeure)
+        btnOkPopupRechercheHeure = view.findViewById(R.id.btnOkPopupRechercheHeure)
         btnChoisirHeureDébut = view.findViewById(R.id.btnChoisirHeureDébut)
         btnChoisirHeurePrévu = view.findViewById(R.id.btnChoisirHeurePrévu)
-        btnOkPopupRecherche = view.findViewById(R.id.btnOkPopupRecherche)
+        btnFermerPopupRechercheAdresse = view.findViewById(R.id.btnFermerPopupRechercheAdresse)
+        btnOkPopupRechercheAdresse = view.findViewById(R.id.btnOkPopupRechercheAdresse)
         btnTousStationnements = view.findViewById(R.id.btnTousStationnements)
         choisirHeure = view.findViewById(R.id.choisirHeure)
         choisirAdresse = view.findViewById(R.id.choisirAdresse)
         heureInsértionTexteHeure = view.findViewById(R.id.heureInsértionTexteHeure)
         heureInsértionTexteAdresse = view.findViewById(R.id.heureInsértionTexteAdresse)
         imageStationnement = view.findViewById(R.id.imageStationnement)
+        sélectionNuméroMunicipal = view.findViewById(R.id.sélectionNuméroMunicipal)
+        sélectionRue = view.findViewById(R.id.sélectionRue)
+        sélectionCodePostal = view.findViewById(R.id.sélectionCodePostal)
 
 
 
@@ -184,7 +195,11 @@ class VueCarte : Fragment() {
         }
 
         // Cacher popup recherche
-        btnFermerPopupRecherche.setOnClickListener {
+        btnFermerPopupRechercheHeure.setOnClickListener {
+            popupRecherche.visibility = View.GONE
+        }
+
+        btnFermerPopupRechercheAdresse.setOnClickListener {
             popupRecherche.visibility = View.GONE
         }
 
@@ -230,7 +245,7 @@ class VueCarte : Fragment() {
                 positionClient.lastLocation.addOnSuccessListener { position: Location? ->
                     if (position != null) {
                         val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
-                        présentateur.dessinerCercle( Point.fromLngLat(-73.589473, 45.554418)  )
+                        présentateur.dessinerCercle( Point.fromLngLat( positionActuelle.longitude(), positionActuelle.latitude() )  )
                     }
                 }
             } else {
@@ -262,7 +277,7 @@ class VueCarte : Fragment() {
             présentateur.montrerMontrePrévu()
         }
 
-        btnOkPopupRecherche.setOnClickListener {
+        btnOkPopupRechercheHeure.setOnClickListener {
             if (présentateur.vérifierBoutonsHeureRempli() == true) {
                 présentateur.détruireTousMarqueurs()
                 présentateur.afficherStationnementsParHeure()
@@ -271,25 +286,37 @@ class VueCarte : Fragment() {
             popupRecherche.visibility = View.GONE
         }
 
+        btnOkPopupRechercheAdresse.setOnClickListener {
+            présentateur.détruireTousMarqueurs()
+            présentateur.afficherStationnementParAdresse( sélectionNuméroMunicipal.selectedItem.toString(), sélectionRue.selectedItem.toString(), sélectionCodePostal.selectedItem.toString() )
+            popupRecherche.visibility = View.GONE
+        }
 
-/*
-            var adresseRecherchée = txtRecherche.text.toString().trim()
-            if (adresseRecherchée.isEmpty()) {
-                Toast.makeText(requireContext(), R.string.adresseRecherchée_indéterminée, Toast.LENGTH_SHORT).show()
-            } else if (adresseRecherchée.equals("Insectarium", ignoreCase = true)) {
-                popupRecherche.visibility = View.GONE
-                mapView.getMapboxMap().setCamera(
-                    CameraOptions.Builder()
-                        .center(Point.fromLngLat(-73.554640, 45.561120))
-                        .zoom(14.97)
-                        .build()
-                )
-                Toast.makeText(requireContext(), R.string.position_trouvée, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), R.string.adresseRecherchée_inconnue, Toast.LENGTH_SHORT).show()
+        // Source: https://www.geeksforgeeks.org/spinner-in-kotlin/
+        sélectionNuméroMunicipal.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected( parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long ) {
+                val numéro_municipal = sélectionNuméroMunicipal.selectedItem.toString()
+
+                CoroutineScope( Dispatchers.Main ).launch {
+                    présentateur.mettreÀJourSpinnerRue( numéro_municipal )
+                }
             }
 
-             */
+            override fun onNothingSelected(parentView: AdapterView<*>) {}
+        }
+
+        sélectionRue.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected( parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long ) {
+                val numéro_municipal = sélectionNuméroMunicipal.selectedItem.toString()
+                val rue = sélectionRue.selectedItem.toString()
+
+                CoroutineScope( Dispatchers.Main ).launch {
+                    présentateur.mettreÀJourSpinnerCodePostal( numéro_municipal, rue)
+                }
+            }
+
+            override fun onNothingSelected( parentView: AdapterView<*> ) {}
+        }
 
     }
 
