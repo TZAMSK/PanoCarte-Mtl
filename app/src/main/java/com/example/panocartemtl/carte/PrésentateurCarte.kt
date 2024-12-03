@@ -198,6 +198,8 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         return vue.btnChoisirHeureDébut.text != vue.getString( R.string.début ) && vue.btnChoisirHeurePrévu.text != vue.getString( R.string.prévu )
     }
 
+    // Pour la montre, code copier coller de ce tutoriel
+    // Source: https://www.youtube.com/watch?v=BLmFrR13-bs
     fun montrerMontreDébut() {
         val calendrier = Calendar.getInstance()
         val heureListener = TimePickerDialog.OnTimeSetListener{ heureChoix, heure, minute ->

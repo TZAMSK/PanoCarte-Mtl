@@ -82,6 +82,39 @@ class ModèleTest {
     }
 
     @Test
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête avec le numéro municipal 6507 et rue 10e Avenue, on obtient le code postal « H1Y 2H8 »`() {
+        runBlocking {
+            val cobaye_requête = cobaye_instance_modèle.obtenirCodesPostalsUniques( "6507", "10e Avenue" )
+
+            val résultat_attendu = listOf( "H1Y 2H8" )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données invalides qui ne se relie pas, on obtient aucun code postal`() {
+        runBlocking {
+            val cobaye_requête = cobaye_instance_modèle.obtenirCodesPostalsUniques( "999999", "Infinième Avenue De L'Éternel" )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données valide qui ne se relie pas, on obtient aucun code postal`() {
+        runBlocking {
+            val cobaye_requête = cobaye_instance_modèle.obtenirCodesPostalsUniques( "3642", "Rue Sherbrooke" )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
     fun `étant donné une adresse valide, lorsqu'on cherche un stationnement par adresse, on obtient le stationnement correspondant`() {
         runBlocking {
             val résultat_observé = cobaye_instance_modèle.obtenirStationnementParAdresse("3571", "Rue Beaubien", "H1X 1H1")

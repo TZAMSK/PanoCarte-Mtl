@@ -16,6 +16,7 @@ class ObtenirRessourceServiceTest {
 
     val service_cobaye = ObtenirRessourceService()
     val url_stationnements = "http://10.0.0.136:3000/stationnements"
+    val url_codes_postals = "http://10.0.0.136:3000/codes_postals"
     val url_host_erreur = "http://10.0.0.136:3000/..."
     val url_rayon = "http://10.0.0.136:3000/stationnements/rayon"
 
@@ -42,6 +43,39 @@ class ObtenirRessourceServiceTest {
         }
 
         assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête avec le numéro municipal 6507 et rue 10e Avenue, on obtient le code postal « H1Y 2H8 »`() {
+        runBlocking {
+            val cobaye_requête = service_cobaye.obtenirCodesPostalsUniques( url_codes_postals, "6507", "10e Avenue" )
+
+            val résultat_attendu = listOf( "H1Y 2H8" )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données invalides qui ne se relie pas, on obtient aucun code postal`() {
+        runBlocking {
+            val cobaye_requête = service_cobaye.obtenirCodesPostalsUniques( url_codes_postals, "999999", "Infinième Avenue De L'Éternel" )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données valide qui ne se relie pas, on obtient aucun code postal`() {
+        runBlocking {
+            val cobaye_requête = service_cobaye.obtenirCodesPostalsUniques( url_codes_postals, "3642", "Rue Sherbrooke" )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
     }
 
     @Test

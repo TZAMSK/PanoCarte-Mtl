@@ -26,10 +26,6 @@ class Modèle private constructor (
             field = value
         }
 
-    private var taille_téléchargement : Int = 0
-
-    var stationnements = listOf<Stationnement>()
-
     companion object {
         var instance = Modèle()
     }
@@ -84,16 +80,16 @@ class Modèle private constructor (
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirNumerosMunicipauxUniques(): List<String> {
-        val stationnement_reçues = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_stationnements )
+        val liste_numéro_municipaux_reçue = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_stationnements )
 
-        return stationnement_reçues
+        return liste_numéro_municipaux_reçue
     }
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirRuesUniques( numéro_municipal: String ): List<String> {
-        val stationnements_reçues = obtenirRessourceService.obtenirRuesUniques( url_rues, numéro_municipal )
+        val liste_rues_reçue = obtenirRessourceService.obtenirRuesUniques( url_rues, numéro_municipal )
 
-        return stationnements_reçues
+        return liste_rues_reçue
     }
 
     @Throws( SourceDeDonnéesException::class )
@@ -101,7 +97,9 @@ class Modèle private constructor (
         numéro_municipal: String,
         rue: String
     ): List<String> {
-        TODO("Not yet implemented")
+        val liste_codes_postals_reçue = obtenirRessourceService.obtenirCodesPostalsUniques( url_codes_postals, numéro_municipal, rue )
+
+        return liste_codes_postals_reçue
     }
 
     @Throws( SourceDeDonnéesException::class )

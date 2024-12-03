@@ -196,7 +196,27 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
         numero_municipal: String,
         rue: String
     ): List<String> {
-        TODO("Not yet implemented")
+        try {
+            val url_complet = "${url}/${numero_municipal}/${rue}"
+            val client = OkHttpClient()
+            val requête = Request.Builder().url( url_complet ).build()
+            val réponse = client.newCall( requête ).execute();
+
+            if ( réponse.code != 200 ) {
+                throw SourceDeDonnéesException( "Erreur: " + réponse.code )
+            }
+
+            val données = réponse.body
+
+            if ( données == null ) {
+                throw SourceDeDonnéesException( "Pas de données reçues " )
+            }
+
+            return DécodeurJson.décoderListe( données.string() )
+        }
+        catch ( e: IOException ) {
+            throw SourceDeDonnéesException( e.message ?: "Erreur inconnue" )
+        }
     }
 
     @Throws( SourceDeDonnéesException::class )
