@@ -12,12 +12,13 @@ import kotlin.test.assertEquals
 class SourceDeDonnéesTest {
 
     val source: SourceDeDonnées = SourceDeDonnéesHTTP()
-    val url_stationnements = "http://10.0.0.136:3000/stationnements"
-    val url_host_erreur = "http://10.0.0.136:3000/..."
-    val url_numeros_municipaux = "http://10.0.0.136:3000/numeros_municipaux"
-    val url_rues = "http://10.0.0.136:3000/rues"
-    val url_codes_postals = "http://10.0.0.136:3000/codes_postals"
-    val url_rayon = "http://10.0.0.136:3000/stationnements/rayon"
+    var adresse_ip: String = "10.0.0.136:3000"
+    val url_stationnements = "http://${adresse_ip}/stationnements"
+    val url_host_erreur = "http://${adresse_ip}/..."
+    val url_numeros_municipaux = "http://${adresse_ip}/numeros_municipaux"
+    val url_rues = "http://${adresse_ip}/rues"
+    val url_codes_postals = "http://${adresse_ip}/codes_postals"
+    val url_rayon = "http://${adresse_ip}/stationnements/rayon"
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -26,7 +27,7 @@ class SourceDeDonnéesTest {
         runBlocking {
             val cobaye_requête = source.obtenirStationnementParId( url_stationnements, 1 )
 
-            val résultat_attendu = Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583856, 45.557873 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
+            val résultat_attendu = Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583889, 45.557855 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
 
             assertEquals( cobaye_requête, résultat_attendu )
         }
@@ -50,12 +51,12 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirStationnementParHeuresDisponibles( url_stationnements, "01:00", "15:00" )
 
             val résultat_attendu = listOf(
-                Stationnement( 30, Adresse( "6507", "10e Avenue", "H1Y 2H8" ), Coordonnée( -73.58783, 45.5546 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
-                Stationnement( 31, Adresse( "6392", "10e Avenue", "H1Y 2H10" ), Coordonnée( -73.588532, 45.553961 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
-                Stationnement( 32, Adresse( "6189", "BD Saint-Michel", "H1Y E30" ), Coordonnée( -73.582765, 45.553116 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
-                Stationnement( 33, Adresse( "6756", "20e Avenue", "H1X 2J9" ), Coordonnée( -73.586228, 45.562443 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
-                Stationnement( 34, Adresse( "6683", "21e Avenue", "H1X 2G8" ), Coordonnée( -73.584062, 45.562188 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
-                Stationnement( 35, Adresse( "3626", "Rue Saint-Zotique", "H1X 1E6" ), Coordonnée( -73.588248, 45.559659 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" )
+                Stationnement( 30, Adresse( "6507", "10e Avenue", "H1Y 2H8" ), Coordonnée( -73.587287, 45.554431 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
+                Stationnement( 31, Adresse( "6392", "10e Avenue", "H1Y 2H10" ), Coordonnée( -73.585912, 45.554026 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
+                Stationnement( 32, Adresse( "6189", "BD Saint-Michel", "H1Y E30" ), Coordonnée( -73.582823, 45.554063 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
+                Stationnement( 33, Adresse( "6756", "20e Avenue", "H1X 2J9" ), Coordonnée( -73.585744, 45.562648 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
+                Stationnement( 34, Adresse( "6683", "21e Avenue", "H1X 2G8" ), Coordonnée( -73.583365, 45.562824 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" ),
+                Stationnement( 35, Adresse( "3626", "Rue Saint-Zotique", "H1X 1E6" ), Coordonnée( -73.587382, 45.559318 ), "/panneaux_images/SB-US_NE-2312.png", "18:00:00", "00:00:00" )
             )
 
             assertEquals( cobaye_requête, résultat_attendu )
@@ -88,7 +89,7 @@ class SourceDeDonnéesTest {
             val résultat_attendu = Stationnement(
                 1,
                 Adresse("3571", "Rue Beaubien", "H1X 1H1"),
-                Coordonnée(-73.583856, 45.557873),
+                Coordonnée(-73.583889, 45.557855),
                 "/panneaux_images/SB-AC_NE-181.png",
                 "09:00:00",
                 "12:00:00"
@@ -104,12 +105,13 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirNumerosMunicipauxUniques( url_numeros_municipaux )
 
             val résultat_attendu = listOf(
-                "2661", "2762", "3284", "3299", "3368", "3370", "3425", "3454", "3535", "3561", "3571", "3589", "3603", "3617", "3620",
-                "3626", "3642", "3660", "3674", "5187", "5364", "5423", "5448", "5476", "5481", "5600", "5601", "5637", "5678", "5690",
-                "5722", "5745", "5764", "5778", "5867", "5892", "5930", "5984", "6001", "6050", "6072", "6115", "6128", "6175", "6189",
-                "6293", "6306", "6312", "6320", "6321", "6329", "6333", "6359", "6392", "6401", "6411", "6412", "6414", "6420", "6474",
-                "6486", "6498", "6500", "6507", "6513", "6541", "6545", "6609", "6612", "6615", "6681", "6683", "6691", "6708", "6741",
-                "6750", "6752", "6756", "6820", "6823", "6976", "6981"
+                "11546", "1272", "2319", "2661", "2762", "3284", "3299", "3350", "336", "3368", "3370", "3425",
+                "3454", "3535", "3561", "3571", "3582", "3587", "3603", "3620", "3626", "3642", "3650", "3674",
+                "3855", "3880", "5187", "5210", "5364", "5423", "5476", "5481", "5501", "5600", "5601","5678",
+                "5690", "5722", "5764", "5778", "5867", "5892", "5930", "5984", "6001", "6050", "6072", "6115",
+                "6128", "6185", "6189", "6293", "6306", "6312", "6320", "6333", "6359", "6392", "6403", "6411",
+                "6414", "6420", "6474", "6486", "6498", "6500", "6507", "6513", "6545", "6609", "6612", "6615",
+                "6635", "6683", "6691", "6708", "6750", "6756", "6823", "6976", "6985", "7621", "8300"
             )
 
             assertEquals( cobaye_requête, résultat_attendu )
@@ -123,7 +125,7 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirRuesUniques( url_rues, numero_municipal )
 
             val résultat_attendu = listOf(
-                "Bb Rosemont", "Rue Beaubien"
+                "Rue Beaubien"
             )
 
             assertEquals( cobaye_requête, résultat_attendu )
@@ -185,8 +187,8 @@ class SourceDeDonnéesTest {
 
             val résultat_attendu = Stationnement(
                 1,
-                Adresse(numero_municipal, rue, code_postal),
-                Coordonnée(-73.583856, 45.557873),
+                Adresse( numero_municipal, rue, code_postal ),
+                Coordonnée( -73.583889, 45.557855 ),
                 "/panneaux_images/SB-AC_NE-181.png",
                 "09:00:00",
                 "12:00:00"
@@ -249,21 +251,16 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirStationnementsRayon( url_rayon, longitude, latitude, rayon )
 
             val résultat_attendu = listOf(
-                Stationnement( 6, Adresse( "3454", "Rue Beaubien", "H1X 1G1"),
-                    Coordonnée(-73.589946, 45.556087),
-                    "/panneaux_images/SB-DB_NE-223.png",
+                Stationnement( 41, Adresse( "6545", "9e Avenue", "H1Y 2K7" ),
+                    Coordonnée( -73.588465, 45.554125 ),
+                    "/panneaux_images/SS-JC_QE-0530.png",
+                    "08:00:00",
+                    "17:00:00"),
+                Stationnement( 81, Adresse( "6609", "9e Avenue", "H1Y 2K8" ),
+                Coordonnée( -73.589473, 45.554418 ),
+                    "/panneaux_images/SV-PS_NE-1446.png",
                     "13:00:00",
-                    "15:30:00"),
-                Stationnement( 30, Adresse( "6507", "10e Avenue", "H1Y 2H8"),
-                Coordonnée(-73.58783, 45.5546),
-                    "/panneaux_images/SB-US_NE-2312.png",
-                    "18:00:00",
-                    "00:00:00"),
-                Stationnement( 31, Adresse( "6392", "10e Avenue", "H1Y 2H10"),
-                    Coordonnée(-73.588532, 45.553961),
-                    "/panneaux_images/SB-US_NE-2312.png",
-                    "18:00:00",
-                    "00:00:00"),
+                    "14:00:00"),
             )
 
             assertEquals( cobaye_requête, résultat_attendu )
