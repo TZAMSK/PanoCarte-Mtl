@@ -5,11 +5,32 @@
     android:layout_height="match_parent"
     tools:context=".VueFavoris">
 
+    <!-- Liste des favoris -->
     <ListView
         android:id="@+id/listViewFavoris"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp" />
 
+    <!-- Bouton pour afficher/masquer le calendrier -->
+    <Button
+        android:id="@+id/btnAfficherCalendrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Calendrier"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/bleuBouton" />
+
+    <!-- Calendrier -->
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="bottom" />
+
+    <!-- Bouton de retour -->
     <Button
         android:id="@+id/btnRetour"
         android:layout_width="wrap_content"

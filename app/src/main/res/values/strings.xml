@@ -12,6 +12,7 @@
     <string name="oui">Oui</string>
     <string name="début">Début</string>
     <string name="prévu">Prévu</string>
+    <string name="Calendrier">Calendrier</string>
 
     <!-- Pour Toast -->
     <string name="autorisation_de_la_position_est_requise">Autorisation de la position est requise</string>
@@ -22,4 +23,5 @@
     <string name="position_trouvée">Position trouvée</string>
     <string name="marqueur_cliqué">Marqueur cliqué</string>
     <string name="adresse_supprimée">Adresse supprimée</string>
+
 </resources>

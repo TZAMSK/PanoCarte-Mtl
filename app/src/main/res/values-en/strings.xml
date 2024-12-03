@@ -13,6 +13,7 @@
     <string name="oui">Ok</string>
     <string name="début">Beginning</string>
     <string name="prévu">Foreseen</string>
+    <string name="Calendrier">Calendar</string>
 
     <!-- Pour Toast -->
     <string name="autorisation_de_la_position_est_requise">Position authorization is required</string>
