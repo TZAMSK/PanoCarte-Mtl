@@ -79,6 +79,57 @@ class ObtenirRessourceServiceTest {
     }
 
     @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse valide, on obtient un objet Stationnement correspondant`() {
+        runBlocking {
+            val numero_municipal = "3571"
+            val rue = "Rue Beaubien"
+            val code_postal = "H1X 1H1"
+            val cobaye_requête = service_cobaye.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
+
+            val résultat_attendu = Stationnement(
+                1,
+                Adresse(numero_municipal, rue, code_postal),
+                Coordonnée(-73.583856, 45.557873),
+                "/panneaux_images/SB-AC_NE-181.png",
+                "09:00:00",
+                "12:00:00"
+            )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit un adresse avec des données inexistante, on obtient l'erreur 500`() {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
+            val numero_municipal = "1"
+            val rue = "1 Rue des Nuages"
+            val code_postal = "H0H OHO"
+
+            runBlocking {
+                service_cobaye.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
+            }
+        }
+
+        assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit un adresse avec des données existante, mais qui ne sont pas reliés, on obtient l'erreur 500`() {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
+            val numero_municipal = "3571"
+            val rue = "3e Avenue"
+            val code_postal = "H3J 1G1"
+
+            runBlocking {
+                service_cobaye.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
+            }
+        }
+
+        assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
     fun `étant donné une requête HTTP GET qui cherche des stationnements discponibles selon un temps prévu, lorsqu'on cherche entre 1h00 et 16h00, on obtient une liste des stationnements disponibles`() {
 
         runBlocking {

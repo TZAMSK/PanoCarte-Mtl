@@ -185,6 +185,36 @@ class SourceDeDonnéesTest {
     }
 
     @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit un adresse avec des données inexistante, on obtient l'erreur 500`() {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
+            val numero_municipal = "1"
+            val rue = "1 Rue des Nuages"
+            val code_postal = "H0H OHO"
+
+            runBlocking {
+                source.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
+            }
+        }
+
+        assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit un adresse avec des données existante, mais qui ne sont pas reliés, on obtient l'erreur 500`() {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
+            val numero_municipal = "3571"
+            val rue = "3e Avenue"
+            val code_postal = "H3J 1G1"
+
+            runBlocking {
+                source.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
+            }
+        }
+
+        assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
     fun `étant donné une requête HTTP GET qui cherche une image de stationnement, lorsqu'on cherche une image avec une URL valide, on obtient un stationnement avec l'image correspondante`() {
 
         runBlocking {

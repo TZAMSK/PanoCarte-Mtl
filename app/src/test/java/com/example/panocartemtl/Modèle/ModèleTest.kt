@@ -82,7 +82,7 @@ class ModèleTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête avec le numéro municipal 6507 et rue 10e Avenue, on obtient le code postal « H1Y 2H8 »`() {
+    fun `étant donné on veut chercher des codes postals, lorsqu'on fait une requête avec le numéro municipal 6507 et rue 10e Avenue, on obtient le code postal « H1Y 2H8 »`() {
         runBlocking {
             val cobaye_requête = cobaye_instance_modèle.obtenirCodesPostalsUniques( "6507", "10e Avenue" )
 
@@ -93,7 +93,7 @@ class ModèleTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données invalides qui ne se relie pas, on obtient aucun code postal`() {
+    fun `étant donné on veut chercher des codes postals, lorsqu'on fait une requête valide avec des données invalides qui ne se relie pas, on obtient aucun code postal`() {
         runBlocking {
             val cobaye_requête = cobaye_instance_modèle.obtenirCodesPostalsUniques( "999999", "Infinième Avenue De L'Éternel" )
 
@@ -104,7 +104,7 @@ class ModèleTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données valide qui ne se relie pas, on obtient aucun code postal`() {
+    fun `étant donné on veut chercher des codes postals, lorsqu'on fait une requête valide avec des données valide qui ne se relie pas, on obtient aucun code postal`() {
         runBlocking {
             val cobaye_requête = cobaye_instance_modèle.obtenirCodesPostalsUniques( "3642", "Rue Sherbrooke" )
 
@@ -123,6 +123,37 @@ class ModèleTest {
             assertEquals(donnée_attendu, résultat_observé)
         }
     }
+
+    @Test
+    fun `étant donné on veut chercher un stationnement par adresse, lorsqu'on fournit un adresse avec des données inexistante, on obtient l'erreur 500`() {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
+            val numero_municipal = "1"
+            val rue = "1 Rue des Nuages"
+            val code_postal = "H0H OHO"
+
+            runBlocking {
+                cobaye_instance_modèle.obtenirStationnementParAdresse( numero_municipal, rue, code_postal )
+            }
+        }
+
+        assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
+    fun `étant donné on veut chercher un stationnement par adresse, lorsqu'on fournit un adresse avec des données existante, mais qui ne sont pas reliés, on obtient l'erreur 500`() {
+        val exception = assertThrows( SourceDeDonnéesException::class.java ) {
+            val numero_municipal = "3571"
+            val rue = "3e Avenue"
+            val code_postal = "H3J 1G1"
+
+            runBlocking {
+                cobaye_instance_modèle.obtenirStationnementParAdresse( numero_municipal, rue, code_postal )
+            }
+        }
+
+        assertEquals( "Erreur: 500", exception.message )
+    }
+
     @Test
     fun `étant donné une URL d'image valide, lorsqu'on cherche un stationnement par image, on obtient le stationnement correspondant`() {
         runBlocking {
