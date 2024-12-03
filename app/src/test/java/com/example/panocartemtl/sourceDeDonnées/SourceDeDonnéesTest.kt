@@ -12,10 +12,11 @@ import kotlin.test.assertEquals
 class SourceDeDonnéesTest {
 
     val source: SourceDeDonnées = SourceDeDonnéesHTTP()
-    val url_stationnements = "http://localhost:8080/stationnements"
-    val url_host_erreur = "http://localhost:8080/..."
-    val url_numeros_municipaux = "http://localhost:8080/numeros_municipaux"
-    val url_rues = "http://localhost:8080/rues"
+    val url_stationnements = "http://10.0.0.136:3000/stationnements"
+    val url_host_erreur = "http://10.0.0.136:3000/..."
+    val url_numeros_municipaux = "http://10.0.0.136:3000/numeros_municipaux"
+    val url_rues = "http://10.0.0.136:3000/rues"
+    val url_rayon = "http://10.0.0.136:3000/stationnements/rayon"
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -102,11 +103,12 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirNumerosMunicipauxUniques( url_numeros_municipaux )
 
             val résultat_attendu = listOf(
-                "3571", "3642", "3561", "3370", "6411", "3454", "3535", "3425", "3589", "3617", "2762", "6823", "3603", "3674", "3620", "3660", "3284", "6312",
-                "5778", "5364", "6293", "3299", "5984", "6612", "6708", "5892", "6072", "6500", "6507", "6392", "6189", "6756", "6683", "3626", "6050", "6691",
-                "5187", "5476", "5601", "6545", "5423", "5678", "6615", "5764", "6128", "6333", "6359", "6474", "5867", "6541", "6115", "6001", "6681", "5600",
-                "6498", "5722", "6321", "6752", "5690", "2661", "5448", "5930", "5745", "6420", "6486", "6329", "6175", "5481", "6401", "6412", "5637", "6513",
-                "6320", "6414", "6820", "3368", "6981", "6750", "6976", "6609", "6741", "6306"
+                "2661", "2762", "3284", "3299", "3368", "3370", "3425", "3454", "3535", "3561", "3571", "3589", "3603", "3617", "3620",
+                "3626", "3642", "3660", "3674", "5187", "5364", "5423", "5448", "5476", "5481", "5600", "5601", "5637", "5678", "5690",
+                "5722", "5745", "5764", "5778", "5867", "5892", "5930", "5984", "6001", "6050", "6072", "6115", "6128", "6175", "6189",
+                "6293", "6306", "6312", "6320", "6321", "6329", "6333", "6359", "6392", "6401", "6411", "6412", "6414", "6420", "6474",
+                "6486", "6498", "6500", "6507", "6513", "6541", "6545", "6609", "6612", "6615", "6681", "6683", "6691", "6708", "6741",
+                "6750", "6752", "6756", "6820", "6823", "6976", "6981"
             )
 
             assertEquals( cobaye_requête, résultat_attendu )
@@ -120,7 +122,7 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirRuesUniques( url_rues, numero_municipal )
 
             val résultat_attendu = listOf(
-                "Rue Beaubien", "Bb Rosemont"
+                "Bb Rosemont", "Rue Beaubien"
             )
 
             assertEquals( cobaye_requête, résultat_attendu )
@@ -230,5 +232,63 @@ class SourceDeDonnéesTest {
         }
 
         assertEquals( "Erreur: 500", exception.message )
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 150 mètre du point (-73,589473,, 45,554418), on obtient des stationnements correspondants`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "150"
+            val cobaye_requête = source.obtenirStationnementsRayon( url_rayon, longitude, latitude, rayon )
+
+            val résultat_attendu = listOf(
+                Stationnement( 6, Adresse( "3454", "Rue Beaubien", "H1X 1G1"),
+                    Coordonnée(-73.589946, 45.556087),
+                    "/panneaux_images/SB-DB_NE-223.png",
+                    "13:00:00",
+                    "15:30:00"),
+                Stationnement( 30, Adresse( "6507", "10e Avenue", "H1Y 2H8"),
+                Coordonnée(-73.58783, 45.5546),
+                    "/panneaux_images/SB-US_NE-2312.png",
+                    "18:00:00",
+                    "00:00:00"),
+                Stationnement( 31, Adresse( "6392", "10e Avenue", "H1Y 2H10"),
+                    Coordonnée(-73.588532, 45.553961),
+                    "/panneaux_images/SB-US_NE-2312.png",
+                    "18:00:00",
+                    "00:00:00"),
+            )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 0 mètre du point (-73,589473,, 45,554418), on obtient aucune stationnement`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "0"
+            val cobaye_requête = source.obtenirStationnementsRayon( url_rayon, longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<Stationnement>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 1000 km du point (28,976829,, 41,005362), La Mosqué Bleu, on obtient aucun stationnement`() {
+        runBlocking {
+            val longitude = 28.976829
+            val latitude = 41.005362
+            val rayon = "1000000"
+            val cobaye_requête = source.obtenirStationnementsRayon( url_rayon, longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<Stationnement>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
     }
 }

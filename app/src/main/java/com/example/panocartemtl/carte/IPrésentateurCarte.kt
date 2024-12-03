@@ -8,5 +8,7 @@ interface IPrésentateurCarte {
     fun recupérerTousStationnements();
     fun afficherStationnementParId();
     fun navigationEntrePostion( à_partir: Point );
-    fun afficherStationnementParHeure();
+    fun afficherStationnementsParHeure();
+    fun afficherStationnementsRayon( position: Point, rayon: String );
+    fun dessinerCercle( position: Point );
 }

@@ -32,5 +32,5 @@ interface SourceDeDonnées {
     suspend fun obtenirCodesPostalsUniques( url: String, numero_municipal: String, rue: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirStationnementsRayon( url: String, longitude: Double, latitude: Double ) : List<Stationnement>
+    suspend fun obtenirStationnementsRayon( url: String, longitude: Double, latitude: Double, rayon: String ) : List<Stationnement>
 }

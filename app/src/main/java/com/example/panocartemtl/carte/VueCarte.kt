@@ -65,9 +65,9 @@ class VueCarte : Fragment() {
     private lateinit var popupLayout: View
     private lateinit var popupRecherche: View
     private lateinit var btnPostion: Button
-    private lateinit var txtRayon: EditText
+    lateinit var txtRayon: EditText
     private lateinit var txtRecherche: AutoCompleteTextView
-    private lateinit var btnRayon: ImageView
+    lateinit var btnRayon: ImageView
     private lateinit var popupBouton: Button
     private lateinit var btnFermerPopupRecherche: Button
     lateinit var btnOkPopupRecherche: Button
@@ -217,6 +217,8 @@ class VueCarte : Fragment() {
 
         // Rayon cercle
         btnRayon.setOnClickListener {
+            présentateur.détruireTousMarqueurs()
+
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -226,7 +228,7 @@ class VueCarte : Fragment() {
                 positionClient.lastLocation.addOnSuccessListener { position: Location? ->
                     if (position != null) {
                         val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
-                        dessinerCercleAutourPostion(positionActuelle)
+                        présentateur.dessinerCercle( Point.fromLngLat(-73.589473, 45.554418)  )
                     }
                 }
             } else {
@@ -261,7 +263,7 @@ class VueCarte : Fragment() {
         btnOkPopupRecherche.setOnClickListener {
             if (présentateur.vérifierBoutonsHeureRempli() == true) {
                 présentateur.détruireTousMarqueurs()
-                présentateur.afficherStationnementParHeure()
+                présentateur.afficherStationnementsParHeure()
             }
 
             popupRecherche.visibility = View.GONE
@@ -307,66 +309,6 @@ class VueCarte : Fragment() {
             Toast.makeText(requireContext(),
                 R.string.autorisation_de_la_position_actuelle_n_a_pas_été_accordée, Toast.LENGTH_SHORT).show()
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
-
-    // Écrit grâce à l'example du Mapbox - «Cluster points within a layer»
-    // Source: https://docs.mapbox.com/android/maps/examples/android-view/location-component-animation/
-    private fun dessinerCercleAutourPostion(position: Point) {
-        val mapboxMap = mapView.getMapboxMap()
-
-        // Si rayon pas encore procuré ou l'utilisateur veut pas
-        var rayon = try {
-            txtRayon.text.toString().toDouble()
-        } catch (e: NumberFormatException) {
-            Toast.makeText(requireContext(), R.string.rayon_indéterminé, Toast.LENGTH_SHORT).show()
-            0.0
-        }
-
-        val geoJsonSource = geoJsonSource("circle-source") {
-            geometry(position)
-        }
-
-        if (rayon > 0) {
-            mapboxMap.getStyle { style ->
-                // Erreur code: le cerle existe déja. Alors j'ajouté si le cercle existe, on l'efface avant de permettre de recliqué le bouton rayon
-                if (style.getLayer("circle-layer") != null) {
-                    style.removeStyleLayer("circle-layer")
-                }
-                if (style.getSource("circle-source") != null) {
-                    style.removeStyleSource("circle-source")
-                }
-
-                // Pour qu'il n'y a pas de nouveau 5 marqueurs à chaque fois qu'on clique bouton rayon
-                pointAnnotationManager.deleteAll()
-
-                style.addSource(geoJsonSource)
-                style.addLayer(
-                    circleLayer("circle-layer", "circle-source") {
-                        circleColor(ColorUtils.colorToRgbaString(Color.BLUE))
-                        circleRadius(rayon)
-                        circleOpacity(0.2)
-                    }
-                )
-            }
-
-            for (i in 0 until 5) {
-                val longHazard = Random.nextDouble(-0.001, 0.002)
-                val latHazard = Random.nextDouble(-0.001, 0.002)
-
-                val coordRandom = Point.fromLngLat(
-                    position.longitude() + longHazard,
-                    position.latitude() + latHazard
-                )
-
-                val insectarium = PointAnnotationOptions()
-                    .withPoint(coordRandom)
-                    .withIconImage("marqueur_rouge")
-                    .withIconAnchor(IconAnchor.BOTTOM)
-                    .withIconSize(0.3)
-
-                pointAnnotationManager.create(insectarium)
-            }
         }
     }
 

@@ -57,8 +57,9 @@ class ObtenirRessourceService( var source: SourceDeDonnées = SourceDeDonnéesHT
     suspend fun obtenirStationnementsRayon(
         url: String,
         longitude: Double,
-        latitude: Double
+        latitude: Double,
+        rayon: String
     ): List<Stationnement> {
-        return source.obtenirStationnementsRayon( url, longitude, latitude )
+        return source.obtenirStationnementsRayon( url, longitude, latitude, rayon )
     }
 }

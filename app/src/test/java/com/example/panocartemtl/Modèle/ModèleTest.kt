@@ -72,15 +72,15 @@ class ModèleTest {
 
     @Test
     fun `étant donné on veut chercher toutes les rues correspondates à un numéro municipal fournie, lorsqu'on cherche les rues qui partagent le code municipal 3571 on obtient Rue Beaubien et Bb Rosemont`() {
-
         runBlocking {
             val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniques( "3571" )
 
-            val résultat_attendu = listOf( "Rue Beaubien", "Bb Rosemont" )
+            val résultat_attendu = listOf( "Bb Rosemont", "Rue Beaubien" )
 
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
+
     @Test
     fun `étant donné une adresse valide, lorsqu'on cherche un stationnement par adresse, on obtient le stationnement correspondant`() {
         runBlocking {
@@ -121,4 +121,61 @@ class ModèleTest {
         assertEquals("Erreur: Ressource introuvable pour l'image $urlImageInvalide", exception.message)
     }
 
+    @Test
+    fun `étant donné on veut chercher des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 150 mètre du point (-73,589473,, 45,554418), on obtient des stationnements correspondants`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "150"
+            val cobaye_requête = cobaye_instance_modèle.obtenirStationnementsRayon( longitude, latitude, rayon )
+
+            val résultat_attendu = listOf(
+                Stationnement( 6, Adresse( "3454", "Rue Beaubien", "H1X 1G1"),
+                    Coordonnée(-73.589946, 45.556087),
+                    "/panneaux_images/SB-DB_NE-223.png",
+                    "13:00:00",
+                    "15:30:00"),
+                Stationnement( 30, Adresse( "6507", "10e Avenue", "H1Y 2H8"),
+                    Coordonnée(-73.58783, 45.5546),
+                    "/panneaux_images/SB-US_NE-2312.png",
+                    "18:00:00",
+                    "00:00:00"),
+                Stationnement( 31, Adresse( "6392", "10e Avenue", "H1Y 2H10"),
+                    Coordonnée(-73.588532, 45.553961),
+                    "/panneaux_images/SB-US_NE-2312.png",
+                    "18:00:00",
+                    "00:00:00"),
+            )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné on veut chercher des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 0 mètre du point (-73,589473,, 45,554418), on obtient aucune stationnement`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "0"
+            val cobaye_requête = cobaye_instance_modèle.obtenirStationnementsRayon( longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<Stationnement>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné on veut chercher des stationnements avec un rayon, lorsqu'on cherche avec le rayon de 1000 km du point (28,976829,, 41,005362), La Mosqué Bleu, on obtient aucun stationnement`() {
+        runBlocking {
+            val longitude = 28.976829
+            val latitude = 41.005362
+            val rayon = "100000"
+            val cobaye_requête = cobaye_instance_modèle.obtenirStationnementsRayon( longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<Stationnement>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
 }

@@ -203,8 +203,29 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
     override suspend fun obtenirStationnementsRayon(
         url: String,
         longitude: Double,
-        latitude: Double
+        latitude: Double,
+        rayon: String
     ): List<Stationnement> {
-        TODO("Not yet implemented")
+        try {
+            val url_complet = "${url}/${longitude}/${latitude}/${rayon}"
+            val client = OkHttpClient()
+            val requête = Request.Builder().url( url_complet ).build()
+            val réponse = client.newCall( requête ).execute();
+
+            if ( réponse.code != 200 ) {
+                throw SourceDeDonnéesException( "Erreur: " + réponse.code )
+            }
+
+            val données = réponse.body
+
+            if ( données == null ) {
+                throw SourceDeDonnéesException( "Pas de données reçues " )
+            }
+
+            return DécodeurJson.décoderJsonVersStationnementsListe( données.string() )
+        }
+        catch ( e: IOException ) {
+            throw SourceDeDonnéesException( e.message ?: "Erreur inconnue" )
+        }
     }
 }

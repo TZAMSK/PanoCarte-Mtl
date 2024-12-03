@@ -23,6 +23,7 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
 import com.mapbox.maps.extension.style.layers.getLayer
 import com.mapbox.maps.extension.style.sources.addSource
@@ -40,6 +41,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.logging.SimpleFormatter
+import kotlin.random.Random
 
 class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = Dispatchers.IO ): IPrésentateurCarte {
     private var destinationChoisie: Point? = null
@@ -218,7 +220,7 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         TimePickerDialog( vue.requireContext(), heureListener, calendrier.get( Calendar.HOUR_OF_DAY ), calendrier.get( Calendar.MINUTE ), true).show()
     }
 
-    override fun afficherStationnementParHeure() {
+    override fun afficherStationnementsParHeure() {
         if ( vérifierBoutonsHeureRempli() == true ) {
             CoroutineScope( iocontext ).launch {
                 val début = vue.btnChoisirHeureDébut.text.toString()
@@ -239,6 +241,67 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
                 }
             }
         }
+    }
+
+    override fun afficherStationnementsRayon( position: Point, rayon: String ) {
+        CoroutineScope( iocontext ).launch {
+            val listeStationnementsRayon = modèle.obtenirStationnementsRayon( position.longitude(), position.latitude(), rayon )
+
+            withContext ( Dispatchers.Main ) {
+                for ( stationnement in listeStationnementsRayon ) {
+                    val nouveauPoint = PointAnnotationOptions()
+                        .withPoint( Point.fromLngLat( stationnement.coordonnée.longitude, stationnement.coordonnée.latitude ) )
+                        .withIconImage( "marqueur_rouge" )
+                        .withIconAnchor( IconAnchor.BOTTOM )
+                        .withIconSize( 0.6 )
+
+                    val point = vue.pointAnnotationManager.create( nouveauPoint )
+                    markerMap[point] = stationnement.id
+                }
+            }
+        }
+    }
+
+    // Écrit grâce à l'example du Mapbox - «Cluster points within a layer»
+    // Source: https://docs.mapbox.com/android/maps/examples/android-view/location-component-animation/
+    override fun dessinerCercle( position: Point ) {
+        val mapboxMap = vue.mapView.getMapboxMap()
+
+        // Si rayon pas encore procuré ou l'utilisateur veut pas
+        var rayon = try {
+            vue.txtRayon.text.toString().toInt()
+        } catch (e: NumberFormatException) {
+            Toast.makeText( vue.requireContext(), R.string.rayon_indéterminé, Toast.LENGTH_SHORT ).show()
+            0
+        }
+
+        val geoJsonSource = geoJsonSource("circle-source") {
+            geometry(position)
+        }
+
+        if ( rayon > 0) {
+            mapboxMap.getStyle { style ->
+                // Erreur code: le cerle existe déja. Alors j'ajouté si le cercle existe, on l'efface avant de permettre de recliqué le bouton rayon
+                if (style.getLayer("circle-layer") != null) {
+                    style.removeStyleLayer("circle-layer")
+                }
+                if (style.getSource("circle-source") != null) {
+                    style.removeStyleSource("circle-source")
+                }
+
+                style.addSource(geoJsonSource)
+                style.addLayer(
+                    circleLayer("circle-layer", "circle-source") {
+                        circleColor(ColorUtils.colorToRgbaString(Color.BLUE))
+                        circleRadius(rayon.toDouble())
+                        circleOpacity(0.2)
+                    }
+                )
+            }
+        }
+
+        afficherStationnementsRayon( position, rayon.toString() )
+
     }
 }
 

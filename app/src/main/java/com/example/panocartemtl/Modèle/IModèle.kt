@@ -37,5 +37,5 @@ interface IModèle {
     suspend fun obtenirCodesPostalsUniques( numéro_municipal: String, rue: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirStationnementsRayon( longitude: String, latitude: String ) : List<Stationnement>
+    suspend fun obtenirStationnementsRayon( longitude: Double, latitude: Double, rayon: String ) : List<Stationnement>
 }
