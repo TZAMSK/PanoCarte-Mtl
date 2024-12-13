@@ -28,10 +28,10 @@ interface IModèle {
     suspend fun obtenirStationnementImage( url_image : String ) : Stationnement
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirNumerosMunicipauxUniques() : List<String>
+    suspend fun obtenirNumerosMunicipauxUniques( rue: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirRuesUniques( numéro_municipal: String ) : List<String>
+    suspend fun obtenirRuesUniques() : List<String>
 
     @Throws( SourceDeDonnéesException::class )
     suspend fun obtenirCodesPostalsUniques( numéro_municipal: String, rue: String ) : List<String>

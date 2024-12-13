@@ -48,14 +48,13 @@ class SourceBidon: SourceDeDonnées {
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenirNumerosMunicipauxUniques( url: String ): List<String> {
+    override suspend fun obtenirNumerosMunicipauxUniques( url: String, rue: String ): List<String> {
         TODO("Not yet implemented")
     }
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirRuesUniques(
         url: String,
-        numero_municipal: String
     ): List<String> {
         return listOf("1000", "1001", "1002", "1003", "1004")
     }

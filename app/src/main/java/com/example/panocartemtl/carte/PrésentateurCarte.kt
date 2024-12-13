@@ -70,7 +70,7 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
     override fun recupérerTousStationnements() {
         CoroutineScope( iocontext ).launch {
             val listeStationnements = modèle.obtenirTousStationnements()
-            instancierSpinnerNuméroMunicipal()
+            instancierSpinnerRue()
 
             withContext( Dispatchers.Main ) {
                 for ( stationnement in listeStationnements ) {
@@ -317,15 +317,15 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
 
     }
 
-    override suspend fun récuperListeNumérosMunicipaux(): List<String> {
+    override suspend fun récuperListeNumérosMunicipaux( rue: String ): List<String> {
         return withContext( iocontext ) {
-            modèle.obtenirNumerosMunicipauxUniques()
+            modèle.obtenirNumerosMunicipauxUniques( rue )
         }
     }
 
-    override suspend fun récuperListeRues( numéro_municipal: String ): List<String> {
+    override suspend fun récuperListeRues(): List<String> {
         return withContext( iocontext ) {
-            modèle.obtenirRuesUniques( numéro_municipal )
+            modèle.obtenirRuesUniques()
         }
     }
 
@@ -335,17 +335,17 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         }
     }
 
-    suspend fun instancierSpinnerNuméroMunicipal() {
-        val liste_numéros_nunicipaux = récuperListeNumérosMunicipaux()
+    suspend fun mettreÀJourSpinnerNuméroMunicipal( rue: String ) {
+        val liste_numéros_municipaux = récuperListeNumérosMunicipaux( rue )
 
-        withContext(Dispatchers.Main) {
-            val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_numéros_nunicipaux )
+        withContext( Dispatchers.Main ) {
+            val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_numéros_municipaux )
             vue.sélectionNuméroMunicipal.adapter = adaptateur
         }
     }
 
-    suspend fun mettreÀJourSpinnerRue( numéro_municipal: String ) {
-        val liste_rues = récuperListeRues(numéro_municipal)
+    suspend fun instancierSpinnerRue() {
+        val liste_rues = récuperListeRues()
 
         withContext(Dispatchers.Main) {
             val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_rues )

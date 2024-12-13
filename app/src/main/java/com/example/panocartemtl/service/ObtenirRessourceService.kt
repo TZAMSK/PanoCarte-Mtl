@@ -38,12 +38,12 @@ class ObtenirRessourceService( var source: SourceDeDonnées = SourceDeDonnéesHT
         return source.obtenirStationnementImage( url, image_url )
     }
 
-    suspend fun obtenirNumerosMunicipauxUniques( url: String ): List<String> {
-        return source.obtenirNumerosMunicipauxUniques( url )
+    suspend fun obtenirNumerosMunicipauxUniques( url: String, rue: String ): List<String> {
+        return source.obtenirNumerosMunicipauxUniques( url, rue )
     }
 
-    suspend fun obtenirRuesUniques( url: String, numero_municipal: String ): List<String> {
-        return source.obtenirRuesUniques( url, numero_municipal )
+    suspend fun obtenirRuesUniques( url: String ): List<String> {
+        return source.obtenirRuesUniques( url )
     }
 
     suspend fun obtenirCodesPostalsUniques(

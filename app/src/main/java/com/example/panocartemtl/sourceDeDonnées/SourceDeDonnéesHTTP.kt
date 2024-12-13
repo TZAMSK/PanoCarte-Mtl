@@ -143,10 +143,11 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenirNumerosMunicipauxUniques( url: String ): List<String> {
+    override suspend fun obtenirNumerosMunicipauxUniques( url: String, rue: String ): List<String> {
         try {
+            val url_complet = "${url}/${rue}"
             val client = OkHttpClient()
-            val requête = Request.Builder().url( url ).build()
+            val requête = Request.Builder().url( url_complet ).build()
             val réponse = client.newCall( requête ).execute()
 
             if ( réponse.code != 200 ) {
@@ -166,11 +167,10 @@ class SourceDeDonnéesHTTP() : SourceDeDonnées {
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenirRuesUniques( url: String, numero_municipal: String ): List<String> {
+    override suspend fun obtenirRuesUniques( url: String): List<String> {
         try {
-            val url_complet = "${url}/${numero_municipal}"
             val client = OkHttpClient()
-            val requête = Request.Builder().url( url_complet ).build()
+            val requête = Request.Builder().url( url ).build()
             val réponse = client.newCall( requête ).execute();
 
             if ( réponse.code != 200 ) {

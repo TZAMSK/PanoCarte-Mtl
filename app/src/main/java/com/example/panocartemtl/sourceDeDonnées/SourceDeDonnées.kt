@@ -23,10 +23,10 @@ interface SourceDeDonnées {
     suspend fun obtenirStationnementImage( url: String, image_url: String ) : Stationnement
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirNumerosMunicipauxUniques( url: String ) : List<String>
+    suspend fun obtenirNumerosMunicipauxUniques( url: String, rue: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
-    suspend fun obtenirRuesUniques( url: String, numero_municipal: String ) : List<String>
+    suspend fun obtenirRuesUniques( url: String ) : List<String>
 
     @Throws( SourceDeDonnéesException::class )
     suspend fun obtenirCodesPostalsUniques( url: String, numero_municipal: String, rue: String ) : List<String>

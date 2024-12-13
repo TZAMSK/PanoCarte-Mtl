@@ -46,7 +46,7 @@ class SourceDeDonnéesTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des stationnements discponibles selon un temps prévu, lorsqu'on cherche les stationnements disponibles entre 1h00 et 16h00, on obtient une liste des stationnements disponibles`() {
+    fun `étant donné une requête HTTP GET qui cherche des stationnements disponibles selon un temps prévu, lorsqu'on cherche les stationnements disponibles entre 1h00 et 16h00, on obtient une liste des stationnements disponibles`() {
         runBlocking {
             val cobaye_requête = source.obtenirStationnementParHeuresDisponibles( url_stationnements, "01:00", "15:00" )
 
@@ -64,7 +64,7 @@ class SourceDeDonnéesTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche un stationnement discponibles selon un temps prévu fournie, lorsqu'on cherche le stationnement dispnoble avec de fausses heures comme 25h00, on obtient une erreur`() {
+    fun `étant donné une requête HTTP GET qui cherche un stationnement disponibles selon un temps prévu fournie, lorsqu'on cherche le stationnement dispnoble avec de fausses heures comme 25h00, on obtient une erreur`() {
 
         val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
@@ -76,69 +76,44 @@ class SourceDeDonnéesTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on cherche un stationnement avec une adresse donnée, on obtient le stationnement correspondant`() {
-
+    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques avec une rue, lorsqu'on fait une requête valide avec la rue « 10e Avenue », on obtient une liste des numéros municipaux`() {
         runBlocking {
-            val cobaye_requête = source.obtenirStationnementParAdresse(
-                url_stationnements,
-                "3571",
-                "Rue Beaubien",
-                "H1X 1H1"
-            )
+            val cobaye_requête = source.obtenirNumerosMunicipauxUniques( url_numeros_municipaux, "10e Avenue" )
 
-            val résultat_attendu = Stationnement(
-                1,
-                Adresse("3571", "Rue Beaubien", "H1X 1H1"),
-                Coordonnée(-73.583889, 45.557855),
-                "/panneaux_images/SB-AC_NE-181.png",
-                "09:00:00",
-                "12:00:00"
-            )
+            val résultat_attendu = listOf( "6392", "6507" )
 
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques, lorsqu'on fait une requête valide, on obtient une liste des numéros municipaux`() {
+    fun `étant donné une requête HTTP GET qui cherche des numéros municipaux uniques avec une rue, lorsqu'on fait une requête invalide avec une rue inconnue, on obtient une liste vide`() {
         runBlocking {
-            val cobaye_requête = source.obtenirNumerosMunicipauxUniques( url_numeros_municipaux )
-
-            val résultat_attendu = listOf(
-                "11546", "1272", "2319", "2661", "2762", "3284", "3299", "3350", "336", "3368", "3370", "3425",
-                "3454", "3535", "3561", "3571", "3582", "3587", "3603", "3620", "3626", "3642", "3650", "3674",
-                "3855", "3880", "5187", "5210", "5364", "5423", "5476", "5481", "5501", "5600", "5601","5678",
-                "5690", "5722", "5764", "5778", "5867", "5892", "5930", "5984", "6001", "6050", "6072", "6115",
-                "6128", "6185", "6189", "6293", "6306", "6312", "6320", "6333", "6359", "6392", "6403", "6411",
-                "6414", "6420", "6474", "6486", "6498", "6500", "6507", "6513", "6545", "6609", "6612", "6615",
-                "6635", "6683", "6691", "6708", "6750", "6756", "6823", "6976", "6985", "7621", "8300"
-            )
-
-            assertEquals( cobaye_requête, résultat_attendu )
-        }
-    }
-
-    @Test
-    fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec numéro municipal, on obtient une liste des rues`() {
-        runBlocking {
-            val numero_municipal = "3571"
-            val cobaye_requête = source.obtenirRuesUniques( url_rues, numero_municipal )
-
-            val résultat_attendu = listOf(
-                "Rue Beaubien"
-            )
-
-            assertEquals( cobaye_requête, résultat_attendu )
-        }
-    }
-
-    @Test
-    fun `étant donné une requête HTTP GET qui cherche des rues uniques pour un numéro municipal, lorsqu'on fait une requête valide avec un numéro municipal inexistant, on obtient une liste vide`() {
-        runBlocking {
-            val numero_municipal = "9999"
-            val cobaye_requête = source.obtenirRuesUniques( url_rues, numero_municipal )
+            val cobaye_requête = source.obtenirNumerosMunicipauxUniques( url_numeros_municipaux, "Infinitième Avenue" )
 
             val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques, lorsqu'on fait une requête valide, on obtient une liste des rues`() {
+        runBlocking {
+            val cobaye_requête = source.obtenirRuesUniques( url_rues )
+
+            val résultat_attendu = listOf(
+                " BD Saint-Michel", "10e Avenue", "12e Avenue", "20e Avenue", "21e Avenue", "23e Avenue", "24e Avenue",
+                "2e Avenue", "3e Avenue", "6e Avenue", "9e Avenue", "Ave L Archevêque", "Avenue Beaconsfield",
+                "Avenue du Mont-Royal", "Avenue du Parc", "Avenue Henri-Julien", "Avenue Louis-Hébert", "Avenue Papineau",
+                "Avenue Saint-Charles", "Avenue Swail", "Avenue Van Horne", "Bb Rosemont", "Bd Keller", "BD Saint-Michel",
+                "Boulevard de Acadie", "Boulevard Gouin", "Boulevard Pie-IX", "Boulevard René-Lévesque", "Boulevard Saint-Joseph",
+                "Boulevard Saint-Laurent", "Boulevard Saint-Michel", "Chemin Hudson", "Earnscliffe", "Rue Beaubien",
+                "Rue Bélanger", "Rue Charlevoix", "Rue de la Montagne", "Rue de la Visitation", "Rue des Érables", "Rue des Pins",
+                "Rue du Champ-d'Eau", "Rue Jarry", "Rue Laurier", "Rue Legendre", "Rue Notre-Dame", "Rue Parc", "Rue Parthenais",
+                "Rue Saint-Antoine", "Rue Saint-Denis", "Rue Saint-Hubert", "Rue Saint-Urbain", "Rue Saint-Zotique", "Rue Sherbrooke",
+                "St Louis Square St"
+            )
 
             assertEquals( cobaye_requête, résultat_attendu )
         }
@@ -158,7 +133,7 @@ class SourceDeDonnéesTest {
     @Test
     fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données invalides qui ne se relie pas, on obtient aucun code postal`() {
         runBlocking {
-            val cobaye_requête = source.obtenirCodesPostalsUniques( url_codes_postals, "999999", "Infinième Avenue De L'Éternel" )
+            val cobaye_requête = source.obtenirCodesPostalsUniques( url_codes_postals, "999999", "Infinitième Avenue De L'Éternel" )
 
             val résultat_attendu = emptyList<String>()
 
@@ -167,32 +142,11 @@ class SourceDeDonnéesTest {
     }
 
     @Test
-    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données valide qui ne se relie pas, on obtient aucun code postal`() {
+    fun `étant donné une requête HTTP GET qui cherche des codes postals, lorsqu'on fait une requête valide avec des données valides qui ne se relient pas, on obtient aucun code postal`() {
         runBlocking {
             val cobaye_requête = source.obtenirCodesPostalsUniques( url_codes_postals, "3642", "Rue Sherbrooke" )
 
             val résultat_attendu = emptyList<String>()
-
-            assertEquals( cobaye_requête, résultat_attendu )
-        }
-    }
-
-    @Test
-    fun `étant donné une requête HTTP GET qui cherche un stationnement par adresse, lorsqu'on fournit une adresse valide, on obtient un objet Stationnement correspondant`() {
-        runBlocking {
-            val numero_municipal = "3571"
-            val rue = "Rue Beaubien"
-            val code_postal = "H1X 1H1"
-            val cobaye_requête = source.obtenirStationnementParAdresse( url_stationnements, numero_municipal, rue, code_postal )
-
-            val résultat_attendu = Stationnement(
-                1,
-                Adresse( numero_municipal, rue, code_postal ),
-                Coordonnée( -73.583889, 45.557855 ),
-                "/panneaux_images/SB-AC_NE-181.png",
-                "09:00:00",
-                "12:00:00"
-            )
 
             assertEquals( cobaye_requête, résultat_attendu )
         }

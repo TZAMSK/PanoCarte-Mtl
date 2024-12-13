@@ -80,15 +80,15 @@ class Modèle private constructor (
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenirNumerosMunicipauxUniques(): List<String> {
-        val liste_numéro_municipaux_reçue = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_numéros_municipaux )
+    override suspend fun obtenirNumerosMunicipauxUniques( rue: String ): List<String> {
+        val liste_numéro_municipaux_reçue = obtenirRessourceService.obtenirNumerosMunicipauxUniques( url_numéros_municipaux, rue )
 
         return liste_numéro_municipaux_reçue
     }
 
     @Throws( SourceDeDonnéesException::class )
-    override suspend fun obtenirRuesUniques( numéro_municipal: String ): List<String> {
-        val liste_rues_reçue = obtenirRessourceService.obtenirRuesUniques( url_rues, numéro_municipal )
+    override suspend fun obtenirRuesUniques(): List<String> {
+        val liste_rues_reçue = obtenirRessourceService.obtenirRuesUniques( url_rues )
 
         return liste_rues_reçue
     }

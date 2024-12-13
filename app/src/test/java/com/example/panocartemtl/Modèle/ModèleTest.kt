@@ -72,13 +72,24 @@ class ModèleTest {
     }
 
     @Test
-    fun `étant donné on veut chercher toutes les rues correspondates à un numéro municipal fournie, lorsqu'on cherche les rues qui partagent le code municipal 3571 on obtient Rue Beaubien et Bb Rosemont`() {
+    fun `étant donné une requête HTTP GET qui cherche des rues uniques, on obtient une liste des rues correspondantes`() {
         runBlocking {
-            val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniques( "3571" )
+            val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniques()
 
-            val résultat_attendu = listOf( "Rue Beaubien" )
+            val résultat_attendu = listOf(
+                " BD Saint-Michel", "10e Avenue", "12e Avenue", "20e Avenue", "21e Avenue", "23e Avenue", "24e Avenue",
+                "2e Avenue", "3e Avenue", "6e Avenue", "9e Avenue", "Ave L Archevêque", "Avenue Beaconsfield",
+                "Avenue du Mont-Royal", "Avenue du Parc", "Avenue Henri-Julien", "Avenue Louis-Hébert", "Avenue Papineau",
+                "Avenue Saint-Charles", "Avenue Swail", "Avenue Van Horne", "Bb Rosemont", "Bd Keller", "BD Saint-Michel",
+                "Boulevard de Acadie", "Boulevard Gouin", "Boulevard Pie-IX", "Boulevard René-Lévesque", "Boulevard Saint-Joseph",
+                "Boulevard Saint-Laurent", "Boulevard Saint-Michel", "Chemin Hudson", "Earnscliffe", "Rue Beaubien",
+                "Rue Bélanger", "Rue Charlevoix", "Rue de la Montagne", "Rue de la Visitation", "Rue des Érables", "Rue des Pins",
+                "Rue du Champ-d'Eau", "Rue Jarry", "Rue Laurier", "Rue Legendre", "Rue Notre-Dame", "Rue Parc", "Rue Parthenais",
+                "Rue Saint-Antoine", "Rue Saint-Denis", "Rue Saint-Hubert", "Rue Saint-Urbain", "Rue Saint-Zotique", "Rue Sherbrooke",
+                "St Louis Square St"
+            )
 
-            assertEquals( cobaye_requête, résultat_attendu )
+            assertEquals( résultat_attendu, cobaye_requête )
         }
     }
 
@@ -208,36 +219,27 @@ class ModèleTest {
         }
     }
 
-
     @Test
-    fun `étant donné on veut chercher des numéros municipaux uniques, lorsqu'on fait une requête valide avec un numéro municipal inexistant, on obtient une liste vide`() {
+    fun `étant donné on veut chercher des numéros municipaux uniques, lorsqu'on fait une requête valide avec la rue « 10e Avenue », on obtient une liste vide`() {
         runBlocking {
-            val numero_municipal = "9999"
-            val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniques( numero_municipal )
+            val rue = "10e Avenue"
+            val cobaye_requête = cobaye_instance_modèle.obtenirNumerosMunicipauxUniques( rue )
 
-            val résultat_attendu = emptyList<String>()
+            val résultat_attendu = listOf( "6392", "6507" )
 
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 
     @Test
-    fun `étant donné que la requête pour trouver les numéroes municipaux uniques est valide, lorsqu'on cherche les numéros municipaux uniques, on obtient la liste des numéros municipaux`() {
+    fun `étant donné on veut chercher des numéros municipaux uniques, lorsqu'on fait une requête valide avec une rue inexistant, on obtient une liste vide`() {
         runBlocking {
-            val résultat_observé = cobaye_instance_modèle.obtenirNumerosMunicipauxUniques()
+            val rue = "9999"
+            val cobaye_requête = cobaye_instance_modèle.obtenirNumerosMunicipauxUniques( rue )
 
-            val résultat_attendu = listOf(
-                "11546", "1272", "2319", "2661", "2762", "3284", "3299", "3350", "336", "3368", "3370", "3425",
-                "3454", "3535", "3561", "3571", "3582", "3587", "3603", "3620", "3626", "3642", "3650", "3674",
-                "3855", "3880", "5187", "5210", "5364", "5423", "5476", "5481", "5501", "5600", "5601","5678",
-                "5690", "5722", "5764", "5778", "5867", "5892", "5930", "5984", "6001", "6050", "6072", "6115",
-                "6128", "6185", "6189", "6293", "6306", "6312", "6320", "6333", "6359", "6392", "6403", "6411",
-                "6414", "6420", "6474", "6486", "6498", "6500", "6507", "6513", "6545", "6609", "6612", "6615",
-                "6635", "6683", "6691", "6708", "6750", "6756", "6823", "6976", "6985", "7621", "8300"
-            )
+            val résultat_attendu = emptyList<String>()
 
-            assertEquals(résultat_attendu, résultat_observé)
+            assertEquals( cobaye_requête, résultat_attendu )
         }
     }
-
 }

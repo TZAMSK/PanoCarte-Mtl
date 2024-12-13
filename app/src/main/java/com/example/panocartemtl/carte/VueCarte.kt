@@ -293,19 +293,19 @@ class VueCarte : Fragment() {
         }
 
         // Source: https://www.geeksforgeeks.org/spinner-in-kotlin/
-        sélectionNuméroMunicipal.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        sélectionRue.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected( parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long ) {
-                val numéro_municipal = sélectionNuméroMunicipal.selectedItem.toString()
+                val rue = sélectionRue.selectedItem.toString()
 
                 CoroutineScope( Dispatchers.Main ).launch {
-                    présentateur.mettreÀJourSpinnerRue( numéro_municipal )
+                    présentateur.mettreÀJourSpinnerNuméroMunicipal( rue )
                 }
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>) {}
         }
 
-        sélectionRue.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        sélectionNuméroMunicipal.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected( parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long ) {
                 val numéro_municipal = sélectionNuméroMunicipal.selectedItem.toString()
                 val rue = sélectionRue.selectedItem.toString()
