@@ -77,4 +77,14 @@ class SourceBidon: SourceDeDonnées {
     ): List<Stationnement> {
         TODO("Not yet implemented")
     }
+
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirRuesUniquesRayon(
+        url: String,
+        longitude: Double,
+        latitude: Double,
+        rayon: String
+    ): List<String> {
+        TODO("Not yet implemented")
+    }
 }

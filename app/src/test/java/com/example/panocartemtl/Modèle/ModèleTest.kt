@@ -242,4 +242,46 @@ class ModèleTest {
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
+
+    @Test
+    fun `étant donné on veut chercher des rues avec un rayon, lorsqu'on cherche avec le rayon de 150 mètre du point (-73,589473,, 45,554418), on obtient la rue « 9e Avenue »`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "150"
+            val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniquesRayon( longitude, latitude, rayon )
+
+            val résultat_attendu = listOf( "9e Avenue" )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné on veut chercher des rues avec un rayon, lorsqu'on cherche avec le rayon de 0 mètre du point (-73,589473,, 45,554418), on obtient aucune rue`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "0"
+            val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniquesRayon( longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné on veut chercher des rues avec un rayon, lorsqu'on cherche avec le rayon de 1000 km du point (28,976829,, 41,005362), La Mosqué Bleu, on obtient aucun stationnement`() {
+        runBlocking {
+            val longitude = 28.976829
+            val latitude = 41.005362
+            val rayon = "1000000"
+            val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniquesRayon( longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
 }

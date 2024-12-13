@@ -33,4 +33,7 @@ interface SourceDeDonnées {
 
     @Throws( SourceDeDonnéesException::class )
     suspend fun obtenirStationnementsRayon( url: String, longitude: Double, latitude: Double, rayon: String ) : List<Stationnement>
+
+    @Throws( SourceDeDonnéesException::class )
+    suspend fun obtenirRuesUniquesRayon( url: String, longitude: Double, latitude: Double, rayon: String ) : List<String>
 }

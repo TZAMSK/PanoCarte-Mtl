@@ -4,9 +4,7 @@ import com.example.panocartemtl.entitées.Adresse
 import com.example.panocartemtl.entitées.Coordonnée
 import com.example.panocartemtl.entitées.Stationnement
 import com.example.panocartemtl.service.ObtenirRessourceService
-import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnées
 import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnéesException
-import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnéesHTTP
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -22,6 +20,7 @@ class ObtenirRessourceServiceTest {
     val url_rayon = "http://${adresse_ip}/stationnements/rayon"
     val url_rues = "http://${adresse_ip}/rues"
     val url_numéros_municipaux = "http:/${adresse_ip}/numeros_municipaux"
+    val url_rues_rayon = "http://${adresse_ip}/stationnements/recherche/rayon"
 
     @Test
     fun `étant donné une recherche d'un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
@@ -261,6 +260,48 @@ class ObtenirRessourceServiceTest {
             val résultat_attendu = emptyList<String>()
 
             assertEquals( résultat_attendu, résultat_observé )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues avec un rayon, lorsqu'on cherche avec le rayon de 150 mètre du point (-73,589473,, 45,554418), on obtient la rue « 9e Avenue »`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "150"
+            val cobaye_requête = service_cobaye.obtenirRuesUniquesRayon( url_rues_rayon, longitude, latitude, rayon )
+
+            val résultat_attendu = listOf("9e Avenue")
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues avec un rayon, lorsqu'on cherche avec le rayon de 0 mètre du point (-73,589473,, 45,554418), on obtient aucune rue`() {
+        runBlocking {
+            val longitude = -73.589473
+            val latitude = 45.554418
+            val rayon = "0"
+            val cobaye_requête = service_cobaye.obtenirRuesUniquesRayon( url_rues_rayon, longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des rues avec un rayon, lorsqu'on cherche avec le rayon de 1000 km du point (28,976829,, 41,005362), La Mosqué Bleu, on obtient aucun stationnement`() {
+        runBlocking {
+            val longitude = 28.976829
+            val latitude = 41.005362
+            val rayon = "1000000"
+            val cobaye_requête = service_cobaye.obtenirRuesUniquesRayon( url_rayon, longitude, latitude, rayon )
+
+            val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
         }
     }
 }

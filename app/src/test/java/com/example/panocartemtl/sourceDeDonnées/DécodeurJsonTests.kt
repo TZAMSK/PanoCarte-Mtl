@@ -3,11 +3,9 @@ package com.example.panocartemtl.sourceDeDonnées
 import com.example.panocartemtl.entitées.Adresse
 import com.example.panocartemtl.entitées.Coordonnée
 import com.example.panocartemtl.entitées.Stationnement
-import com.google.gson.stream.JsonReader
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class DécodeurJsonTests {
 

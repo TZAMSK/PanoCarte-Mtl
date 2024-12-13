@@ -19,6 +19,8 @@ class Modèle private constructor (
     override var url_rues: String = "http://${adresse_ip}/rues",
     override var url_codes_postals: String = "http://${adresse_ip}/codes_postals",
     override var url_rayon: String = "http://${adresse_ip}/stationnements/rayon",
+    override var url_rues_rayon: String = "http://${adresse_ip}/stationnements/recherche/rayon",
+
     source: SourceDeDonnées = SourceDeDonnéesHTTP()
 ) : IModèle {
 
@@ -112,5 +114,16 @@ class Modèle private constructor (
         val stationnements_reçues = obtenirRessourceService.obtenirStationnementsRayon( url_rayon, longitude, latitude, rayon )
 
         return stationnements_reçues
+    }
+
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirRuesUniquesRayon(
+        longitude: Double,
+        latitude: Double,
+        rayon: String
+    ): List<String> {
+        val rues_reçues = obtenirRessourceService.obtenirRuesUniquesRayon( url_rues_rayon, longitude, latitude, rayon )
+
+        return rues_reçues
     }
 }

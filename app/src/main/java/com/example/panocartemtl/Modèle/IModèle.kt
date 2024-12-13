@@ -11,6 +11,7 @@ interface IModèle {
     var url_rues: String
     var url_codes_postals: String
     var url_rayon: String
+    var url_rues_rayon: String
 
     @Throws( SourceDeDonnéesException::class )
     suspend fun obtenirTousStationnements(): List<Stationnement>
@@ -38,4 +39,7 @@ interface IModèle {
 
     @Throws( SourceDeDonnéesException::class )
     suspend fun obtenirStationnementsRayon( longitude: Double, latitude: Double, rayon: String ) : List<Stationnement>
+
+    @Throws( SourceDeDonnéesException::class )
+    suspend fun obtenirRuesUniquesRayon( longitude: Double, latitude: Double, rayon: String ) : List<String>
 }
