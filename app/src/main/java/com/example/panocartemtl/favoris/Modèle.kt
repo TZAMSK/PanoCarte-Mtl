@@ -43,4 +43,12 @@ class Modèle {
         this.stationnements.clear()
         this.stationnements.addAll(stationnements)
     }
+    fun ajouterStationnement(adresse: String) {
+        if (adresse.isNotBlank()) {
+            stationnements.add(Stationnement(adresse))
+        } else {
+            throw IllegalArgumentException("L'adresse ne peut pas être vide.")
+        }
+    }
+
 }

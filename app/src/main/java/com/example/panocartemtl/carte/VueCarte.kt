@@ -1,6 +1,7 @@
 package com.example.panocartemtl.carte
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.location.Location
@@ -26,6 +27,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
+import com.example.panocartemtl.VueFavoris
+import com.example.panocartemtl.favoris.Présentateur
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -141,6 +144,16 @@ class VueCarte : Fragment() {
         checkBoxRayon = view.findViewById(R.id.checkBoxRayon)
         checkBoxTxtRayon = view.findViewById(R.id.checkBoxTxtRayon)
 
+        // Configuration bouton et TextView pour navigation
+        val buttonFav = view.findViewById<Button>(R.id.buttonfav)
+        val textViewAdresse = view.findViewById<TextView>(R.id.txtAdresse)
+
+        buttonFav.setOnClickListener {
+            val adresse = textViewAdresse.text.toString()
+            val présentateurFavoris = Présentateur(VueFavoris())
+            présentateurFavoris.ajouterNouvelleAdresse(adresse)
+            Toast.makeText(requireContext(), "Adresse ajoutée aux favoris : $adresse", Toast.LENGTH_SHORT).show()
+        }
 
 
         // Changer contenur du popupRecherche

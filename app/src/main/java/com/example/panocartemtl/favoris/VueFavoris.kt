@@ -83,6 +83,12 @@ class VueFavoris : Fragment() {
         navController = findNavController()
 
         présentateur.chargerListeStationnement()
+
+        // Vérifie si une adresse a été transmise
+        val adresse = activity?.intent?.getStringExtra("ADRESSE")
+        if (!adresse.isNullOrEmpty()) {
+            présentateur.ajouterNouvelleAdresse(adresse)
+        }
     }
 
     private fun afficherDatePicker(position: Int) {

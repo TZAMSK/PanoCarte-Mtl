@@ -47,4 +47,15 @@ class Présentateur(val vue: VueFavoris) {
     fun retourVersCarte() {
         vue.naviguerVersCarte()
     }
+    fun ajouterNouvelleAdresse(adresse: String) {
+        try {
+            val stationnements = modèle.getStationnementSimulés().toMutableList()
+            stationnements.add(Stationnement(adresse)) // Ajout de la nouvelle adresse
+            modèle.mettreAJourStationnements(stationnements)
+            vue.listeStationnement(stationnements) // Mise à jour de la vue
+        } catch (e: Exception) {
+            vue.afficherErreur("Erreur : ${e.message}")
+        }
+    }
+
 }
