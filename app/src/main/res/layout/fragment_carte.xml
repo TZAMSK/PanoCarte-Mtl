@@ -322,7 +322,7 @@
                     android:hint="@string/rue"
                     android:padding="12dp"
                     android:background="@drawable/personnaliser_edit_text"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="2dp" />
 
                 <Spinner
                     android:id="@+id/sélectionCodePostal"
@@ -333,6 +333,28 @@
                     android:background="@drawable/personnaliser_edit_text"
                     android:layout_marginTop="8dp" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="16dp">
+
+                    <CheckBox
+                        android:id="@+id/checkBoxRayon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rayon"
+                        android:textSize="18sp"
+                        android:padding="7dp" />
+
+                    <EditText
+                        android:id="@+id/checkBoxTxtRayon"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/personnaliser_edit_text" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

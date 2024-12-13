@@ -1,4 +1,4 @@
-package com.example.panocartemtl
+package com.example.panocartemtl.Chargement
 
 import com.example.panocartemtl.chargement.Chargement
 import com.example.panocartemtl.chargement.Modèle
@@ -12,7 +12,7 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class TestChargement {
+class ModèleTest {
     @Test
     fun `test étant donné l'application nouvellement instanciée, lorsqu'on démarre, le chargement fait des sauts de 10, on obtient une liste de chiffre divisible par 10`() {
 

@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.panocartemtl.chargement.Présentateur
 
 class VueChargement : Fragment() {
-    lateinit var prgText: TextView
     lateinit var prgChargement: ProgressBar
     lateinit var présentateur: Présentateur
     lateinit var navController: NavController
@@ -27,7 +26,6 @@ class VueChargement : Fragment() {
     override fun onViewCreated( view: View, savedInstanceState: Bundle? ) {
         super.onViewCreated( view, savedInstanceState )
 
-        prgText = view.findViewById( R.id.prgText )
         prgChargement = view.findViewById( R.id.prgChargement )
 
         présentateur = Présentateur(this)
@@ -39,7 +37,6 @@ class VueChargement : Fragment() {
 
     fun mettreÀjourCercleProgression(progrès: Int) {
         prgChargement.progress = progrès
-        prgText.text = "${progrès} %"
     }
 
     fun naviguerVersCarte() {

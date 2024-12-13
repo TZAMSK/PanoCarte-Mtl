@@ -50,9 +50,9 @@ import kotlin.random.Random
 
 class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = Dispatchers.IO ): IPrésentateurCarte {
     private var destinationChoisie: Point? = null
-    private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
+    val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
 
-    val modèle = Modèle.instance
+    var modèle = Modèle.instance
 
     override fun caméraPremièreInstance() {
         vue.mapView.getMapboxMap().setCamera(

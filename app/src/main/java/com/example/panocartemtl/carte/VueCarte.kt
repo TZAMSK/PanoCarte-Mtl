@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -92,9 +93,8 @@ class VueCarte : Fragment() {
     lateinit var sélectionNuméroMunicipal: Spinner
     lateinit var sélectionRue: Spinner
     lateinit var sélectionCodePostal: Spinner
-
-    private val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
-    private var destinationChoisie: Point? = null
+    lateinit var checkBoxRayon: CheckBox
+    lateinit var checkBoxTxtRayon: EditText
 
     val modèle = Modèle.instance
     val présentateur = PrésentateurCarte(this )
@@ -161,6 +161,8 @@ class VueCarte : Fragment() {
         sélectionNuméroMunicipal = view.findViewById(R.id.sélectionNuméroMunicipal)
         sélectionRue = view.findViewById(R.id.sélectionRue)
         sélectionCodePostal = view.findViewById(R.id.sélectionCodePostal)
+        checkBoxRayon = view.findViewById(R.id.checkBoxRayon)
+        checkBoxTxtRayon = view.findViewById(R.id.checkBoxTxtRayon)
 
 
 
