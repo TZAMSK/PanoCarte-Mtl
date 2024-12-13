@@ -86,21 +86,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:visibility="gone"
+        android:layout_marginBottom="60dp"
         android:background="#AAFFFFFF"
-        android:layout_marginBottom="60dp">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:padding="32dp"
-            android:orientation="vertical"
             android:layout_margin="32dp"
             android:background="@drawable/popup_bg"
             android:elevation="4dp"
             android:minHeight="400dp"
-            >
+            android:orientation="vertical"
+            android:padding="32dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,10 +112,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:padding="20dp"
-                    android:src="@drawable/station"
                     android:contentDescription="Image"
-                    android:scaleType="centerCrop"/>
+                    android:padding="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/station" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -130,20 +129,20 @@
                         android:id="@+id/Adresse"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/adresse"
                         android:textColor="@android:color/black"
                         android:textSize="30sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/txtAdresse"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
                         android:text="text"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="4dp" />
+                        android:textSize="20sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -152,33 +151,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
 
-                <ImageView
-                    android:id="@+id/bookmarkLogo"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/bookmark"
-                    android:layout_alignParentStart="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="8dp" />
+                <Button
+                    android:id="@+id/buttonfav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Button" />
 
                 <Button
                     android:id="@+id/popupBouton"
                     android:layout_width="120dp"
                     android:layout_height="70dp"
-                    android:text="@string/fermer"
-                    android:textSize="25sp"
                     android:layout_centerInParent="true"
+                    android:backgroundTint="@color/bleuBouton"
+                    android:text="@string/fermer"
                     android:textColor="@android:color/white"
-                    android:backgroundTint="@color/bleuBouton" />
+                    android:textSize="25sp" />
 
                 <ImageView
                     android:id="@+id/btnDestination"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/destination"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/destination" />
 
             </RelativeLayout>
         </LinearLayout>
