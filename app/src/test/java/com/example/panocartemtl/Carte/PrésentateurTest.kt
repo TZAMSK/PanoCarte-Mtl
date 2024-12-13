@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 class PrésentateurCarteTest {
 
     @Test
-    fun `test recupérerTousStationnements adds markers to the map`() = runTest {
+    fun `test recupérerTousStationnements`() = runTest {
         val vueMock = mock(VueCarte::class.java)
         val modèleMock = mock(Modèle::class.java)
 
