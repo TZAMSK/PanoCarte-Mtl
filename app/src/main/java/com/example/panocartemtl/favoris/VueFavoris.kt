@@ -136,7 +136,7 @@ class VueFavoris : Fragment() {
             startActivity(intent)
         } else {
             // Si aucune application de calendrier n'est trouvée
-            Toast.makeText(requireContext(), "Aucune application de calendrier disponible", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.aucun_calendrier, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -149,12 +149,12 @@ class VueFavoris : Fragment() {
     }
 
     fun notifierSuppression() {
-        Toast.makeText(requireContext(), "Stationnement supprimé", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), R.string.stationnement_supprimé, Toast.LENGTH_SHORT).show()
     }
 
     // Notifie la vue qu'une date a été sélectionnée
     fun notifierDateSelectionnee(date: String) {
-        Toast.makeText(requireContext(), "Date sélectionnée: $date", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.date_sélectionnée) + date, Toast.LENGTH_SHORT).show()
     }
 
     // Affiche une erreur dans la vue
@@ -173,7 +173,7 @@ class VueFavoris : Fragment() {
             }
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(requireContext(), "Impossible d'ouvrir l'application calendrier", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.impossible_ouvrir_calendrier, Toast.LENGTH_SHORT).show()
         }
     }
 

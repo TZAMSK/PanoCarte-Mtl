@@ -26,5 +26,9 @@
     <string name="position_trouvée">Position trouvée</string>
     <string name="marqueur_cliqué">Marqueur cliqué</string>
     <string name="adresse_supprimée">Adresse supprimée</string>
-
+    <string name="aucun_calendrier">Aucune application de calendrier disponible</string>
+    <string name="stationnement_supprimé">Sationnement supprimé</string>
+    <string name="date_sélectionnée">Date sélectionnée: </string>
+    <string name="impossible_ouvrir_calendrier">Impossible d\'ouvrir l\'application calendrier</string>
+    <string name="adresse_ajoutée">Adresse ajoutée aux favoris: </string>
 </resources>

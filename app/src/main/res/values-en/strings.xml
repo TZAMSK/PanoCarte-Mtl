@@ -27,4 +27,9 @@
     é<string name="position_trouvée">Position found</string>
     <string name="marqueur_cliqué">Clicked marker</string>
     <string name="adresse_supprimée">Address deleted</string>
+    <string name="aucun_calendrier">No calendar application available</string>
+    <string name="stationnement_supprimé">Parking deleted</string>
+    <string name="date_sélectionnée">Date selected: </string>
+    <string name="impossible_ouvrir_calendrier">Can\'t open the calendar application</string>
+    <string name="adresse_ajoutée">Address added to favorites: </string>
 </resources>

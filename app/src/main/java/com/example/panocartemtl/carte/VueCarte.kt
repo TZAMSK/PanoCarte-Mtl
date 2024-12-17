@@ -152,7 +152,7 @@ class VueCarte : Fragment() {
             val adresse = textViewAdresse.text.toString()
             val présentateurFavoris = Présentateur(VueFavoris())
             présentateurFavoris.ajouterNouvelleAdresse(adresse)
-            Toast.makeText(requireContext(), "Adresse ajoutée aux favoris : $adresse", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.adresse_ajoutée) + adresse, Toast.LENGTH_SHORT).show()
         }
 
 
