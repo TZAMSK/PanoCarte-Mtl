@@ -2,6 +2,7 @@ package com.example.panocartemtl
 
 import android.Manifest
 import android.app.DatePickerDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -171,7 +172,7 @@ class VueFavoris : Fragment() {
                 addCategory(Intent.CATEGORY_APP_CALENDAR)
             }
             startActivity(intent)
-        } catch (e: Exception) {
+        } catch (e: ActivityNotFoundException) {
             Toast.makeText(requireContext(), "Impossible d'ouvrir l'application calendrier", Toast.LENGTH_SHORT).show()
         }
     }
