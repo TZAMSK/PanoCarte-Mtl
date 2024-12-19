@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -64,7 +63,7 @@ class VueCarte : Fragment() {
     lateinit var checkBoxTxtRayon: EditText
 
     val modèle = Modèle.instance
-    val présentateur = PrésentateurCarte(this )
+    val présentateur = PrésentateurCarte( this )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,7 +83,7 @@ class VueCarte : Fragment() {
             setupMap( style )
         }
 
-        positionClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        positionClient = LocationServices.getFusedLocationProviderClient( requireContext() )
 
         navController = findNavController()
 
@@ -173,7 +172,7 @@ class VueCarte : Fragment() {
         // Rayon cercle
         btnRayon.setOnClickListener {
             présentateur.détruireTousMarqueurs()
-            présentateur.dessinerCercleDepuisPartirPositionActuelle()
+            présentateur.dessinerCercleDepuisPositionActuelle()
         }
 
         btnDestination.setOnClickListener {
@@ -205,10 +204,10 @@ class VueCarte : Fragment() {
 
     // Écrit grâce à la documentation officiel de Mapbox - «Markers and annotations»
     // Source: https://docs.mapbox.com/android/maps/guides/annotations/annotations/
-    private fun setupMap(style: Style) {
-        style.addImage("marqueur_rouge", BitmapFactory.decodeResource(resources,
+    private fun setupMap( style: Style ) {
+        style.addImage( "marqueur_rouge", BitmapFactory.decodeResource( resources,
             R.drawable.marqueur_rouge
-        ))
+        ) )
 
         présentateur.recupérerTousStationnements()
 
@@ -221,8 +220,8 @@ class VueCarte : Fragment() {
         présentateur.afficherStationnementParId()
     }
 
-    fun montrerPopup(description: String) {
-        popupLayout.findViewById<TextView>(R.id.txtAdresse).text = description
+    fun montrerPopup( description: String ) {
+        popupLayout.findViewById<TextView>( R.id.txtAdresse ).text = description
         popupLayout.visibility = View.VISIBLE
     }
 }
