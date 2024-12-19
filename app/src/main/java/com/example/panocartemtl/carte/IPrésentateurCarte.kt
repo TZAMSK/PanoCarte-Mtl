@@ -15,4 +15,17 @@ interface IPrésentateurCarte {
     suspend fun récuperListeNumérosMunicipaux( rue: String ): List<String>;
     suspend fun récuperListeRues(): List<String>;
     suspend fun récuperListeCodesPostal( numéro_municipal: String, rue: String ): List<String>;
+
+    fun afficherContenuePourSpinnerNuméroMunicipal();
+    fun afficherContenuePourSpinnerCodePostal();
+    fun vérifierContenuEtAfficherStationnementParHeure();
+    fun changerÉcranCliqueMenu( itemId: Int ): Boolean;
+
+    fun changerContenuPopupRechercheHeure( cliqué: Boolean );
+    fun changerContenuPopupRechercheAdresse( cliqué: Boolean );
+
+    fun getPositionActuelle();
+    fun dessinerNavigationEntrePostion();
+    fun dessinerCercleDepuisPartirPositionActuelle();
+    fun afficherPostionActuelle();
 }

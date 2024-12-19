@@ -1,30 +1,29 @@
 package com.example.panocartemtl.carte
 
+import android.Manifest
 import android.app.TimePickerDialog
-import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color
-import android.util.Log
+import android.location.Location
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
-import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
-import com.mapbox.maps.Style
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
@@ -35,7 +34,6 @@ import com.mapbox.maps.extension.style.sources.getSource
 import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.async
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -45,14 +43,29 @@ import org.json.JSONObject
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.logging.SimpleFormatter
-import kotlin.random.Random
 
 class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = Dispatchers.IO ): IPrésentateurCarte {
     private var destinationChoisie: Point? = null
     val markerMap: MutableMap<PointAnnotation, Int> = mutableMapOf()
 
     var modèle = Modèle.instance
+
+    // Position actuelle
+
+    // Écrit grâce à la documentation officiel de Mapbox - «User Location»
+    // Source: https://docs.mapbox.com/android/maps/guides/user-location/location-on-map/
+
+    // Aussissous «Request permissions»
+    // Source: https://developer.android.com/training/permissions/requesting
+    val requestPermissionLauncher =
+        vue.registerForActivityResult( ActivityResultContracts.RequestPermission() ) { permis: Boolean ->
+            if ( permis == true ) {
+                getPositionActuelle()
+            } else {
+                Toast.makeText( vue.requireContext(),
+                    R.string.autorisation_de_la_position_est_requise, Toast.LENGTH_SHORT ).show()
+            }
+        }
 
     override fun caméraPremièreInstance() {
         vue.mapView.getMapboxMap().setCamera(
@@ -376,6 +389,141 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
                 val point = vue.pointAnnotationManager.create( nouveauPoint )
                 markerMap[point] = stationnement.id
             }
+        }
+    }
+
+    override fun changerÉcranCliqueMenu( itemId: Int ): Boolean {
+        return when ( itemId ) {
+            R.id.navigation_carte -> true
+            R.id.navigation_recherche -> {
+                vue.popupRecherche.visibility = View.VISIBLE
+                true
+            }
+            R.id.navigation_favoris -> {
+                vue.navController.navigate( R.id.action_fragment_carte_vers_fragment_favoris )
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun changerContenuPopupRechercheHeure( cliqué: Boolean ) {
+        if ( cliqué ) {
+            vue.heureInsértionTexteHeure.visibility = View.VISIBLE
+            vue.heureInsértionTexteAdresse.visibility = View.GONE
+            vue.choisirAdresse.isChecked = false
+        }
+    }
+
+    override fun changerContenuPopupRechercheAdresse( cliqué: Boolean ) {
+        if ( cliqué ) {
+            vue.heureInsértionTexteAdresse.visibility = View.VISIBLE
+            vue.heureInsértionTexteHeure.visibility = View.GONE
+            vue.choisirHeure.isChecked = false
+        }
+    }
+
+    override fun afficherContenuePourSpinnerNuméroMunicipal() {
+        // Source: https://www.geeksforgeeks.org/spinner-in-kotlin/
+        vue.sélectionRue.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected( parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long ) {
+                val rue = vue.sélectionRue.selectedItem.toString()
+
+                CoroutineScope( Dispatchers.Main ).launch {
+                    mettreÀJourSpinnerNuméroMunicipal( rue )
+                }
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>) {}
+        }
+    }
+
+    override fun afficherContenuePourSpinnerCodePostal() {
+        vue.sélectionNuméroMunicipal.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected( parentView: AdapterView<*>, selectedItemView: View?, position: Int, id: Long ) {
+                val numéro_municipal = vue.sélectionNuméroMunicipal.selectedItem.toString()
+                val rue = vue.sélectionRue.selectedItem.toString()
+
+                CoroutineScope( Dispatchers.Main ).launch {
+                    mettreÀJourSpinnerCodePostal( numéro_municipal, rue)
+                }
+            }
+
+            override fun onNothingSelected( parentView: AdapterView<*> ) {}
+        }
+    }
+
+    override fun vérifierContenuEtAfficherStationnementParHeure() {
+        if ( vérifierBoutonsHeureRempli() == true ) {
+            détruireTousMarqueurs()
+            afficherStationnementsParHeure()
+        }
+    }
+
+    override fun getPositionActuelle() {
+        if (ActivityCompat.checkSelfPermission( vue.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
+            vue.positionClient.lastLocation.addOnSuccessListener { position: Location? ->
+                if (position != null) {
+                    val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
+
+                    vue.mapView.getMapboxMap().setCamera(
+                        CameraOptions.Builder()
+                            .center(positionActuelle)
+                            .zoom(14.97)
+                            .build()
+                    )
+                }
+            }
+        } else {
+            Toast.makeText(vue.requireContext(),
+                R.string.autorisation_de_la_position_actuelle_n_a_pas_été_accordée, Toast.LENGTH_SHORT).show()
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    override fun dessinerNavigationEntrePostion() {
+        if (ActivityCompat.checkSelfPermission(
+                vue.requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED) {
+            vue.positionClient.lastLocation.addOnSuccessListener { position: Location? ->
+                if (position != null) {
+                    val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
+                    navigationEntrePostion(positionActuelle)
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    override fun dessinerCercleDepuisPartirPositionActuelle() {
+        if (ActivityCompat.checkSelfPermission(
+                vue.requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Ressemble à btnPostion.setOnClickListener mais avec position actuelle
+            vue.positionClient.lastLocation.addOnSuccessListener { position: Location? ->
+                if (position != null) {
+                    val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
+                    vue.présentateur.dessinerCercle( Point.fromLngLat( positionActuelle.longitude(), positionActuelle.latitude() )  )
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    override fun afficherPostionActuelle() {
+        if (ActivityCompat.checkSelfPermission(
+                vue.requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            getPositionActuelle()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
