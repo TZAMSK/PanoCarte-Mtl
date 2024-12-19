@@ -11,6 +11,8 @@ class Modèle {
 
     private val stationnements = mutableListOf<Stationnement>()
 
+    fun getStationnementSimulés(): List<Stationnement> = stationnements.toList()
+
     // Supprime un stationnement de la liste
     fun supprimerStationnement(index: Int, stationnements: MutableList<Stationnement>) {
         if (index in stationnements.indices) {
