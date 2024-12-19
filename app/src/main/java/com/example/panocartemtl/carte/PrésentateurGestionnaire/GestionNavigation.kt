@@ -12,7 +12,7 @@ class GestionNavigation( val vue: VueCarte, val iocontext: CoroutineContext = Di
                         val markerMap: MutableMap<PointAnnotation, Int> ): NavigationInterface {
 
     private val gestionInstallation = GestionInitialisation( vue, markerMap )
-    private val gestionAPI = GestionAPI( vue, iocontext, markerMap )
+    private val gestionAPI = GestionIPA( vue, iocontext, markerMap )
 
     override fun changerÉcranCliqueMenu( itemId: Int ): Boolean {
         return when ( itemId ) {

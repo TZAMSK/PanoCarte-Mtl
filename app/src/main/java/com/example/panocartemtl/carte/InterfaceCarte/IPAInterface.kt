@@ -9,4 +9,8 @@ interface IPAInterface {
     fun afficherStationnementsRayon( position: Point, rayon: String );
     fun afficherStationnementsParHeure();
     fun afficherStationnementParAdresse( numéro_municipal: String, rue: String, code_postal: String );
+
+    fun getPositionActuelle();
+    fun dessinerNavigationEntrePostion();
+    fun navigationEntrePostion( à_partir: Point );
 }
