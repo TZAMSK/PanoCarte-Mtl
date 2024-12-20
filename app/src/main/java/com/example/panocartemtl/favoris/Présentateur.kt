@@ -6,6 +6,8 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.provider.CalendarContract
 import android.content.ActivityNotFoundException
+import com.example.panocartemtl.Modèle.Modèle
+import com.example.panocartemtl.entitées.Stationnement
 import java.util.*
 
 class Présentateur(val vue: VueFavoris) {

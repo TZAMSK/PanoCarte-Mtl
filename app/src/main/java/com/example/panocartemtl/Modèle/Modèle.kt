@@ -5,6 +5,7 @@ import com.example.panocartemtl.service.ObtenirRessourceService
 import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnées
 import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnéesException
 import com.example.panocartemtl.sourceDeDonnées.SourceDeDonnéesHTTP
+import java.time.LocalDate
 import kotlin.jvm.Throws
 
 class Modèle private constructor (
@@ -22,9 +23,10 @@ class Modèle private constructor (
     override var url_rues_rayon: String = "http://${adresse_ip}/stationnements/recherche/rayon",
     override var url_stationnements_rues: String = "http://${adresse_ip}/stationnements",
 
+
     source: SourceDeDonnées = SourceDeDonnéesHTTP()
 ) : IModèle {
-
+    private val stationnements = mutableListOf<com.example.panocartemtl.entitées.Stationnement>()
     var source: SourceDeDonnées = source
         set( value ){
             field = value
@@ -35,7 +37,7 @@ class Modèle private constructor (
     }
 
     val obtenirRessourceService = ObtenirRessourceService( source )
-
+    fun getStationnementSimulés(): List<Stationnement> = stationnements.toList()
     /**
      * Obtient une certaine quantité de données de la source
      *
@@ -133,4 +135,38 @@ class Modèle private constructor (
 
         return stationnements_reçues
     }
+
+    override fun ajouterStationnement(adresse: String) {
+        if (adresse.isNotBlank()) {
+            stationnements.add(com.example.panocartemtl.entitées.Stationnement(adresse))
+        } else {
+            throw IllegalArgumentException("L'adresse ne peut pas être vide.")
+        }
+    }
+
+    override fun associerDate(
+        index: Int,
+        stationnements: MutableList<Stationnement>,
+        date: LocalDate
+    ) {
+        if (index in stationnements.indices) {
+            stationnements[index].dateSelectionnee = date
+        } else {
+            throw IndexOutOfBoundsException("Index de stationnement invalide : $index")
+        }
+    }
+
+    override fun supprimerStationnement(index: Int, stationnements: MutableList<Stationnement>) {
+        if (index in stationnements.indices) {
+            stationnements.removeAt(index)
+        } else {
+            throw IndexOutOfBoundsException("Index de stationnement invalide : $index")
+        }
+    }
+
+    override fun mettreAJourStationnements(stationnements: List<Stationnement>) {
+        this.stationnements.clear()
+        this.stationnements.addAll(stationnements)
+    }
 }
+
