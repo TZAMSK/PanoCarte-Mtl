@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
 import com.example.panocartemtl.VueFavoris
-import com.example.panocartemtl.favoris.Présentateur
+import com.example.panocartemtl.favoris.PrésentateurFavoris
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -132,7 +132,7 @@ class VueCarte : Fragment() {
 
         buttonFav.setOnClickListener {
             val adresse = textViewAdresse.text.toString()
-            val présentateurFavoris = Présentateur( VueFavoris() )
+            val présentateurFavoris = PrésentateurFavoris( VueFavoris() )
             présentateurFavoris.ajouterNouvelleAdresse( adresse )
             Toast.makeText( requireContext(), "Adresse ajoutée aux favoris : $adresse", Toast.LENGTH_SHORT ).show()
         }

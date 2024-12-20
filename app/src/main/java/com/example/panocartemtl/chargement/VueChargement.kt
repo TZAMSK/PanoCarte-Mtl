@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.example.panocartemtl.chargement.Présentateur
+import com.example.panocartemtl.chargement.PrésentateurChargement
 
 class VueChargement : Fragment() {
     lateinit var prgChargement: ProgressBar
-    lateinit var présentateur: Présentateur
+    lateinit var présentateur: PrésentateurChargement
     lateinit var navController: NavController
 
     override fun onCreateView(
@@ -27,7 +27,7 @@ class VueChargement : Fragment() {
 
         prgChargement = view.findViewById( R.id.prgChargement )
 
-        présentateur = Présentateur(this)
+        présentateur = PrésentateurChargement(this)
 
         présentateur.commencerChargement()
 

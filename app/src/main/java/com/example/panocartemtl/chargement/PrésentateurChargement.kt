@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Présentateur(val vue: VueChargement) {
+class PrésentateurChargement(val vue: VueChargement) {
     private val modèle = Modèle()
 
     fun commencerChargement() {

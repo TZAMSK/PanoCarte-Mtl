@@ -1,29 +1,23 @@
 package com.example.panocartemtl
 
-import android.Manifest
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.example.panocartemtl.favoris.Présentateur
+import com.example.panocartemtl.favoris.PrésentateurFavoris
 import com.example.panocartemtl.favoris.Stationnement
-import java.util.*
 
 class VueFavoris : Fragment() {
 
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var navController: NavController
-    private lateinit var présentateur: Présentateur
+    private lateinit var présentateur: PrésentateurFavoris
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +25,7 @@ class VueFavoris : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_favoris, container, false)
 
-        présentateur = Présentateur(this)
+        présentateur = PrésentateurFavoris(this)
 
         // Gestion du bouton pour afficher le calendrier
         val btnAfficherCalendrier: Button = view.findViewById(R.id.btnAfficherCalendrier)

@@ -8,7 +8,7 @@ import android.provider.CalendarContract
 import android.content.ActivityNotFoundException
 import java.util.*
 
-class Présentateur(val vue: VueFavoris) {
+class PrésentateurFavoris(val vue: VueFavoris) {
     private val modèle = Modèle()
 
     // Récupère la liste des stationnements
