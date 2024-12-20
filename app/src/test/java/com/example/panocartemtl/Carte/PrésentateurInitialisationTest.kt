@@ -26,7 +26,7 @@ import kotlinx.coroutines.test.*
 @RunWith(MockitoJUnitRunner::class)
 class PrésentateurCarteTest {
 
-    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+    private val mainThreadSurrogate = newSingleThreadContext( "UI thread" )
 
     @Mock
     lateinit var mockVue: VueCarte
@@ -45,15 +45,15 @@ class PrésentateurCarteTest {
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(mainThreadSurrogate)
+        Dispatchers.setMain( mainThreadSurrogate )
 
-        Mockito.`when`(mockMapView.getMapboxMap()).thenReturn(mockMapboxMap)
-        Mockito.`when`(mockVue.mapView).thenReturn(mockMapView)
+        Mockito.`when`( mockMapView.getMapboxMap() ).thenReturn( mockMapboxMap )
+        Mockito.`when`( mockVue.mapView ).thenReturn( mockMapView )
 
-        Mockito.`when`(mockVue.registerForActivityResult(
+        Mockito.`when`( mockVue.registerForActivityResult(
             Mockito.any<ActivityResultContract<Intent, Intent>>(),
-            Mockito.any())
-        ).thenReturn(mockActivityResultLauncher)
+            Mockito.any() )
+        ).thenReturn( mockActivityResultLauncher )
     }
 
     @After
@@ -63,28 +63,28 @@ class PrésentateurCarteTest {
     }
 
     @Test
-    fun `détruireTousMarqueurs should clear all markers on the map`() = runTest {
-        val marker1 = Mockito.mock(PointAnnotation::class.java)
-        val marker2 = Mockito.mock(PointAnnotation::class.java)
+    fun `détruireTousMarqueurs détruit tous les marqueurs présentent dans MarkerMap`() = runTest {
+        val marker1 = Mockito.mock( PointAnnotation::class.java )
+        val marker2 = Mockito.mock( PointAnnotation::class.java )
         mockMarkerMap[marker1] = 1
         mockMarkerMap[marker2] = 2
 
-        val présentateur = PrésentateurCarte(mockVue)
+        val présentateur = PrésentateurCarte( mockVue )
 
         présentateur.détruireTousMarqueurs()
 
-        assertFalse(mockMarkerMap.isEmpty())
+        assertFalse( mockMarkerMap.isEmpty() )
     }
 
     @Test
-    fun `caméraPremièreInstance should correctly center the camera`() = runTest {
-        Mockito.`when`(mockVue.mapView).thenReturn(mockMapView)
+    fun `caméraPremièreInstance centre la caméra`() = runTest {
+        Mockito.`when`( mockVue.mapView ).thenReturn( mockMapView )
 
-        val présentateur = PrésentateurCarte(mockVue)
+        val présentateur = PrésentateurCarte( mockVue )
 
         présentateur.caméraPremièreInstance()
 
-        Mockito.verify(mockMapboxMap).setCamera(
+        Mockito.verify( mockMapboxMap ).setCamera(
             CameraOptions.Builder()
                 .center(Point.fromLngLat(-73.554640, 45.561120))
                 .zoom(13.0)
