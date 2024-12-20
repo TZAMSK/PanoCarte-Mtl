@@ -21,7 +21,6 @@ import java.util.*
 
 class VueFavoris : Fragment() {
 
-    private var adresses: MutableList<String> = mutableListOf()
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var navController: NavController
     private lateinit var présentateur: Présentateur
@@ -37,14 +36,14 @@ class VueFavoris : Fragment() {
         // Gestion du bouton pour afficher le calendrier
         val btnAfficherCalendrier: Button = view.findViewById(R.id.btnAfficherCalendrier)
         btnAfficherCalendrier.setOnClickListener {
-            ouvrirCalendrier()
+            présentateur.ouvrirCalendrier()
         }
 
         // Initialisation de la ListView
         val listView: ListView = view.findViewById(R.id.listViewFavoris)
 
         // Création de l'adaptateur
-        adapter = object : ArrayAdapter<String>(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, adresses) {
+        adapter = object : ArrayAdapter<String>(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, mutableListOf()) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent)
 
@@ -57,7 +56,7 @@ class VueFavoris : Fragment() {
                 // Récupération du bouton de sélection de date
                 val btnDate: Button = view.findViewById(R.id.btnDate)
                 btnDate.setOnClickListener {
-                    afficherDatePicker(position)
+                    présentateur.afficherDatePicker(position)
                 }
 
                 return view
@@ -91,60 +90,26 @@ class VueFavoris : Fragment() {
         }
     }
 
-    private fun afficherDatePicker(position: Int) {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDate = Calendar.getInstance().apply {
-                set(selectedYear, selectedMonth, selectedDay, 9, 0) // Heure par défaut : 9h
-            }
-
-            // Vérification de la permission avant d'ajouter l'événement au calendrier
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_CALENDAR), 1)
-            } else {
-                // Si la permission est déjà accordée, on peut ajouter l'événement
-                val stationnement = présentateur.récupérerListeStationnement()[position]
-                ajouterEvenementDansCalendrier(
-                    titre = "Stationnement réservé",
-                    description = "Réservation pour le stationnement à ${stationnement.adresse}",
-                    location = stationnement.adresse,
-                    date = selectedDate.timeInMillis
-                )
-            }
-        }, year, month, day).show()
-    }
-
     // Fonction pour ajouter un événement au calendrier
-    private fun ajouterEvenementDansCalendrier(titre: String, description: String, location: String, date: Long) {
-        val intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-            putExtra(CalendarContract.Events.TITLE, titre)
-            putExtra(CalendarContract.Events.DESCRIPTION, description)
-            putExtra(CalendarContract.Events.EVENT_LOCATION, location)
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, date)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, date + 60 * 60 * 1000) // 1 heure par défaut
-        }
+    fun ajouterEvenementDansCalendrier(intent: Intent) {
         val packageManager = requireContext().packageManager
         val activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
 
         if (activities.isNotEmpty()) {
             startActivity(intent)
         } else {
-            // Si aucune application de calendrier n'est trouvée
             Toast.makeText(requireContext(), "Aucune application de calendrier disponible", Toast.LENGTH_SHORT).show()
         }
     }
 
     fun listeStationnement(stationnements: List<Stationnement>) {
-        adresses.clear()
-        stationnements.forEach { stationnement ->
-            adresses.add(stationnement.adresse)
+        // Source: https://www.geeksforgeeks.org/how-to-check-if-a-lateinit-variable-has-been-initialized-or-not-in-kotlin/
+        if(::adapter.isInitialized) {
+            val adresses = stationnements.map { it.adresse }
+            adapter.clear()
+            adapter.addAll(adresses)
+            adapter.notifyDataSetChanged()
         }
-        adapter.notifyDataSetChanged()
     }
 
     fun notifierSuppression() {
@@ -165,15 +130,6 @@ class VueFavoris : Fragment() {
     fun naviguerVersCarte() {
         navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
     }
-    private fun ouvrirCalendrier() {
-        try {
-            val intent = Intent(Intent.ACTION_MAIN).apply {
-                addCategory(Intent.CATEGORY_APP_CALENDAR)
-            }
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Impossible d'ouvrir l'application calendrier", Toast.LENGTH_SHORT).show()
-        }
-    }
+
 
 }
