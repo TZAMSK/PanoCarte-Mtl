@@ -2,6 +2,10 @@ package com.example.panocartemtl.favoris
 
 import com.example.panocartemtl.VueFavoris
 import java.time.LocalDate
+import android.app.DatePickerDialog
+import android.content.Intent
+import android.provider.CalendarContract
+import java.util.*
 
 class Présentateur(val vue: VueFavoris) {
     private val modèle = Modèle()
@@ -51,6 +55,49 @@ class Présentateur(val vue: VueFavoris) {
             vue.listeStationnement(stationnements) // Mise à jour de la vue
         } catch (e: IllegalArgumentException) {
             vue.afficherErreur("Erreur : ${e.message}")
+        }
+    }
+
+    fun afficherDatePicker(position: Int) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(vue.requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+            val selectedDate = Calendar.getInstance().apply {
+                set(selectedYear, selectedMonth, selectedDay, 9, 0) // 9:00 par défaut
+            }
+            val stationnement = récupérerListeStationnement()[position]
+            val intent = préparerIntentCalendrier(
+                titre = "Stationnement réservé",
+                description = "Réservation pour le stationnement à ${stationnement.adresse}",
+                location = stationnement.adresse,
+                date = selectedDate.timeInMillis
+            )
+            vue.ajouterEvenementDansCalendrier(intent)
+        }, year, month, day).show()
+    }
+
+    fun ouvrirCalendrier() {
+        try {
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_APP_CALENDAR)
+            }
+            vue.startActivity(intent)
+        } catch (e: Exception) {
+            vue.afficherErreur("Impossible d'ouvrir l'application calendrier")
+        }
+    }
+
+    private fun préparerIntentCalendrier(titre: String, description: String, location: String, date: Long): Intent {
+        return Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(CalendarContract.Events.TITLE, titre)
+            putExtra(CalendarContract.Events.DESCRIPTION, description)
+            putExtra(CalendarContract.Events.EVENT_LOCATION, location)
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, date)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, date + 60 * 60 * 1000) // 1 heure par défaut
         }
     }
 
