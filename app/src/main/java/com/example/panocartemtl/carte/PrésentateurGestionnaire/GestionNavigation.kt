@@ -31,16 +31,28 @@ class GestionNavigation( val vue: VueCarte, val iocontext: CoroutineContext = Di
 
     override fun changerContenuPopupRechercheHeure( cliqué: Boolean ) {
         if ( cliqué ) {
-            vue.heureInsértionTexteHeure.visibility = View.VISIBLE
-            vue.heureInsértionTexteAdresse.visibility = View.GONE
+            vue.insértionTexteHeure.visibility = View.VISIBLE
+            vue.insértionTexteAdresse.visibility = View.GONE
+            vue.insértionTextePrèsDeMoi.visibility = View.GONE
             vue.choisirAdresse.isChecked = false
         }
     }
 
     override fun changerContenuPopupRechercheAdresse( cliqué: Boolean ) {
         if ( cliqué ) {
-            vue.heureInsértionTexteAdresse.visibility = View.VISIBLE
-            vue.heureInsértionTexteHeure.visibility = View.GONE
+            vue.insértionTexteAdresse.visibility = View.VISIBLE
+            vue.insértionTexteHeure.visibility = View.GONE
+            vue.insértionTextePrèsDeMoi.visibility = View.GONE
+            vue.choisirHeure.isChecked = false
+        }
+    }
+
+
+    override fun changerContenuPopupRecherchePrèsDeMoi( cliqué: Boolean ) {
+        if (cliqué) {
+            vue.insértionTextePrèsDeMoi.visibility = View.VISIBLE
+            vue.insértionTexteAdresse.visibility = View.GONE
+            vue.insértionTexteHeure.visibility = View.GONE
             vue.choisirHeure.isChecked = false
         }
     }

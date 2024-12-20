@@ -212,18 +212,28 @@
                     android:id="@+id/choisirHeure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textOn="Heure"
+                    android:textOn="@string/heure"
                     android:textColor="@android:color/black"
-                    android:textOff="Heure"
+                    android:textOff="@string/heure"
                     android:background="@drawable/popup_bg" />
 
                 <ToggleButton
                     android:id="@+id/choisirAdresse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textOn="Adresse"
+                    android:textOn="@string/adresse"
                     android:textColor="@android:color/black"
-                    android:textOff="Adresse"
+                    android:textOff="@string/adresse"
+                    android:background="@drawable/popup_bg"
+                    android:layout_marginStart="16dp" />
+
+                <ToggleButton
+                    android:id="@+id/choisirPrèsDeMoi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="@string/prèsDeMoi"
+                    android:textColor="@android:color/black"
+                    android:textOff="@string/prèsDeMoi"
                     android:background="@drawable/popup_bg"
                     android:layout_marginStart="16dp" />
 
@@ -232,7 +242,7 @@
 
             <!-- Heure -->
             <LinearLayout
-                android:id="@+id/heureInsértionTexteHeure"
+                android:id="@+id/insértionTexteHeure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -296,7 +306,7 @@
 
             <!-- Adresse -->
             <LinearLayout
-                android:id="@+id/heureInsértionTexteAdresse"
+                android:id="@+id/insértionTexteAdresse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -336,20 +346,6 @@
                     android:gravity="center"
                     android:paddingTop="16dp">
 
-                    <CheckBox
-                        android:id="@+id/checkBoxRayon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/rayon"
-                        android:textSize="18sp"
-                        android:padding="7dp" />
-
-                    <EditText
-                        android:id="@+id/checkBoxTxtRayon"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:background="@drawable/personnaliser_edit_text" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -378,6 +374,68 @@
                         android:backgroundTint="@color/vert" />
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- Près de moi -->
+            <LinearLayout
+                android:id="@+id/insértionTextePrèsDeMoi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:gravity="center_horizontal">
+
+                <Spinner
+                    android:id="@+id/sélectionRuePrèsDeMoi"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:hint="@string/rue"
+                    android:padding="12dp"
+                    android:background="@drawable/personnaliser_edit_text"
+                    android:layout_marginTop="2dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="16dp">
+
+                    <EditText
+                        android:id="@+id/rechercheTxtRayon"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/personnaliser_edit_text"
+                        android:text="3000"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="16dp">
+
+                    <Button
+                        android:id="@+id/btnFermerPopupRecherchePrèsDeMoi"
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="@string/fermer"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/rouge"
+                        android:layout_marginEnd="16dp" />
+
+                    <Button
+                        android:id="@+id/btnOkPopupRecherchePrèsDeMoi"
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="@string/oui"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/vert" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </FrameLayout>
 

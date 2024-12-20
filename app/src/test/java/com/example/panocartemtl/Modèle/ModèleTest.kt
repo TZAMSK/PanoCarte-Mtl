@@ -284,4 +284,28 @@ class ModèleTest {
             assertEquals( cobaye_requête, résultat_attendu )
         }
     }
+
+    @Test
+    fun `étant donné on veut chercher des stationnements avec une rue fournie, lorsqu'on cherche les stationnements avec la rue « Earnscliffe », on obtient une liste des stationnements`() {
+        runBlocking {
+            val cobaye_requête = cobaye_instance_modèle.obtenirStationnementsParRue( "Earnscliffe" )
+
+            val résultat_attendu = listOf(
+                Stationnement( 67, Adresse( "5210", "Earnscliffe", "H3X 2P5" ), Coordonnée( -73.632844, 45.482929 ), "/panneaux_images/SV-JB_QE-0377.png", "08:00:00", "16:00:00" )
+            )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné on veut chercher des stationnements avec une rue fournie, lorsqu'on cherche les stationnements avec une rue inexistante comme « Rue inconnu », on obtient une liste vide`() {
+        runBlocking {
+            val cobaye_requête = cobaye_instance_modèle.obtenirStationnementsParRue( "Rue inconnu" )
+
+            val résultat_attendu = emptyList<Stationnement>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
 }

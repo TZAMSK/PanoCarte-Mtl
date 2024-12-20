@@ -54,6 +54,10 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         gestionIPA.afficherStationnementParAdresse( numéro_municipal, rue, code_postal )
     }
 
+    override fun afficherStationnementsParRue( rue: String ) {
+        gestionIPA.afficherStationnementsParRue( rue )
+    }
+
     override fun getPositionActuelle() {
         gestionIPA.getPositionActuelle()
     }
@@ -102,6 +106,10 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         gestionNavigation.changerContenuPopupRechercheAdresse( cliqué )
     }
 
+    override fun changerContenuPopupRecherchePrèsDeMoi( cliqué: Boolean ) {
+        gestionNavigation.changerContenuPopupRecherchePrèsDeMoi( cliqué )
+    }
+
     override fun vérifierContenuEtAfficherStationnementParHeure() {
         gestionNavigation.vérifierContenuEtAfficherStationnementParHeure()
     }
@@ -113,6 +121,14 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
 
     override suspend fun récuperListeRues(): List<String> {
         return gestionSpinner.récuperListeRues()
+    }
+
+    override suspend fun récuperListeRuesRayon(
+        longitude: Double,
+        latitude: Double,
+        rayon: String
+    ): List<String> {
+        return gestionSpinner.récuperListeRuesRayon( longitude, latitude, rayon )
     }
 
     override suspend fun récuperListeCodesPostal( numéro_municipal: String, rue: String ): List<String> {

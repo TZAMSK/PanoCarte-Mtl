@@ -3,7 +3,9 @@
     <string name="app_name">panoCarteMTL</string>
     <string name="ma_position">My position</string>
     <string name="rayon">Radius</string>
+    <string name="heure">Hour</string>
     <string name="adresse">Address</string>
+    <string name="prèsDeMoi">Next to me</string>
     <string name="fermer">Close</string>
     <string name="carte">Map</string>
     <string name="recherche">Search</string>

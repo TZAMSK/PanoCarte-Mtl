@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -56,33 +58,75 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
         vue.registerForActivityResult( ActivityResultContracts.RequestPermission() ) { permis: Boolean ->
             if ( permis == true ) {
                 getPositionActuelle()
-            } else {
-                Toast.makeText( vue.requireContext(),
-                    R.string.autorisation_de_la_position_est_requise, Toast.LENGTH_SHORT ).show()
             }
         }
 
     private val gestionSpinner = GestionSpinner( vue )
 
     override fun recupérerTousStationnements() {
-        CoroutineScope( iocontext ).launch {
+        CoroutineScope(iocontext).launch {
             val listeStationnements = modèle.obtenirTousStationnements()
             gestionSpinner.instancierSpinnerRue()
 
-            withContext( Dispatchers.Main ) {
-                for ( stationnement in listeStationnements ) {
-                    val nouveauPoint = PointAnnotationOptions()
-                        .withPoint( Point.fromLngLat( stationnement.coordonnée.longitude, stationnement.coordonnée.latitude ) )
-                        .withIconImage( "marqueur_rouge" )
-                        .withIconAnchor( IconAnchor.BOTTOM )
-                        .withIconSize( 0.6 )
+            if (ActivityCompat.checkSelfPermission(
+                    vue.requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED) {
+                vue.positionClient.lastLocation.addOnSuccessListener { position: Location? ->
+                    if (position != null) {
+                        val positionActuelle = Point.fromLngLat(position.longitude, position.latitude)
 
-                    val point = vue.pointAnnotationManager.create( nouveauPoint )
+                        // Source: https://stackoverflow.com/questions/40569436/kotlin-addtextchangelistener-lambda
+                        vue.rechercheTxtRayon.addTextChangedListener(object : TextWatcher {
+                            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                                var rayon = vue.rechercheTxtRayon.text.toString()
+
+                                if ( rayon.isNullOrEmpty() ) {
+                                    rayon = "0"
+                                }
+                                CoroutineScope(iocontext).launch {
+                                    gestionSpinner.instancierSpinnerRuePrèsDeMoi(
+                                        positionActuelle.longitude(),
+                                        positionActuelle.latitude(),
+                                        rayon
+                                    )
+                                }
+                            }
+
+                            override fun afterTextChanged(editable: Editable?) {}
+                        })
+
+                        val initialRayon = vue.rechercheTxtRayon.text.toString()
+                        CoroutineScope(iocontext).launch {
+                            gestionSpinner.instancierSpinnerRuePrèsDeMoi(
+                                positionActuelle.longitude(),
+                                positionActuelle.latitude(),
+                                initialRayon
+                            )
+                        }
+                    }
+                }
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+
+            withContext(Dispatchers.Main) {
+                for (stationnement in listeStationnements) {
+                    val nouveauPoint = PointAnnotationOptions()
+                        .withPoint(Point.fromLngLat(stationnement.coordonnée.longitude, stationnement.coordonnée.latitude))
+                        .withIconImage("marqueur_rouge")
+                        .withIconAnchor(IconAnchor.BOTTOM)
+                        .withIconSize(0.6)
+
+                    val point = vue.pointAnnotationManager.create(nouveauPoint)
                     markerMap[point] = stationnement.id
                 }
             }
         }
     }
+
 
     override fun afficherStationnementParId() {
         vue.pointAnnotationManager.addClickListener( object : OnPointAnnotationClickListener {
@@ -180,6 +224,27 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
 
                 val point = vue.pointAnnotationManager.create( nouveauPoint )
                 markerMap[point] = stationnement.id
+            }
+        }
+    }
+
+    override fun afficherStationnementsParRue(
+        rue: String,
+    ) {
+        CoroutineScope( iocontext ).launch {
+            val listeStationnementsRayon = modèle.obtenirStationnementsParRue( rue )
+
+            withContext ( Dispatchers.Main ) {
+                for ( stationnement in listeStationnementsRayon ) {
+                    val nouveauPoint = PointAnnotationOptions()
+                        .withPoint( Point.fromLngLat( stationnement.coordonnée.longitude, stationnement.coordonnée.latitude ) )
+                        .withIconImage( "marqueur_rouge" )
+                        .withIconAnchor( IconAnchor.BOTTOM )
+                        .withIconSize( 0.6 )
+
+                    val point = vue.pointAnnotationManager.create( nouveauPoint )
+                    markerMap[point] = stationnement.id
+                }
             }
         }
     }

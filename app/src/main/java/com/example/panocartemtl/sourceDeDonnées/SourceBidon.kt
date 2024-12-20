@@ -87,4 +87,12 @@ class SourceBidon: SourceDeDonnées {
     ): List<String> {
         TODO("Not yet implemented")
     }
+
+    @Throws( SourceDeDonnéesException::class )
+    override suspend fun obtenirStationnementsParRue(
+        url: String,
+        rue: String
+    ): List<Stationnement> {
+        TODO("Not yet implemented")
+    }
 }

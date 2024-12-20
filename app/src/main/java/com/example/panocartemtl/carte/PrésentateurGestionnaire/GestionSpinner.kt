@@ -37,6 +37,12 @@ class GestionSpinner( var vue: VueCarte, val iocontext: CoroutineContext = Dispa
         }
     }
 
+    override suspend fun récuperListeRuesRayon( longitude: Double, latitude: Double, rayon: String ): List<String> {
+        return withContext( iocontext ) {
+            modèle.obtenirRuesUniquesRayon( longitude, latitude, rayon )
+        }
+    }
+
     override fun afficherContenuePourSpinnerNuméroMunicipal() {
         // Source: https://www.geeksforgeeks.org/spinner-in-kotlin/
         vue.sélectionRue.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -91,6 +97,17 @@ class GestionSpinner( var vue: VueCarte, val iocontext: CoroutineContext = Dispa
         withContext( Dispatchers.Main ) {
             val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_codes_postaux )
             vue.sélectionCodePostal.adapter = adaptateur
+        }
+    }
+
+    //--- Rayon ---//
+
+    suspend fun instancierSpinnerRuePrèsDeMoi( longitude: Double, latitude: Double, rayon: String ) {
+        val liste_rues_près_de_moi = récuperListeRuesRayon( longitude, latitude, rayon )
+
+        withContext( Dispatchers.Main ) {
+            val adaptateur = ArrayAdapter( vue.requireContext(), android.R.layout.simple_spinner_dropdown_item, liste_rues_près_de_moi )
+            vue.sélectionRuePrèsDeMoi.adapter = adaptateur
         }
     }
 }

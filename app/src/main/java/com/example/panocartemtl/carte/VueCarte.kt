@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -42,6 +41,8 @@ class VueCarte : Fragment() {
     lateinit var btnOkPopupRechercheHeure: Button
     private lateinit var btnFermerPopupRechercheAdresse: Button
     lateinit var btnOkPopupRechercheAdresse: Button
+    private lateinit var btnFermerPopupRecherchePrèsDeMoi: Button
+    lateinit var btnOkPopupRecherchePrèsDeMoi: Button
     lateinit var btnChoisirHeureDébut: Button
     lateinit var btnChoisirHeurePrévu: Button
     lateinit var navController: NavController
@@ -52,15 +53,20 @@ class VueCarte : Fragment() {
     private lateinit var btnDestination: ImageView
     lateinit var choisirHeure: ToggleButton
     lateinit var choisirAdresse: ToggleButton
-    lateinit var heureInsértionTexteHeure: LinearLayout
-    lateinit var heureInsértionTexteAdresse: LinearLayout
+    lateinit var choisirPrèsDeMoi: ToggleButton
+    lateinit var insértionTexteHeure: LinearLayout
+    lateinit var insértionTexteAdresse: LinearLayout
+    lateinit var insértionTextePrèsDeMoi: LinearLayout
     private lateinit var btnTousStationnements: Button
     lateinit var imageStationnement: ImageView
+
     lateinit var sélectionNuméroMunicipal: Spinner
     lateinit var sélectionRue: Spinner
     lateinit var sélectionCodePostal: Spinner
-    lateinit var checkBoxRayon: CheckBox
-    lateinit var checkBoxTxtRayon: EditText
+
+    lateinit var sélectionRuePrèsDeMoi: Spinner
+
+    lateinit var rechercheTxtRayon: EditText
 
     val modèle = Modèle.instance
     val présentateur = PrésentateurCarte( this )
@@ -101,17 +107,24 @@ class VueCarte : Fragment() {
         btnChoisirHeurePrévu = view.findViewById( R.id.btnChoisirHeurePrévu )
         btnFermerPopupRechercheAdresse = view.findViewById( R.id.btnFermerPopupRechercheAdresse )
         btnOkPopupRechercheAdresse = view.findViewById( R.id.btnOkPopupRechercheAdresse )
+        btnOkPopupRecherchePrèsDeMoi = view.findViewById( R.id.btnOkPopupRecherchePrèsDeMoi )
+        btnFermerPopupRecherchePrèsDeMoi = view.findViewById( R.id.btnFermerPopupRecherchePrèsDeMoi )
         btnTousStationnements = view.findViewById( R.id.btnTousStationnements )
         choisirHeure = view.findViewById( R.id.choisirHeure )
         choisirAdresse = view.findViewById( R.id.choisirAdresse )
-        heureInsértionTexteHeure = view.findViewById( R.id.heureInsértionTexteHeure )
-        heureInsértionTexteAdresse = view.findViewById( R.id.heureInsértionTexteAdresse )
+        choisirPrèsDeMoi = view.findViewById( R.id.choisirPrèsDeMoi )
+        insértionTexteHeure = view.findViewById( R.id.insértionTexteHeure )
+        insértionTexteAdresse = view.findViewById( R.id.insértionTexteAdresse )
+        insértionTextePrèsDeMoi = view.findViewById( R.id.insértionTextePrèsDeMoi )
         imageStationnement = view.findViewById( R.id.imageStationnement )
+
         sélectionNuméroMunicipal = view.findViewById( R.id.sélectionNuméroMunicipal )
         sélectionRue = view.findViewById( R.id.sélectionRue )
         sélectionCodePostal = view.findViewById( R.id.sélectionCodePostal )
-        checkBoxRayon = view.findViewById( R.id.checkBoxRayon )
-        checkBoxTxtRayon = view.findViewById( R.id.checkBoxTxtRayon )
+
+        sélectionRuePrèsDeMoi = view.findViewById( R.id.sélectionRuePrèsDeMoi )
+
+        rechercheTxtRayon = view.findViewById( R.id.rechercheTxtRayon )
 
         // Configuration bouton et TextView pour navigation
         val buttonFav = view.findViewById<Button>( R.id.buttonfav )
@@ -135,6 +148,10 @@ class VueCarte : Fragment() {
             présentateur.changerContenuPopupRechercheAdresse( cliqué )
         }
 
+        choisirPrèsDeMoi.setOnCheckedChangeListener { _, cliqué ->
+            présentateur.changerContenuPopupRecherchePrèsDeMoi( cliqué )
+        }
+
         val menuView = requireActivity().findViewById<BottomNavigationView>( R.id.menu_navigation )
 
         // Afficher tous
@@ -154,6 +171,10 @@ class VueCarte : Fragment() {
         }
 
         btnFermerPopupRechercheAdresse.setOnClickListener {
+            popupRecherche.visibility = View.GONE
+        }
+
+        btnFermerPopupRecherchePrèsDeMoi.setOnClickListener {
             popupRecherche.visibility = View.GONE
         }
 
@@ -195,6 +216,12 @@ class VueCarte : Fragment() {
         btnOkPopupRechercheAdresse.setOnClickListener {
             présentateur.détruireTousMarqueurs()
             présentateur.afficherStationnementParAdresse( sélectionNuméroMunicipal.selectedItem.toString(), sélectionRue.selectedItem.toString(), sélectionCodePostal.selectedItem.toString() )
+            popupRecherche.visibility = View.GONE
+        }
+
+        btnOkPopupRecherchePrèsDeMoi.setOnClickListener {
+            présentateur.détruireTousMarqueurs()
+            présentateur.afficherStationnementsParRue( sélectionRuePrèsDeMoi.selectedItem.toString() )
             popupRecherche.visibility = View.GONE
         }
 

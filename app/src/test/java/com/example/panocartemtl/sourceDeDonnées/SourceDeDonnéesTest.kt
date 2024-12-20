@@ -13,19 +13,21 @@ class SourceDeDonnéesTest {
     val source: SourceDeDonnées = SourceDeDonnéesHTTP()
     var adresse_ip: String = "10.0.0.136:3000"
     val url_stationnements = "http://${adresse_ip}/stationnements"
+    val url_stationnement = "http://${adresse_ip}/stationnement"
     val url_host_erreur = "http://${adresse_ip}/..."
     val url_numeros_municipaux = "http://${adresse_ip}/numeros_municipaux"
     val url_rues = "http://${adresse_ip}/rues"
     val url_codes_postals = "http://${adresse_ip}/codes_postals"
     val url_rayon = "http://${adresse_ip}/stationnements/rayon"
     val url_rues_rayon = "http://${adresse_ip}/stationnements/recherche/rayon"
+    val url_stationnements_rues: String = "http://${adresse_ip}/stationnements"
 
     @Test
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche le stationnement avec id 1, on obtient un objet Stationnement correspondant avec l'id 1`() {
         // Code: Interprété par ce code par l'utilisation de « runBlocking »
         // Source: https://proandroiddev.com/testing-kotlin-coroutines-d904738b846d
         runBlocking {
-            val cobaye_requête = source.obtenirStationnementParId( url_stationnements, 1 )
+            val cobaye_requête = source.obtenirStationnementParId( url_stationnement, 1 )
 
             val résultat_attendu = Stationnement( 1, Adresse( "3571", "Rue Beaubien", "H1X 1H1" ), Coordonnée( -73.583889, 45.557855 ), "/panneaux_images/SB-AC_NE-181.png", "09:00:00", "12:00:00" )
 
@@ -38,7 +40,7 @@ class SourceDeDonnéesTest {
     fun `étant donné une requête HTTP GET qui cherche un stationnement avec un id, lorsqu'on cherche un stationnement avec id inconnu, on obtient l'erreur 500`() {
         val exception = assertThrows( SourceDeDonnéesException::class.java ) {
             runBlocking {
-                source.obtenirStationnementParId( url_stationnements, 9999 )
+                source.obtenirStationnementParId( url_stationnement, 9999 )
             }
         }
 
@@ -286,6 +288,30 @@ class SourceDeDonnéesTest {
             val cobaye_requête = source.obtenirRuesUniquesRayon( url_rayon, longitude, latitude, rayon )
 
             val résultat_attendu = emptyList<String>()
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des stationnements avec une rue fournie, lorsqu'on cherche les stationnements avec la rue « Earnscliffe », on obtient une liste des stationnements`() {
+        runBlocking {
+            val cobaye_requête = source.obtenirStationnementsParRue( url_stationnements_rues, "Earnscliffe" )
+
+            val résultat_attendu = listOf(
+                Stationnement( 67, Adresse( "5210", "Earnscliffe", "H3X 2P5" ), Coordonnée( -73.632844, 45.482929 ), "/panneaux_images/SV-JB_QE-0377.png", "08:00:00", "16:00:00" )
+            )
+
+            assertEquals( cobaye_requête, résultat_attendu )
+        }
+    }
+
+    @Test
+    fun `étant donné une requête HTTP GET qui cherche des stationnements avec une rue fournie, lorsqu'on cherche les stationnements avec une rue inexistante comme « Rue inconnu », on obtient une liste vide`() {
+        runBlocking {
+            val cobaye_requête = source.obtenirStationnementsParRue( url_stationnements_rues, "Rue inconnu" )
+
+            val résultat_attendu = emptyList<Stationnement>()
 
             assertEquals( cobaye_requête, résultat_attendu )
         }

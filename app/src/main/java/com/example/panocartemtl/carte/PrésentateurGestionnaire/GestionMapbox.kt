@@ -4,9 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.panocartemtl.R
 import com.example.panocartemtl.carte.InterfaceCarte.MapboxInterface
 import com.example.panocartemtl.carte.VueCarte
 import com.mapbox.geojson.Point
@@ -35,7 +33,6 @@ class GestionMapbox( var vue: VueCarte, val iocontext: CoroutineContext = Dispat
         var rayon = try {
             vue.txtRayon.text.toString().toInt()
         } catch ( e: NumberFormatException ) {
-            Toast.makeText( vue.requireContext(), R.string.rayon_indéterminé, Toast.LENGTH_SHORT ).show()
             0
         }
 
@@ -77,7 +74,7 @@ class GestionMapbox( var vue: VueCarte, val iocontext: CoroutineContext = Dispat
             vue.positionClient.lastLocation.addOnSuccessListener { position: Location? ->
                 if ( position != null ) {
                     val positionActuelle = Point.fromLngLat( position.longitude, position.latitude )
-                    vue.présentateur.dessinerCercle( Point.fromLngLat( positionActuelle.longitude(), positionActuelle.latitude() )  )
+                    dessinerCercle( Point.fromLngLat( positionActuelle.longitude(), positionActuelle.latitude() )  )
                 }
             }
         } else {

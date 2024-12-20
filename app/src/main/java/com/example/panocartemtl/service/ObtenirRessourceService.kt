@@ -71,4 +71,11 @@ class ObtenirRessourceService( var source: SourceDeDonnées = SourceDeDonnéesHT
     ): List<String> {
         return source.obtenirRuesUniquesRayon( url, longitude, latitude, rayon )
     }
+
+    suspend fun obtenirStationnementsParRue(
+        url: String,
+        rue: String
+    ): List<Stationnement> {
+        return source.obtenirStationnementsParRue( url, rue )
+    }
 }
