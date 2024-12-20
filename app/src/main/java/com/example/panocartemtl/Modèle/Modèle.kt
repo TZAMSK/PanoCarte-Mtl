@@ -50,7 +50,7 @@ class Modèle private constructor (
 
     @Throws( SourceDeDonnéesException::class )
     override suspend fun obtenirStationnementParId( id: Int ): Stationnement {
-        val stationnement_reçue = obtenirRessourceService.obtenirStationnementParId( url_stationnements, id )
+        val stationnement_reçue = obtenirRessourceService.obtenirStationnementParId( url_stationnement, id )
 
         return stationnement_reçue
     }

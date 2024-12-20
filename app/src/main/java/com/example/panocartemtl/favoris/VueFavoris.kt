@@ -103,10 +103,13 @@ class VueFavoris : Fragment() {
     }
 
     fun listeStationnement(stationnements: List<Stationnement>) {
-        val adresses = stationnements.map { it.adresse }
-        adapter.clear()
-        adapter.addAll(adresses)
-        adapter.notifyDataSetChanged()
+        // Source: https://www.geeksforgeeks.org/how-to-check-if-a-lateinit-variable-has-been-initialized-or-not-in-kotlin/
+        if(::adapter.isInitialized) {
+            val adresses = stationnements.map { it.adresse }
+            adapter.clear()
+            adapter.addAll(adresses)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     fun notifierSuppression() {
