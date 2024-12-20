@@ -5,6 +5,7 @@ import java.time.LocalDate
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.provider.CalendarContract
+import android.content.ActivityNotFoundException
 import java.util.*
 
 class Présentateur(val vue: VueFavoris) {
@@ -85,8 +86,8 @@ class Présentateur(val vue: VueFavoris) {
                 addCategory(Intent.CATEGORY_APP_CALENDAR)
             }
             vue.startActivity(intent)
-        } catch (e: Exception) {
-            vue.afficherErreur("Impossible d'ouvrir l'application calendrier")
+        } catch (e: ActivityNotFoundException) {
+            vue.afficherErreur("L'application calendrier n'est pas disponible ou n'a pas été trouvé")
         }
     }
 
