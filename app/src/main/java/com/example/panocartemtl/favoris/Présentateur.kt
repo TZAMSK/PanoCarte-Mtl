@@ -18,7 +18,6 @@ import java.util.*
 class Présentateur(val vue: VueFavoris) {
     private val modèle = Modèle.instance
     private lateinit var adapter: ArrayAdapter<String>
-    private lateinit var navController: NavController
 
     // Récupère la liste des stationnements
     fun récupérerListeStationnement(): List<Stationnement> {
@@ -133,7 +132,7 @@ class Présentateur(val vue: VueFavoris) {
 
     // Navigue vers la carte
     fun naviguerVersCarte() {
-        navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
+        vue.navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
     }
 
     fun listeStationnement(stationnements: List<Stationnement>) {

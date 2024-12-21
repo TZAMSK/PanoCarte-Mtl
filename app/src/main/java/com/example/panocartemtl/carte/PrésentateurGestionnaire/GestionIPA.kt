@@ -48,7 +48,7 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
 
     var modèle = Modèle.instance
     private var destinationChoisie: Point? = null
-    private var stationnementIdChoisie: Int? = null
+    private var stationnementIdChoisie: Int = 1
 
     // Position actuelle
 
@@ -377,17 +377,17 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
     }
 
     override fun ajouterStationnementFavoris() {
-        CoroutineScope(Dispatchers.Main).launch {
-            val stationnement = withContext(iocontext) {
-                modèle.obtenirStationnementParId(stationnementIdChoisie!!)
+        CoroutineScope( Dispatchers.Main ).launch {
+            val stationnement = withContext( iocontext ) {
+                modèle.obtenirStationnementParId( stationnementIdChoisie )
             }
 
             if (stationnement != null) {
                 val présentateurFavoris = Présentateur(VueFavoris())
                 présentateurFavoris.ajouterNouvelleAdresse(stationnement)
-                Toast.makeText(vue.requireContext(), "Adresse ajoutée aux favoris", Toast.LENGTH_SHORT).show()
+                Toast.makeText( vue.requireContext(), "Adresse ajoutée aux favoris", Toast.LENGTH_SHORT ).show()
             } else {
-                Toast.makeText(vue.requireContext(), "Stationnement introuvable", Toast.LENGTH_SHORT).show()
+                Toast.makeText( vue.requireContext(), "Stationnement introuvable", Toast.LENGTH_SHORT ).show()
             }
         }
     }

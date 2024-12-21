@@ -22,7 +22,7 @@ import java.util.*
 class VueFavoris : Fragment() {
 
     private lateinit var adapter: ArrayAdapter<String>
-    private lateinit var navController: NavController
+    lateinit var navController: NavController
     private lateinit var présentateur: Présentateur
 
     override fun onCreateView(
