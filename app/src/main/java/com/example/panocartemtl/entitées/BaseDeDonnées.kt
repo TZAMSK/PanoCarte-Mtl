@@ -56,7 +56,7 @@ class BaseDeDonnées( context: Context ): SQLiteOpenHelper( context, DATABASE_NA
         db.close()
     }
 
-    fun obtenirTousStationnementBD(): List<Stationnement>{
+    fun obtenirTousStationnementBD(): MutableList<Stationnement>{
         val stationnementListe = mutableListOf<Stationnement>()
         val db = readableDatabase
         val query = "SELECT * FROM $TABLE_STATIONNEMENT"

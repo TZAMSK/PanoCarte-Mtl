@@ -151,11 +151,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
 
-                <Button
+                <ImageView
                     android:id="@+id/buttonfav"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button" />
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/bookmark" />
 
                 <Button
                     android:id="@+id/popupBouton"

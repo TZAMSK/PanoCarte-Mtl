@@ -26,7 +26,7 @@ class Modèle private constructor (
 
     source: SourceDeDonnées = SourceDeDonnéesHTTP()
 ) : IModèle {
-    private val stationnements = mutableListOf<com.example.panocartemtl.entitées.Stationnement>()
+    private val stationnements = mutableListOf<Stationnement>()
     var source: SourceDeDonnées = source
         set( value ){
             field = value
@@ -37,7 +37,7 @@ class Modèle private constructor (
     }
 
     val obtenirRessourceService = ObtenirRessourceService( source )
-    fun getStationnementSimulés(): List<Stationnement> = stationnements.toList()
+
     /**
      * Obtient une certaine quantité de données de la source
      *
@@ -134,10 +134,6 @@ class Modèle private constructor (
         val stationnements_reçues = obtenirRessourceService.obtenirStationnementsParRue( url_stationnements_rues, rue )
 
         return stationnements_reçues
-    }
-
-    override fun ajouterStationnement(stationnement: Stationnement) {
-        stationnements.add(stationnement)
     }
 
     override fun associerDate(

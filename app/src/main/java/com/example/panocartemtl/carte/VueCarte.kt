@@ -127,7 +127,7 @@ class VueCarte : Fragment() {
         rechercheTxtRayon = view.findViewById( R.id.rechercheTxtRayon )
 
         // Configuration bouton et TextView pour navigation
-        val buttonFav = view.findViewById<Button>( R.id.buttonfav )
+        val buttonFav = view.findViewById<ImageView>( R.id.buttonfav )
         val textViewAdresse = view.findViewById<TextView>( R.id.txtAdresse )
 
         buttonFav.setOnClickListener {

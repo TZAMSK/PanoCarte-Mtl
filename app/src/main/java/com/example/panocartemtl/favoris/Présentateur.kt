@@ -1,29 +1,24 @@
 package com.example.panocartemtl.favoris
 
 import com.example.panocartemtl.VueFavoris
-import java.time.LocalDate
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.provider.CalendarContract
 import android.content.ActivityNotFoundException
-import android.content.pm.PackageManager
-import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.navigation.NavController
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
 import com.example.panocartemtl.entitées.BaseDeDonnées
 import com.example.panocartemtl.entitées.Stationnement
+import android.app.DatePickerDialog
+import android.content.pm.PackageManager
+import android.util.Log
 import java.util.*
+
 
 class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
     private val modèle = Modèle.instance
-    private lateinit var adapter: ArrayAdapter<String>
 
-    // Récupère la liste des stationnements
-    fun récupérerListeStationnement(): List<Stationnement> {
-        return modèle.getStationnementSimulés() // Retourne la liste immuable
-    }
+    private var stationnementsFavorisAdresse: MutableList<String> = mutableListOf()
 
     // Charge la liste des stationnements et l'affiche dans la vue
     fun chargerListeStationnement() {
@@ -31,16 +26,22 @@ class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
         listeStationnement(stationnements)
     }
 
+    // Récupère la liste des stationnements
+    fun récupérerListeStationnement(): MutableList<Stationnement> {
+        return baseDeDonnées.obtenirTousStationnementBD()
+    }
+
+
     // Supprime un stationnement et met à jour la vue
     fun supprimerStationnement(index: Int) {
-
-        val stationnements = modèle.getStationnementSimulés().toMutableList() // Créer une liste mutable pour modification
+        val stationnements = baseDeDonnées.obtenirTousStationnementBD() // Créer une liste mutable pour modification
         modèle.supprimerStationnement(index, stationnements)
         modèle.mettreAJourStationnements(stationnements) // Mettre à jour la liste dans le modèle
         listeStationnement(stationnements) // Rafraîchir la vue
         notifierSuppression()
     }
 
+    /*
     // Associe une date à un stationnement et met à jour la vue
     fun associerDateAuStationnement(index: Int, date: LocalDate) {
         val stationnements = modèle.getStationnementSimulés().toMutableList() // Créer une liste mutable pour modification
@@ -50,17 +51,17 @@ class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
         notifierDateSelectionnee(date.toString()) // Notifier la vue avec la date sélectionnée
     }
 
+     */
+
     // Navigation vers la carte
     fun retourVersCarte() {
         naviguerVersCarte()
     }
 
     fun ajouterNouvelleAdresse( stationnement: Stationnement ) {
-        val stationnements = modèle.getStationnementSimulés().toMutableList()
-        stationnements.add(stationnement) // Ajout de la nouvelle adresse
         baseDeDonnées.insérerStationnement( stationnement )
-        listeStationnement(stationnements) // Mise à jour de la vue
     }
+
 
     fun afficherDatePicker(position: Int) {
         val calendar = Calendar.getInstance()
@@ -137,11 +138,13 @@ class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
     }
 
     fun listeStationnement(stationnements: List<Stationnement>) {
-        // Source: https://www.geeksforgeeks.org/how-to-check-if-a-lateinit-variable-has-been-initialized-or-not-in-kotlin/
-        if(::adapter.isInitialized) {
-            adapter.clear()
-            adapter.addAll(stationnements.map { it.toString() })
-            adapter.notifyDataSetChanged()
+        stationnementsFavorisAdresse.clear()
+        stationnements.forEach { stationnement ->
+            stationnementsFavorisAdresse.add(" ${stationnement.adresse.numero_municipal} ${stationnement.adresse.rue} ${stationnement.adresse.code_postal} ")
         }
+        vue.adapter.clear()
+        vue.adapter.addAll(stationnementsFavorisAdresse)
+        vue.adapter.notifyDataSetChanged()
+        Log.d("Database", "Fetched stationnements: $stationnementsFavorisAdresse")
     }
 }

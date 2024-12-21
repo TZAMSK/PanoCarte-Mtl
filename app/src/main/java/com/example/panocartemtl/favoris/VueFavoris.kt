@@ -23,7 +23,7 @@ import java.util.*
 
 class VueFavoris : Fragment() {
 
-    private lateinit var adapter: ArrayAdapter<String>
+    lateinit var adapter: ArrayAdapter<String>
     lateinit var navController: NavController
     private lateinit var présentateur: Présentateur
     private lateinit var baseDeDonnées: BaseDeDonnées
@@ -43,9 +43,6 @@ class VueFavoris : Fragment() {
         btnAfficherCalendrier.setOnClickListener {
             présentateur.ouvrirCalendrier()
         }
-
-        // Initialisation de la ListView
-        val listView: ListView = view.findViewById(R.id.listViewFavoris)
 
         // Création de l'adaptateur
         adapter = object : ArrayAdapter<String>(requireContext(), R.layout.list_item_favoris, R.id.txtAdresse, mutableListOf()) {
@@ -68,6 +65,9 @@ class VueFavoris : Fragment() {
             }
         }
 
+        // Initialisation de la ListView
+        val listView: ListView = view.findViewById(R.id.listViewFavoris)
+
         // Assignation de l'adaptateur à la ListView
         listView.adapter = adapter
 
@@ -87,18 +87,5 @@ class VueFavoris : Fragment() {
         navController = findNavController()
 
         présentateur.chargerListeStationnement()
-
-        /*
-        // Vérifie si une adresse a été transmise
-        val adresse = activity?.intent?.getStringExtra("ADRESSE")
-        if (!adresse.isNullOrEmpty()) {
-            présentateur.ajouterNouvelleAdresse(adresse)
-        }
-
-         */
-    }
-
-    fun getContextIfAvailable(): Context? {
-        return activity?.applicationContext
     }
 }
