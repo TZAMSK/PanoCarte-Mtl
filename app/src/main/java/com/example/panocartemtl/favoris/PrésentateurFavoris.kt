@@ -15,8 +15,7 @@ import android.util.Log
 import androidx.compose.ui.res.stringResource
 import java.util.*
 
-
-class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
+class PrésentateurFavoris(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
     private val modèle = Modèle.instance
 
     private var stationnementsFavorisAdresse: MutableList<String> = mutableListOf()

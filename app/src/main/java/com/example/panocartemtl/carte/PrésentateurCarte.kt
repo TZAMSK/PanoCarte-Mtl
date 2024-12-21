@@ -17,20 +17,20 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
 
     var modèle = Modèle.instance
 
-    private val gestionInstallation = GestionInitialisation(vue, markerMap)
-    private val gestionSpinner = GestionSpinner(vue, iocontext)
-    private val gestionIPA = GestionIPA(vue, iocontext, markerMap)
-    private val gestionNavigation = GestionNavigation(vue, iocontext, markerMap)
-    private val gestionMapbox = GestionMapbox(vue, iocontext, markerMap)
-    private val gestionMontre = GestionMontre(vue)
+    private val gestionInitialisation = GestionInitialisation( vue, markerMap )
+    private val gestionSpinner = GestionSpinner( vue, iocontext )
+    private val gestionIPA = GestionIPA( vue, iocontext, markerMap )
+    private val gestionNavigation = GestionNavigation( vue, iocontext, markerMap )
+    private val gestionMapbox = GestionMapbox( vue, iocontext, markerMap )
+    private val gestionMontre = GestionMontre( vue )
 
     //--- Initialisation ---//
     override fun détruireTousMarqueurs() {
-        gestionInstallation.détruireTousMarqueurs()
+        gestionInitialisation.détruireTousMarqueurs()
     }
 
     override fun caméraPremièreInstance() {
-        gestionInstallation.caméraPremièreInstance()
+        gestionInitialisation.caméraPremièreInstance()
     }
 
     //--- API ---//

@@ -18,7 +18,7 @@ import org.mockito.Mockito
 import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
-class PrésentateurCarteTest {
+class PrésentateurFavorisChargementCarteTest {
 
     @Test
     fun `test recupérerTousStationnements`() = runTest {

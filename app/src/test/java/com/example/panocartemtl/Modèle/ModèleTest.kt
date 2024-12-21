@@ -77,16 +77,12 @@ class ModèleTest {
             val cobaye_requête = cobaye_instance_modèle.obtenirRuesUniques()
 
             val résultat_attendu = listOf(
-                " BD Saint-Michel", "10e Avenue", "12e Avenue", "20e Avenue", "21e Avenue", "23e Avenue", "24e Avenue",
-                "2e Avenue", "3e Avenue", "6e Avenue", "9e Avenue", "Ave L Archevêque", "Avenue Beaconsfield",
-                "Avenue du Mont-Royal", "Avenue du Parc", "Avenue Henri-Julien", "Avenue Louis-Hébert", "Avenue Papineau",
-                "Avenue Saint-Charles", "Avenue Swail", "Avenue Van Horne", "Bb Rosemont", "Bd Keller", "BD Saint-Michel",
-                "Boulevard de Acadie", "Boulevard Gouin", "Boulevard Pie-IX", "Boulevard René-Lévesque", "Boulevard Saint-Joseph",
-                "Boulevard Saint-Laurent", "Boulevard Saint-Michel", "Chemin Hudson", "Earnscliffe", "Rue Beaubien",
-                "Rue Bélanger", "Rue Charlevoix", "Rue de la Montagne", "Rue de la Visitation", "Rue des Érables", "Rue des Pins",
-                "Rue du Champ-d'Eau", "Rue Jarry", "Rue Laurier", "Rue Legendre", "Rue Notre-Dame", "Rue Parc", "Rue Parthenais",
-                "Rue Saint-Antoine", "Rue Saint-Denis", "Rue Saint-Hubert", "Rue Saint-Urbain", "Rue Saint-Zotique", "Rue Sherbrooke",
-                "St Louis Square St"
+                "10e Avenue", "12e Avenue", "20e Avenue", "21e Avenue", "23e Avenue", "24e Avenue", "2e Avenue", "3e Avenue", "6e Avenue", "9e Avenue", "Ave L Archevêque", "Avenue Beaconsfield",
+                "Avenue du Mont-Royal", "Avenue du Parc", "Avenue Henri-Julien", "Avenue Louis-Hébert", "Avenue Papineau", "Avenue Saint-Charles", "Avenue Swail", "Avenue Van Horne", "Bb Rosemont", "Bd Keller", "BD Saint-Michel",
+                "Boulevard de Acadie", "Boulevard Gouin", "Boulevard Pie-IX", "Boulevard René-Lévesque", "Boulevard Saint-Joseph", "Boulevard Saint-Laurent", "Boulevard Saint-Michel", "Chemin Hudson", "Earnscliffe",
+                "Rue Beaubien", "Rue Bélanger", "Rue Charlevoix", "Rue de la Montagne", "Rue de la Visitation", "Rue des Érables", "Rue des Pins", "Rue du Champ-d'Eau", "Rue Jarry", "Rue Laurier",
+                "Rue Legendre", "Rue Notre-Dame", "Rue Parc", "Rue Parthenais", "Rue Saint-Antoine", "Rue Saint-Denis",
+                "Rue Saint-Hubert", "Rue Saint-Urbain", "Rue Saint-Zotique", "Rue Sherbrooke", "St Louis Square St"
             )
 
             assertEquals( résultat_attendu, cobaye_requête )

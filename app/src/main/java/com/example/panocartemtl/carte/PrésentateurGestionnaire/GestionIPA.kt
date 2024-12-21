@@ -15,7 +15,7 @@ import com.example.panocartemtl.VueFavoris
 import com.example.panocartemtl.carte.InterfaceCarte.IPAInterface
 import com.example.panocartemtl.carte.VueCarte
 import com.example.panocartemtl.entitées.BaseDeDonnées
-import com.example.panocartemtl.favoris.Présentateur
+import com.example.panocartemtl.favoris.PrésentateurFavoris
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -380,7 +380,7 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
             }
 
             // Create the presenter only if the fragment is still attached
-            val présentateurFavoris = Présentateur(vueFavoris, BaseDeDonnées(context))
+            val présentateurFavoris = PrésentateurFavoris(vueFavoris, BaseDeDonnées(context))
             présentateurFavoris.ajouterNouvelleAdresse(stationnement)
 
             // Make sure the fragment is still attached before showing Toast

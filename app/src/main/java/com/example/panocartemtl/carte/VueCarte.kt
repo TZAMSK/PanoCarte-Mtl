@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
 import com.example.panocartemtl.VueFavoris
-import com.example.panocartemtl.favoris.Présentateur
+import com.example.panocartemtl.favoris.PrésentateurFavoris
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
