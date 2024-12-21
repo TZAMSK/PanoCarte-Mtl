@@ -48,7 +48,7 @@ interface IModèle {
     suspend fun obtenirStationnementsParRue( rue: String ): List<Stationnement>
 
     // Ajout des fonctions pour gérer les stationnements localement
-    fun ajouterStationnement(adresse: String)
+    fun ajouterStationnement(stationnement: Stationnement)
     fun associerDate(index: Int, stationnements: MutableList<Stationnement>, date: java.time.LocalDate)
     fun supprimerStationnement(index: Int, stationnements: MutableList<Stationnement>)
     fun mettreAJourStationnements(stationnements: List<Stationnement>)

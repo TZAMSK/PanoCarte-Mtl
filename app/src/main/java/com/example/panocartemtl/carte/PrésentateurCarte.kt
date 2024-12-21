@@ -17,12 +17,12 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
 
     var modèle = Modèle.instance
 
-    private val gestionInstallation = GestionInitialisation( vue, markerMap )
-    private val gestionSpinner = GestionSpinner( vue, iocontext )
-    private val gestionIPA = GestionIPA( vue, iocontext, markerMap )
-    private val gestionNavigation = GestionNavigation( vue, iocontext, markerMap )
-    private val gestionMapbox = GestionMapbox( vue, iocontext, markerMap )
-    private val gestionMontre = GestionMontre( vue )
+    private val gestionInstallation = GestionInitialisation(vue, markerMap)
+    private val gestionSpinner = GestionSpinner(vue, iocontext)
+    private val gestionIPA = GestionIPA(vue, iocontext, markerMap)
+    private val gestionNavigation = GestionNavigation(vue, iocontext, markerMap)
+    private val gestionMapbox = GestionMapbox(vue, iocontext, markerMap)
+    private val gestionMontre = GestionMontre(vue)
 
     //--- Initialisation ---//
     override fun détruireTousMarqueurs() {
@@ -42,20 +42,24 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         gestionIPA.afficherStationnementParId()
     }
 
-    override fun afficherStationnementsRayon( position: Point, rayon: String ) {
-        gestionIPA.afficherStationnementsRayon( position, rayon )
+    override fun afficherStationnementsRayon(position: Point, rayon: String) {
+        gestionIPA.afficherStationnementsRayon(position, rayon)
     }
 
     override fun afficherStationnementsParHeure() {
         gestionIPA.afficherStationnementsParHeure()
     }
 
-    override fun afficherStationnementParAdresse( numéro_municipal: String, rue: String, code_postal: String ) {
-        gestionIPA.afficherStationnementParAdresse( numéro_municipal, rue, code_postal )
+    override fun afficherStationnementParAdresse(
+        numéro_municipal: String,
+        rue: String,
+        code_postal: String
+    ) {
+        gestionIPA.afficherStationnementParAdresse(numéro_municipal, rue, code_postal)
     }
 
-    override fun afficherStationnementsParRue( rue: String ) {
-        gestionIPA.afficherStationnementsParRue( rue )
+    override fun afficherStationnementsParRue(rue: String) {
+        gestionIPA.afficherStationnementsParRue(rue)
     }
 
     override fun getPositionActuelle() {
@@ -66,14 +70,14 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         gestionIPA.dessinerNavigationEntrePostion()
     }
 
-    override fun navigationEntrePostion( à_partir: Point ) {
-        gestionIPA.navigationEntrePostion( à_partir )
+    override fun navigationEntrePostion(à_partir: Point) {
+        gestionIPA.navigationEntrePostion(à_partir)
     }
 
 
     //--- Mapbox ---//
-    override fun dessinerCercle( position: Point ) {
-        gestionMapbox.dessinerCercle( position )
+    override fun dessinerCercle(position: Point) {
+        gestionMapbox.dessinerCercle(position)
     }
 
     override fun dessinerCercleDepuisPositionActuelle() {
@@ -94,20 +98,20 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
     }
 
     //--- Navigation ---//
-    override fun changerÉcranCliqueMenu( itemId: Int ): Boolean {
-        return gestionNavigation.changerÉcranCliqueMenu( itemId )
+    override fun changerÉcranCliqueMenu(itemId: Int): Boolean {
+        return gestionNavigation.changerÉcranCliqueMenu(itemId)
     }
 
-    override fun changerContenuPopupRechercheHeure( cliqué: Boolean ) {
-        gestionNavigation.changerContenuPopupRechercheHeure( cliqué )
+    override fun changerContenuPopupRechercheHeure(cliqué: Boolean) {
+        gestionNavigation.changerContenuPopupRechercheHeure(cliqué)
     }
 
-    override fun changerContenuPopupRechercheAdresse( cliqué: Boolean ) {
-        gestionNavigation.changerContenuPopupRechercheAdresse( cliqué )
+    override fun changerContenuPopupRechercheAdresse(cliqué: Boolean) {
+        gestionNavigation.changerContenuPopupRechercheAdresse(cliqué)
     }
 
-    override fun changerContenuPopupRecherchePrèsDeMoi( cliqué: Boolean ) {
-        gestionNavigation.changerContenuPopupRecherchePrèsDeMoi( cliqué )
+    override fun changerContenuPopupRecherchePrèsDeMoi(cliqué: Boolean) {
+        gestionNavigation.changerContenuPopupRecherchePrèsDeMoi(cliqué)
     }
 
     override fun vérifierContenuEtAfficherStationnementParHeure() {
@@ -115,8 +119,8 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
     }
 
     //--- Spinner ---//
-    override suspend fun récuperListeNumérosMunicipaux( rue: String ): List<String> {
-        return gestionSpinner.récuperListeNumérosMunicipaux( rue )
+    override suspend fun récuperListeNumérosMunicipaux(rue: String): List<String> {
+        return gestionSpinner.récuperListeNumérosMunicipaux(rue)
     }
 
     override suspend fun récuperListeRues(): List<String> {
@@ -128,11 +132,14 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
         latitude: Double,
         rayon: String
     ): List<String> {
-        return gestionSpinner.récuperListeRuesRayon( longitude, latitude, rayon )
+        return gestionSpinner.récuperListeRuesRayon(longitude, latitude, rayon)
     }
 
-    override suspend fun récuperListeCodesPostal( numéro_municipal: String, rue: String ): List<String> {
-        return gestionSpinner.récuperListeCodesPostal( numéro_municipal, rue )
+    override suspend fun récuperListeCodesPostal(
+        numéro_municipal: String,
+        rue: String
+    ): List<String> {
+        return gestionSpinner.récuperListeCodesPostal(numéro_municipal, rue)
     }
 
     override fun afficherContenuePourSpinnerNuméroMunicipal() {
@@ -142,5 +149,8 @@ class PrésentateurCarte( var vue: VueCarte, val iocontext: CoroutineContext = D
     override fun afficherContenuePourSpinnerCodePostal() {
         gestionSpinner.afficherContenuePourSpinnerCodePostal()
     }
-}
 
+    override fun ajouterStationnementFavoris() {
+        gestionIPA.ajouterStationnementFavoris()
+    }
+}

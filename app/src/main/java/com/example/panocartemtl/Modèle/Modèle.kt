@@ -136,12 +136,8 @@ class Modèle private constructor (
         return stationnements_reçues
     }
 
-    override fun ajouterStationnement(adresse: String) {
-        if (adresse.isNotBlank()) {
-            stationnements.add(com.example.panocartemtl.entitées.Stationnement(adresse))
-        } else {
-            throw IllegalArgumentException("L'adresse ne peut pas être vide.")
-        }
+    override fun ajouterStationnement(stationnement: Stationnement) {
+        stationnements.add(stationnement)
     }
 
     override fun associerDate(

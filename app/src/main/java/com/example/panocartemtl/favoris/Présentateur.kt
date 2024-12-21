@@ -6,12 +6,19 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.provider.CalendarContract
 import android.content.ActivityNotFoundException
+import android.content.pm.PackageManager
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.navigation.NavController
 import com.example.panocartemtl.Modèle.Modèle
+import com.example.panocartemtl.R
 import com.example.panocartemtl.entitées.Stationnement
 import java.util.*
 
 class Présentateur(val vue: VueFavoris) {
-    private val modèle = Modèle()
+    private val modèle = Modèle.instance
+    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var navController: NavController
 
     // Récupère la liste des stationnements
     fun récupérerListeStationnement(): List<Stationnement> {
@@ -21,7 +28,7 @@ class Présentateur(val vue: VueFavoris) {
     // Charge la liste des stationnements et l'affiche dans la vue
     fun chargerListeStationnement() {
         val stationnements = récupérerListeStationnement() // Utilisation de la méthode pour récupérer la liste
-        vue.listeStationnement(stationnements)
+        listeStationnement(stationnements)
     }
 
     // Supprime un stationnement et met à jour la vue
@@ -30,8 +37,8 @@ class Présentateur(val vue: VueFavoris) {
         val stationnements = modèle.getStationnementSimulés().toMutableList() // Créer une liste mutable pour modification
         modèle.supprimerStationnement(index, stationnements)
         modèle.mettreAJourStationnements(stationnements) // Mettre à jour la liste dans le modèle
-        vue.listeStationnement(stationnements) // Rafraîchir la vue
-        vue.notifierSuppression()
+        listeStationnement(stationnements) // Rafraîchir la vue
+        notifierSuppression()
     }
 
     // Associe une date à un stationnement et met à jour la vue
@@ -39,26 +46,20 @@ class Présentateur(val vue: VueFavoris) {
         val stationnements = modèle.getStationnementSimulés().toMutableList() // Créer une liste mutable pour modification
         modèle.associerDate(index, stationnements, date)
         modèle.mettreAJourStationnements(stationnements) // Mettre à jour la liste dans le modèle
-        vue.listeStationnement(stationnements) // Rafraîchir la vue
-        vue.notifierDateSelectionnee(date.toString()) // Notifier la vue avec la date sélectionnée
+        listeStationnement(stationnements) // Rafraîchir la vue
+        notifierDateSelectionnee(date.toString()) // Notifier la vue avec la date sélectionnée
     }
 
     // Navigation vers la carte
     fun retourVersCarte() {
-        vue.naviguerVersCarte()
+        naviguerVersCarte()
     }
-    fun ajouterNouvelleAdresse(adresse: String) {
-        try {
-            if (adresse.isBlank()) {
-                throw IllegalArgumentException("L'adresse ne peut pas être vide.")
-            }
-            val stationnements = modèle.getStationnementSimulés().toMutableList()
-            stationnements.add(Stationnement(adresse)) // Ajout de la nouvelle adresse
-            modèle.mettreAJourStationnements(stationnements)
-            vue.listeStationnement(stationnements) // Mise à jour de la vue
-        } catch (e: IllegalArgumentException) {
-            vue.afficherErreur("Erreur : ${e.message}")
-        }
+
+    fun ajouterNouvelleAdresse( stationnement: Stationnement ) {
+        val stationnements = modèle.getStationnementSimulés().toMutableList()
+        stationnements.add(stationnement) // Ajout de la nouvelle adresse
+        modèle.mettreAJourStationnements(stationnements)
+        listeStationnement(stationnements) // Mise à jour de la vue
     }
 
     fun afficherDatePicker(position: Int) {
@@ -75,10 +76,10 @@ class Présentateur(val vue: VueFavoris) {
             val intent = préparerIntentCalendrier(
                 titre = "Stationnement réservé",
                 description = "Réservation pour le stationnement à ${stationnement.adresse}",
-                location = stationnement.adresse,
+                location = "${stationnement.adresse.numero_municipal}, ${stationnement.adresse.rue}, ${stationnement.adresse.code_postal}",
                 date = selectedDate.timeInMillis
             )
-            vue.ajouterEvenementDansCalendrier(intent)
+            ajouterEvenementDansCalendrier(intent)
         }, year, month, day).show()
     }
 
@@ -89,7 +90,7 @@ class Présentateur(val vue: VueFavoris) {
             }
             vue.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            vue.afficherErreur("L'application calendrier n'est pas disponible ou n'a pas été trouvé")
+            afficherErreur("L'application calendrier n'est pas disponible ou n'a pas été trouvé")
         }
     }
 
@@ -104,4 +105,44 @@ class Présentateur(val vue: VueFavoris) {
         }
     }
 
+    // Fonction pour ajouter un événement au calendrier
+    fun ajouterEvenementDansCalendrier(intent: Intent) {
+        val packageManager = vue.requireContext().packageManager
+        val activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+
+        if (activities.isNotEmpty()) {
+            vue.startActivity(intent)
+        } else {
+            Toast.makeText(vue.requireContext(), "Aucune application de calendrier disponible", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun notifierSuppression() {
+        Toast.makeText(vue.requireContext(), "Stationnement supprimé", Toast.LENGTH_SHORT).show()
+    }
+
+    // Notifie la vue qu'une date a été sélectionnée
+    fun notifierDateSelectionnee(date: String) {
+        Toast.makeText(vue.requireContext(), "Date sélectionnée: $date", Toast.LENGTH_SHORT).show()
+    }
+
+    // Affiche une erreur dans la vue
+    fun afficherErreur(message: String) {
+        Toast.makeText(vue.requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Navigue vers la carte
+    fun naviguerVersCarte() {
+        navController.navigate(R.id.action_fragment_favoris_vers_fragment_carte)
+    }
+
+    fun listeStationnement(stationnements: List<Stationnement>) {
+        // Source: https://www.geeksforgeeks.org/how-to-check-if-a-lateinit-variable-has-been-initialized-or-not-in-kotlin/
+        if(::adapter.isInitialized) {
+            val adresses = stationnements.map { it.adresse }
+            adapter.clear()
+            //.addAll(adresses)
+            adapter.notifyDataSetChanged()
+        }
+    }
 }

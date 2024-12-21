@@ -11,8 +11,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
+import com.example.panocartemtl.VueFavoris
 import com.example.panocartemtl.carte.InterfaceCarte.IPAInterface
 import com.example.panocartemtl.carte.VueCarte
+import com.example.panocartemtl.favoris.Présentateur
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -46,6 +48,7 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
 
     var modèle = Modèle.instance
     private var destinationChoisie: Point? = null
+    private var stationnementIdChoisie: Int? = null
 
     // Position actuelle
 
@@ -143,6 +146,8 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
                             stationnement.coordonnée.longitude,
                             stationnement.coordonnée.latitude
                         )
+
+                        stationnementIdChoisie = marqueurId
 
                         Toast.makeText(
                             vue.requireContext(),
@@ -368,6 +373,22 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
                     lineWidth( 5.0 )
                 }
             )
+        }
+    }
+
+    override fun ajouterStationnementFavoris() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val stationnement = withContext(iocontext) {
+                modèle.obtenirStationnementParId(stationnementIdChoisie!!)
+            }
+
+            if (stationnement != null) {
+                val présentateurFavoris = Présentateur(VueFavoris())
+                présentateurFavoris.ajouterNouvelleAdresse(stationnement)
+                Toast.makeText(vue.requireContext(), "Adresse ajoutée aux favoris", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(vue.requireContext(), "Stationnement introuvable", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

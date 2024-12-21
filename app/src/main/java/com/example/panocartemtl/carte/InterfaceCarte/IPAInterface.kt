@@ -13,4 +13,6 @@ interface IPAInterface {
     fun getPositionActuelle();
     fun dessinerNavigationEntrePostion();
     fun navigationEntrePostion( à_partir: Point );
+
+    fun ajouterStationnementFavoris();
 }
