@@ -373,18 +373,18 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
     }
 
     override fun ajouterStationnementFavoris() {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope( Dispatchers.Main ).launch {
             val context = vue.requireContext()
-            val stationnement = withContext(iocontext) {
-                modèle.obtenirStationnementParId(stationnementIdChoisie)
+            val stationnement = withContext( iocontext ) {
+                modèle.obtenirStationnementParId( stationnementIdChoisie )
             }
 
             // Create the presenter only if the fragment is still attached
-            val présentateurFavoris = PrésentateurFavoris(vueFavoris, BaseDeDonnées(context))
-            présentateurFavoris.ajouterNouvelleAdresse(stationnement)
+            val présentateurFavoris = PrésentateurFavoris( vueFavoris, BaseDeDonnées(context) )
+            présentateurFavoris.ajouterNouvelleAdresse( stationnement )
 
             // Make sure the fragment is still attached before showing Toast
-            Toast.makeText(vue.requireContext(), "Adresse ajoutée aux favoris: ${stationnement.adresse.rue}", Toast.LENGTH_SHORT).show()
+            Toast.makeText( vue.requireContext(), "Adresse ajoutée aux favoris: ${stationnement.adresse.rue}", Toast.LENGTH_SHORT ).show()
         }
     }
 }
