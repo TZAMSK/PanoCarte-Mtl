@@ -147,18 +147,5 @@ class Modèle private constructor (
             throw IndexOutOfBoundsException("Index de stationnement invalide : $index")
         }
     }
-
-    override fun supprimerStationnement(index: Int, stationnements: MutableList<Stationnement>) {
-        if (index in stationnements.indices) {
-            stationnements.removeAt(index)
-        } else {
-            throw IndexOutOfBoundsException("Index de stationnement invalide : $index")
-        }
-    }
-
-    override fun mettreAJourStationnements(stationnements: List<Stationnement>) {
-        this.stationnements.clear()
-        this.stationnements.addAll(stationnements)
-    }
 }
 

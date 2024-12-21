@@ -49,6 +49,4 @@ interface IModèle {
 
     // Ajout des fonctions pour gérer les stationnements localement
     fun associerDate(index: Int, stationnements: MutableList<Stationnement>, date: java.time.LocalDate)
-    fun supprimerStationnement(index: Int, stationnements: MutableList<Stationnement>)
-    fun mettreAJourStationnements(stationnements: List<Stationnement>)
 }

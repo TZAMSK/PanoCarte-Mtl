@@ -151,12 +151,6 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
 
                         stationnementIdChoisie = marqueurId
 
-                        Toast.makeText(
-                            vue.requireContext(),
-                            vue.getString( R.string.marqueur_cliqué ),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
                         // Inspiré de:
                         // Source: https://www.youtube.com/watch?v=81gJ8MB25yw
                         // Source: https://github.com/square/picasso

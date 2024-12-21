@@ -82,24 +82,9 @@ class BaseDeDonnées( context: Context ): SQLiteOpenHelper( context, DATABASE_NA
         return stationnementListe
     }
 
-    fun insérerStationnements(stationnements: List<Stationnement>) {
+    fun supprimerStationnement(id: Int) {
         val db = writableDatabase
-        db.beginTransaction() // Start a transaction for batch insert
-        try {
-            for (stationnement in stationnements) {
-                val values = ContentValues().apply {
-                    put(COLONNE_NUMÉRO_MUNICIPAL, stationnement.adresse.code_postal)
-                    put(COLONNE_RUE, stationnement.adresse.rue)
-                    put(COLONNE_CODE_POSTAL, stationnement.adresse.code_postal)
-                    // Add other columns as needed
-                }
-                db.insert(TABLE_STATIONNEMENT, null, values)
-            }
-            db.setTransactionSuccessful() // Mark the transaction as successful
-        } finally {
-            db.endTransaction() // End the transaction
-            db.close() // Close the database
-        }
+        db.delete(TABLE_STATIONNEMENT, "$COLONNE_ID = ?", arrayOf(id.toString()))
+        db.close()
     }
-
 }

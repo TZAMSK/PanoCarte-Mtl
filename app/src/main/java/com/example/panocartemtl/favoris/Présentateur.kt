@@ -12,6 +12,7 @@ import com.example.panocartemtl.entitées.Stationnement
 import android.app.DatePickerDialog
 import android.content.pm.PackageManager
 import android.util.Log
+import androidx.compose.ui.res.stringResource
 import java.util.*
 
 
@@ -34,11 +35,11 @@ class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
 
     // Supprime un stationnement et met à jour la vue
     fun supprimerStationnement(index: Int) {
-        val stationnements = baseDeDonnées.obtenirTousStationnementBD() // Créer une liste mutable pour modification
-        modèle.supprimerStationnement(index, stationnements)
-        modèle.mettreAJourStationnements(stationnements) // Mettre à jour la liste dans le modèle
-        listeStationnement(stationnements) // Rafraîchir la vue
-        notifierSuppression()
+        val stationnementToDelete = récupérerListeStationnement()[index]
+        baseDeDonnées.supprimerStationnement(stationnementToDelete.id)
+        val ListeStationnementsMisÀJour = récupérerListeStationnement()
+        listeStationnement(ListeStationnementsMisÀJour)
+        vue.adapter.notifyDataSetChanged()
     }
 
     /*
@@ -118,10 +119,6 @@ class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
         }
     }
 
-    fun notifierSuppression() {
-        Toast.makeText(vue.requireContext(), "Stationnement supprimé", Toast.LENGTH_SHORT).show()
-    }
-
     // Notifie la vue qu'une date a été sélectionnée
     fun notifierDateSelectionnee(date: String) {
         Toast.makeText(vue.requireContext(), "Date sélectionnée: $date", Toast.LENGTH_SHORT).show()
@@ -145,6 +142,5 @@ class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
         vue.adapter.clear()
         vue.adapter.addAll(stationnementsFavorisAdresse)
         vue.adapter.notifyDataSetChanged()
-        Log.d("Database", "Fetched stationnements: $stationnementsFavorisAdresse")
     }
 }
