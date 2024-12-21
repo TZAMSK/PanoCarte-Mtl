@@ -1,5 +1,14 @@
 [IPA utilisée](https://github.com/TZAMSK/RestAPIStationnement)
 
+Veuillez changer les adresse dans:
+-Pour les tests:
+-SourceDeDonnéesTest
+-obtenirRessourceServiceTest
+-ModèleTest
+
+-Pour l'application:
+Modèle.kt
+
 Ce projet est une base pour le projet de développement d'application du cours 420-G55-RO.
 
 Vous devez :
