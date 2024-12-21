@@ -46,6 +46,11 @@ class BaseDeDonnées( context: Context ): SQLiteOpenHelper( context, DATABASE_NA
             put( COLONNE_NUMÉRO_MUNICIPAL, stationnemnt.adresse.code_postal )
             put( COLONNE_RUE, stationnemnt.adresse.rue )
             put( COLONNE_CODE_POSTAL, stationnemnt.adresse.code_postal )
+            put( COLONNE_LONGITUDE, stationnemnt.coordonnée.longitude )
+            put( COLONNE_LATITUDE, stationnemnt.coordonnée.latitude )
+            put( COLONNE_PANNEAU, stationnemnt.panneau )
+            put( COLONNE_HEURE_DÉBUT, stationnemnt.heures_début )
+            put( COLONNE_HEURE_PRÉVU, stationnemnt.heures_fin )
         }
         db.insert( TABLE_STATIONNEMENT, null, values )
         db.close()

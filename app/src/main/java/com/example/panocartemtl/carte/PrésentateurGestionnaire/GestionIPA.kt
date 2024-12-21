@@ -14,6 +14,7 @@ import com.example.panocartemtl.R
 import com.example.panocartemtl.VueFavoris
 import com.example.panocartemtl.carte.InterfaceCarte.IPAInterface
 import com.example.panocartemtl.carte.VueCarte
+import com.example.panocartemtl.entitées.BaseDeDonnées
 import com.example.panocartemtl.favoris.Présentateur
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
@@ -49,6 +50,7 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
     var modèle = Modèle.instance
     private var destinationChoisie: Point? = null
     private var stationnementIdChoisie: Int = 1
+    val vueFavoris = VueFavoris()
 
     // Position actuelle
 
@@ -377,18 +379,18 @@ class GestionIPA(var vue: VueCarte, val iocontext: CoroutineContext = Dispatcher
     }
 
     override fun ajouterStationnementFavoris() {
-        CoroutineScope( Dispatchers.Main ).launch {
-            val stationnement = withContext( iocontext ) {
-                modèle.obtenirStationnementParId( stationnementIdChoisie )
+        CoroutineScope(Dispatchers.Main).launch {
+            val context = vue.requireContext()
+            val stationnement = withContext(iocontext) {
+                modèle.obtenirStationnementParId(stationnementIdChoisie)
             }
 
-            if (stationnement != null) {
-                val présentateurFavoris = Présentateur(VueFavoris())
-                présentateurFavoris.ajouterNouvelleAdresse(stationnement)
-                Toast.makeText( vue.requireContext(), "Adresse ajoutée aux favoris", Toast.LENGTH_SHORT ).show()
-            } else {
-                Toast.makeText( vue.requireContext(), "Stationnement introuvable", Toast.LENGTH_SHORT ).show()
-            }
+            // Create the presenter only if the fragment is still attached
+            val présentateurFavoris = Présentateur(vueFavoris, BaseDeDonnées(context))
+            présentateurFavoris.ajouterNouvelleAdresse(stationnement)
+
+            // Make sure the fragment is still attached before showing Toast
+            Toast.makeText(vue.requireContext(), "Adresse ajoutée aux favoris: ${stationnement.adresse.rue}", Toast.LENGTH_SHORT).show()
         }
     }
 }

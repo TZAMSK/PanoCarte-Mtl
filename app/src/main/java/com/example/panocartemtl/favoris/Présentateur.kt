@@ -12,10 +12,11 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import com.example.panocartemtl.Modèle.Modèle
 import com.example.panocartemtl.R
+import com.example.panocartemtl.entitées.BaseDeDonnées
 import com.example.panocartemtl.entitées.Stationnement
 import java.util.*
 
-class Présentateur(val vue: VueFavoris) {
+class Présentateur(val vue: VueFavoris, val baseDeDonnées: BaseDeDonnées) {
     private val modèle = Modèle.instance
     private lateinit var adapter: ArrayAdapter<String>
 
@@ -26,7 +27,7 @@ class Présentateur(val vue: VueFavoris) {
 
     // Charge la liste des stationnements et l'affiche dans la vue
     fun chargerListeStationnement() {
-        val stationnements = récupérerListeStationnement() // Utilisation de la méthode pour récupérer la liste
+        val stationnements = baseDeDonnées.obtenirTousStationnementBD() // Utilisation de la méthode pour récupérer la liste
         listeStationnement(stationnements)
     }
 
@@ -57,7 +58,7 @@ class Présentateur(val vue: VueFavoris) {
     fun ajouterNouvelleAdresse( stationnement: Stationnement ) {
         val stationnements = modèle.getStationnementSimulés().toMutableList()
         stationnements.add(stationnement) // Ajout de la nouvelle adresse
-        modèle.mettreAJourStationnements(stationnements)
+        baseDeDonnées.insérerStationnement( stationnement )
         listeStationnement(stationnements) // Mise à jour de la vue
     }
 
@@ -138,9 +139,8 @@ class Présentateur(val vue: VueFavoris) {
     fun listeStationnement(stationnements: List<Stationnement>) {
         // Source: https://www.geeksforgeeks.org/how-to-check-if-a-lateinit-variable-has-been-initialized-or-not-in-kotlin/
         if(::adapter.isInitialized) {
-            val adresses = stationnements.map { it.adresse }
             adapter.clear()
-            //.addAll(adresses)
+            adapter.addAll(stationnements.map { it.toString() })
             adapter.notifyDataSetChanged()
         }
     }
