@@ -1,0 +1,46 @@
+* Sprint 1
+|                                           | Note | Hatim | Alikhan              | Matthew | Armsky | Commentaires |
+| Qualité du prototype d'interface :        | A    |       |                      |         |        |              |
+|                                           |      |       |                      |         |        |              |
+| Présentation :                            | A    |       |                      |         |        |              |
+|                                           |      |       |                      |         |        |              |
+| Évaluation du travail par les pairs (50%) | ×    | A     | E - Pas d'évaluation | A       | A      |              |
+| Participation à la présentation     (50%) | ×    | A     | A                    | A       | A      |              |
+|-------------------------------------------+------+-------+----------------------+---------+--------+--------------|
+| Total                                     |      | 10    | 5                    | 10      | 10     |              |
+
+* Sprint 2
+|                                           | Note | Alikhan | Matthew           | Hatim | Armsky                        | Commentaires                         |
+| Qualité du produit :                      | B    |         |                   |       |                               | Quelques fonctionnalités prototypées |
+|                                           |      |         |                   |       |                               |                                      |
+| Présentation :                            | A    |         |                   |       |                               |                                      |
+|                                           |      |         |                   |       |                               |                                      |
+| Évaluation du travail par les pairs (33%) | ×    | A       | A                 | A     | E - Pas d'évaluation d'équipe |                                      |
+| Participation à la présentation     (33%) | ×    | A       | A                 | A     | A                             |                                      |
+| Participation au développement      (33%) | ×    | A       | E  - aucun commit | A     | E - aucun commit.             |                                      |
+|-------------------------------------------+------+---------+-------------------+-------+-------------------------------+--------------------------------------|
+| Total                                     |      | 9       | 6.7               | 9     | 3                             |                                      |
+
+* Sprint 3
+|                                           | Note | Hatim                       | Armsky               | Alikhan | Matthew           | Commentaires                                              |
+| Qualité du produit :                      | A    |                             |                      |         |                   |                                                           |
+|                                           |      |                             |                      |         |                   |                                                           |
+| Présentation :                            | C    |                             |                      |         |                   | Le code n'est pas fusionné en une seule app fonctionnelle |
+|                                           |      |                             |                      |         |                   |                                                           |
+| Évaluation du travail par les pairs (33%) | ×    | E - pas d'évaluation        | E - pas d'évaluation | A       | B                 |                                                           |
+| Participation à la présentation     (33%) | ×    | A                           | A                    | A       | A                 |                                                           |
+| Participation au développement      (33%) | ×    | D - 2 commits non fusionnés | E - Aucun commit     | A       | D - 1 seul commit |                                                           |
+|-------------------------------------------+------+-----------------------------+----------------------+---------+-------------------+-----------------------------------------------------------|
+| Total                                     |      | 3.7                         | 2.7                  | 8       | 5.9               |                                                           |
+
+* Sprint 4
+|                                           | Note                | Hatim                | Alikhan | Armsky | Matthew           | Commentaires |
+| Qualité du produit :                      | A                   |                      |         |        |                   |              |
+|                                           |                     |                      |         |        |                   |              |
+| Présentation :                            | C - Non fonctionnel |                      |         |        |                   |              |
+|                                           |                     |                      |         |        |                   |              |
+| Évaluation du travail par les pairs (33%) | ×                   | E - pas d'évaluation | A       | A      | C                 |              |
+| Participation à la présentation     (33%) | ×                   | A                    | A       | A      | A                 |              |
+| Participation au développement      (33%) | ×                   | A                    | A       | A      | E - pas de commit |              |
+|-------------------------------------------+---------------------+----------------------+---------+--------+-------------------+--------------|
+| Total                                     | 8                   | 5.3                  | 8       | 8      | 4.3               |              |
